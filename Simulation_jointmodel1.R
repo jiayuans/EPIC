@@ -1,176 +1,32 @@
-## simulation_jointmodel1
-library(mvtnorm)
+#!/usr/bin/env Rscript
+library(coda)
 library(rjags)
-library(R2jags)
 library(runjags)
 library(tidyverse)
 
-dirg <- "Z:/EJCStudents/ShiJ/EPIC-CF/Data/Source/"
-##################################################################
-##    Functions to calculate the WAIC and Read data (different priors)
-## 
-##################################################################
-dat.pa <- read.csv(file=paste(dirg,"/Data-PA-cohort.csv",sep=""))
-dat.pa <- dat.pa[,-1]
-dat.pe <- read.csv(file=paste(dirg,"/Data-multiple-final-cohort-EPICstart-Bt-LengthPEx.csv",sep=""))
-
-dat.pa1 <-aggregate(dat.pa$VisitAge, by=list(dat.pa$cffidno),
-                 FUN=max, na.rm=TRUE)
-names(dat.pa1) <- c('cffidno','age.max')
-
-dat.pa2 <-aggregate(dat.pa$age.min, by=list(dat.pa$cffidno),
-                 FUN=max, na.rm=TRUE)
-names(dat.pa2) <- c('cffidno','age.min')
-
-first.t<-dat.pa2$age.min
-last.t<-dat.pa1$age.max
-first.tt<-first.t[c(101:300,1001:1200)]
-last.tt<-last.t[c(101:300,1001:1200)]
+long.time <- read.csv("long.time")
+first.tt <- long.time[,2]
+last.tt <- long.time[,3]
 
 ####time of first visit and last visit#######
 N<-length(last.tt)
-###set number of iterations#################################
-I=2
-
-###############set true values#########################################
-c0=-4.4
-c1=0.1
-c2=0.1
-c3=0.1
-c4=0.1
-Verror=1
-cp1.true=4.5
-cp2.true=14.4
 
 s=23###starting seed####
+
+#############################################################
+X <- as.matrix(read.csv(list.files(pattern="X_data.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_data.")))
+r <- as.numeric(read.csv(list.files(pattern="r_data.")))
+simdat.pe <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
 #############################################################
 
-B1.mean<-rep(NA,I-1)
-B2.mean<-rep(NA,I-1)
-B3.mean<-rep(NA,I-1)
-c0.mean<-rep(NA,I-1)
-c1.mean<-rep(NA,I-1)
-c2.mean<-rep(NA,I-1)
-c3.mean<-rep(NA,I-1)
-cp1.mean<-rep(NA,I-1)
-cp2.mean<-rep(NA,I-1)
-u.mean<-rep(NA,I-1)
-u.tau.inv.mean<-rep(NA,I-1)
-cp1.mu<-rep(NA,I-1)
-cp1.tau<-rep(NA,I-1)
-cp2.temp<-rep(NA,I-1)
-
-b0.mean<-rep(NA,I-1)
-b1.mean<-rep(NA,I-1)
-b2.mean<-rep(NA,I-1)
-b3.mean<-rep(NA,I-1)
-a.mean<-rep(NA,I-1)
-v.mean<-rep(NA,I-1)
-ga.mean<-rep(NA,I-1)
-w.mean<-rep(NA,I-1)
-w.tau.inv.mean<-rep(NA,I-1)
-
-#participant ID
-ID<-rep(1:N)
-length(ID)
-
-#######################################################
-for (r in 2:I){
-  ##r <- 2
   set.seed(s+100*(r-1))
   t<-round(first.tt)
   tt<-round(last.tt)
   k.pa<-(tt-t)*4
-  kk=max(k.pa)
   
-  b_0i<-rnorm(N,0,1.6)
   ##X1=c(rep(1,N/2),rep(0,N/2))
   X1=sample(c(1,0),N, replace = TRUE)
-  
-  I1<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  I2<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  p2<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  Y<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  X<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  for (i in 1:N){
-    X[i,1:k.pa[i]]<-c(seq(t[i],tt[i]-0.25,0.25))
-  }
-  
-  for (i in 1:N){
-    for (j in 1:k.pa[i]){
-      I1[i,j]<-ifelse(X[i,j]< cp1.true,-1,1)
-      I2[i,j]<-ifelse(X[i,j]< cp2.true,-1,1)
-      p2[i,j]=exp(c0+c1*(X[i,j]-cp1.true)+c2*(X[i,j]-cp1.true)*I1[i,j]+c3*(X[i,j]-cp2.true)*I2[i,j]+c4*X1[i]+b_0i[i])/(1+exp(c0+c1*(X[i,j]-cp1.true)+c2*(X[i,j]-cp1.true)*I1[i,j]+c3*(X[i,j]-cp2.true)*I2[i,j]+c4*X1[i]+b_0i[i]))
-      Y[i,j]=rbinom(Verror, 1, p2[i,j])
-    }
-  }
-  
-  
-  #########################################################################
-  # Function that generates observations from a NHPP- returns event times
-  # Input: parameters for the mean of a poisson process: a(shape parameter),b, T (exposure time)
-  # Output: REturns the event times and a variable that indicates whether the observation is an event or a 
-  #		  censoring time (no events observed in the whole interval); status=1 indicates event and 0 censoring
-  
-  NHPP<-function(a,b,T){
-    mu <- b*T^a  # Mean of the Poisson process up to time T
-    n <-rpois(1, mu)  #  number of events poisson
-    if (n!=0) {
-      u <- runif(n,0,1) # n uniforms
-      u <- sort(u)
-      y <- T*u^(1/a) 
-      y[length(y)+1] <- T
-      y_0 <- rep(NA,length(y))
-      for (i in 2:length(y_0)){
-        y_0[i] <- y[i-1]
-      }
-      y_0[which(is.na(y_0)==TRUE)] <- 0
-      return(cbind(y_0,y,c(rep(1,length(y)-1),0),n))    #returns n event times
-    } else 
-      return(cbind(0,T,0,n)) 
-  }
-  
-  #########################################################################
-  # Function that creates an event times dataset for a poisson process (continuous data )
-  # Input: parameters for the intensity function alpha; beta; beta0; x; ga (association parameter); Tei 
-  # Output: A dataset with variables
-  # 		 id, xi (treatment),Tei, time, status
-  # -------------- Building the simulated poisson data -----
-  poisson.d <- function(alpha,beta,beta0,x,ga,TTei){
-    le <- length(x)
-    c_0i <- rnorm(le,0,1.4)
-    vi <- exp(ga*b_0i+c_0i)
-    ##vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
-    
-    times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
-    start <-  times[,1]
-    stop <- times[,2]
-    status <- times[,3]
-    n.rec <- times[,4]
-    id <- rep(1,length(stop))
-    xi <- rep(x[1],length(stop))
-    Tei <- rep(TTei[1],length(stop))
-    for (i in 2:length(x)){
-      times2 <- NHPP(b=vi[i]*exp(beta0+beta*x[i]),a=alpha,T=TTei[i]) 
-      start2 <-  times2[,1]
-      stop2 <- times2[,2]
-      status2 <- times2[,3]
-      n.rec2 <- times2[,4]
-      id <- c(id,rep(i,length(stop2)))
-      xi <- c(xi,rep(x[i],length(stop2)))
-      Tei <- c(Tei,rep(TTei[i],length(stop2)))
-      
-      start <- c(start,start2)
-      stop <- c(stop,stop2)
-      status <- c(status,status2)
-      n.rec <- c(n.rec,n.rec2)
-    }
-    return(data.frame(id,xi,Tei,n.rec,start,stop,status))
-  }
-  
-  Tei0 <- rep(20,N)
-
-  simdat.pe <- poisson.d(alpha=1.3,beta=0.2,beta0=-2.5,x=X1,ga=.5,TTei=Tei0)
 
   timeE <-aggregate(simdat.pe$stop, by=list(simdat.pe$id),
                     FUN=max, na.rm=TRUE)
@@ -184,7 +40,7 @@ for (r in 2:I){
   simdat.pe2 <- merge(timeE,time1,all=TRUE)
   simdat.pe2$t[which(is.na(simdat.pe2$t))] <- 0
   
-  length(which(simdat.pe2$t== 0))
+  #length(which(simdat.pe2$t== 0))
   
   count <- simdat.pe2 %>% count(id)
   max.count <- max(count$n) 
@@ -276,7 +132,7 @@ model {
 }"
 
   
-  ####Observed DATA X,
+  ####Observed DATA
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
                            X1=X1, k.pe=k.pe, time.tau=time.tau, Ti=Ti)) 
   ###initial Values
@@ -296,40 +152,32 @@ model {
   summary <- summary(res)
   ##sum <- as.data.frame(summary)
   
-  B1.mean[r]<-summary[1,4] 
-  B2.mean[r]<-summary[2,4] 
-  B3.mean[r]<-summary[3,4] 
-  c0.mean[r]<-summary[4,4] 
-  c1.mean[r]<-summary[5,4] 
-  c2.mean[r]<-summary[6,4] 
-  c3.mean[r]<-summary[7,4]
-  cp1.mean[r]<-summary[8,4] 
-  cp2.mean[r]<-summary[9,4] 
-  u.mean[r]<-mean(summary[10:209,4])
-  u.tau.inv.mean[r]<-summary[210,4] 
-  cp1.mu[r]<-summary[212,4]
-  cp1.tau[r]<-summary[213,4]
-  cp2.temp[r]<-summary[214,4]
+  B1.mean <-summary[1,4] 
+  B2.mean <-summary[2,4] 
+  B3.mean <-summary[3,4] 
+  c0.mean <-summary[4,4] 
+  c1.mean <-summary[5,4] 
+  c2.mean <-summary[6,4] 
+  c3.mean <-summary[7,4]
+  cp1.mean <-summary[8,4] 
+  cp2.mean <-summary[9,4] 
+  u.mean <-mean(summary[10:409,4])
+  u.tau.inv.mean <-summary[410,4] 
+  cp1.mu <-summary[412,4]
+  cp1.tau <-summary[413,4]
+  cp2.temp <-summary[414,4]
   
-  b0.mean[r]<-summary[215,4] 
-  b1.mean[r]<-summary[216,4] 
-  b2.mean[r]<-summary[217,4] 
-  b3.mean[r]<-summary[218,4]
-  a.mean[r]<-summary[219,4] 
-  v.mean[r]<-mean(summary[220:419,4])
-  ga.mean[r]<-summary[420,4] 
-  w.mean[r]<-mean(summary[421:620,4])
-  w.tau.inv.mean[r]<-summary[622,4] 
+  b0.mean <-summary[415,4] 
+  b1.mean <-summary[416,4] 
+  b2.mean <-summary[417,4] 
+  b3.mean <-summary[418,4]
+  a.mean <-summary[419,4] 
+  v.mean <-mean(summary[420:819,4])
+  ga.mean <-summary[820,4] 
+  w.mean <-mean(summary[821:1020,4])
+  w.tau.inv.mean <-summary[1022,4] 
   
-}
 
 Sim.results=cbind(B1.mean,B2.mean,B3.mean,c0.mean,c1.mean,c2.mean,c3.mean,cp1.mean,cp2.mean,u.tau.inv.mean,u.mean,
                   b0.mean,b1.mean,b2.mean,b3.mean,a.mean,v.mean,ga.mean,w.mean,w.tau.inv.mean)
-Sim.results=Sim.results[-1,]
-write.csv(summary,"Z:/EJCStudents/ShiJ/EPIC-CF/Result/Simulation_JM1_summary_rhat.csv")
-write.csv(Sim.results,"Z:/EJCStudents/ShiJ/EPIC-CF/Result/Simulation_JM1.csv")
-Sim.results <- read.csv("Z:/EJCStudents/ShiJ/EPIC-CF/Result/Simulation_JM1.csv")
-
-round(colMeans(Sim.results),2)
-# B1.mean  B2.mean  B3.mean  c0.mean  c1.mean  c2.mean  c3.mean cp1.mean cp2.mean tau.mean   u.mean 
-#-0.57    -0.04     0.29    -3.47    -0.14     0.27     0.16     4.11    14.06    38.56     0.00003
+print(Sim.results)
