@@ -5,4 +5,3 @@ From: rocker/tidyverse:4.3
     apt -y update
     apt -y install jags
     R -e "install.packages(c('coda','rjags','runjags'), dependencies=TRUE, repos='http://cran.rstudio.com/')"
-
