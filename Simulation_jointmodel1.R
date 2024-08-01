@@ -4,7 +4,7 @@ library(rjags)
 library(runjags)
 library(tidyverse)
 
-long.time <- read.csv("long.time")
+long.time <- read.csv("long.time.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
