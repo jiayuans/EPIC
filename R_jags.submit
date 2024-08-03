@@ -9,8 +9,5 @@ output = R.out.$(Cluster).$(Process)
 
 +JobDurationCategory = "Medium"
 
-request_cpus   = 1
-request_memory = 1GB
-request_disk   = 1GB
 
 queue 4 
