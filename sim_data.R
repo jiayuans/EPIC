@@ -1,7 +1,7 @@
 library(tidyverse)
 
-##dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC/"
-##setwd(dirg)
+dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC/"
+setwd(dirg)
 ##################################################################
 ##    Functions to calculate the WAIC and Read data (different priors)
 ## 
@@ -25,14 +25,14 @@ library(tidyverse)
 ##tt <- cbind(first.tt,last.tt)
 ##write.csv(tt,"long.time.csv")
 
-long.time <- read.csv("long.time")
+long.time <- read.csv("long.time.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
 ####time of first visit and last visit#######
 N<-length(last.tt)
 ###set number of iterations#################################
-I=5
+I=11
 
 ###############set true values#########################################
 c0=-4.4
