@@ -53,7 +53,7 @@ length(ID)
 
 #######################################################
 for (r in 2:I){
-  ##r <- 2
+  ##r <- 25
   set.seed(s+100*(r-1))
   t<-round(first.tt)
   tt<-round(last.tt)
@@ -145,7 +145,7 @@ for (r in 2:I){
     return(data.frame(id,xi,Tei,n.rec,start,stop,status))
   }
   
-  Tei0 <- rep(20,N)
+  Tei0 <- tt-t
   
   simdat.pe <- poisson.d(alpha=1.3,beta=0.2,beta0=-2.5,x=X1,ga=.5,TTei=Tei0)
   
