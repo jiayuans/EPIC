@@ -3,27 +3,9 @@ library(tidyverse)
 dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC/"
 setwd(dirg)
 ##################################################################
-##    Functions to calculate the WAIC and Read data (different priors)
+##    Functions to Read data
 ## 
 ##################################################################
-##dat.pa <- read.csv(file=paste(dirg,"/Data-PA-cohort.csv",sep=""))
-##dat.pa <- dat.pa[,-1]
-
-##dat.pa1 <-aggregate(dat.pa$VisitAge, by=list(dat.pa$cffidno),
-##                 FUN=max, na.rm=TRUE)
-##names(dat.pa1) <- c('cffidno','age.max')
-##
-##dat.pa2 <-aggregate(dat.pa$age.min, by=list(dat.pa$cffidno),
-##                 FUN=max, na.rm=TRUE)
-##names(dat.pa2) <- c('cffidno','age.min')
-
-##first.t<-dat.pa2$age.min
-##last.t<-dat.pa1$age.max
-##first.tt<-first.t[c(101:300,1001:1200)]
-##last.tt<-last.t[c(101:300,1001:1200)]
-
-##tt <- cbind(first.tt,last.tt)
-##write.csv(tt,"long.time.csv")
 
 long.time <- read.csv("long.time.csv")
 first.tt <- long.time[,2]
@@ -32,14 +14,14 @@ last.tt <- long.time[,3]
 ####time of first visit and last visit#######
 N<-length(last.tt)
 ###set number of iterations#################################
-I=31
+I=21
 
 ###############set true values#########################################
-c0=-4.4
-c1=0.1
-c2=0.1
-c3=0.1
-c4=0.1
+c0=-4.5
+c1=0.09
+c2=0.14
+c3=0.08
+c4=0.08
 Verror=1
 cp1.true=4.5
 cp2.true=14.4
@@ -53,7 +35,7 @@ length(ID)
 
 #######################################################
 for (r in 2:I){
-  ##r <- 25
+  ##r <- 2
   set.seed(s+100*(r-1))
   t<-round(first.tt)
   tt<-round(last.tt)
@@ -115,7 +97,7 @@ for (r in 2:I){
   # -------------- Building the simulated poisson data -----
   poisson.d <- function(alpha,beta,beta0,x,ga,TTei){
     le <- length(x)
-    c_0i <- rnorm(le,0,1.4)
+    c_0i <- rnorm(le,0,1.3)
     vi <- exp(ga*b_0i+c_0i)
     ##vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
     
@@ -145,9 +127,9 @@ for (r in 2:I){
     return(data.frame(id,xi,Tei,n.rec,start,stop,status))
   }
   
-  Tei0 <- tt-t
+  Tei0 <- tt-0.25-t
   
-  simdat.pe <- poisson.d(alpha=1.3,beta=0.2,beta0=-2.5,x=X1,ga=.5,TTei=Tei0)
+  simdat.pe <- poisson.d(alpha=1.78,beta=0.23,beta0=-4.32,x=X1,ga=.25,TTei=Tei0)
   
   
   X_df <- as.data.frame(X)

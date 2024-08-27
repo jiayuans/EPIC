@@ -28,6 +28,10 @@ simdat.pe <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
   ##X1=c(rep(1,N/2),rep(0,N/2))
   X1=sample(c(1,0),N, replace = TRUE)
 
+  timeS <- aggregate(simdat.pe$start, by=list(simdat.pe$id),
+                     FUN=min, na.rm=TRUE)
+  colnames(timeS) <- c("id","t0")
+  
   timeE <-aggregate(simdat.pe$stop, by=list(simdat.pe$id),
                     FUN=max, na.rm=TRUE)
   colnames(timeE) <- c("id","tau")
@@ -37,7 +41,8 @@ simdat.pe <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
   time <- subset(simdat.pe,status==1)
   time$t <- time$stop
   time1 <- time[,c(1,8)]  
-  simdat.pe2 <- merge(timeE,time1,all=TRUE)
+  simdat.pe1 <- merge(timeS,timeE,all=TRUE)
+  simdat.pe2 <- merge(simdat.pe1,time1,all=TRUE)
   simdat.pe2$t[which(is.na(simdat.pe2$t))] <- 0
   
   #length(which(simdat.pe2$t== 0))
@@ -52,11 +57,16 @@ simdat.pe <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
   
   #################Readingin data for time matrix#############################
   Ti <- matrix(Y.epic$t, N, max.count, byrow=TRUE)
-  
+  Ti.n <- Ti
+  for (i in 1:N) {
+    if (Ti.n[i,1] !=0){
+      Ti.n[i,] <- Ti[i,]+t[i]   
+    }
+  }
   #################Readingin data for X, t0, tau vectors#############################
   ##X1 <- as.numeric(X.dat.pe[,2]) ## sexf: female
-  
-  time.tau <- timeE$tau
+  time.t0 <- timeS$t0+t
+  time.tau <- timeE$tau+t
   
   
   #################input variables for simulation#####################
@@ -99,7 +109,7 @@ model {
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
         v[i] <- exp(ga*u[i]+w[i])
-        L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(-v[i]*exp(b0+b*X1[i])*(time.tau[i]^a)), exp(-v[i]*exp(b0+b*X1[i])*(time.tau[i]^a)))
+        L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
         phi[i] <- -log(L.e[i]) + 1000
         zeros[i] ~ dpois(phi[i])
@@ -134,20 +144,19 @@ model {
   
   ####Observed DATA
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
-                           X1=X1, k.pe=k.pe, time.tau=time.tau, Ti=Ti)) 
+                           X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti.n)) 
   ###initial Values
-  inits1 <- dump.format(list(c0=-4.4, c=c(0.1,0.1,0.1,0.1), u.tau=0.5, cp1=4.5, cp2.temp=10,
-                             b0=-2.5, b=0.2, a=1.3, w.tau=0.5, ga=0.5,
+  inits1 <- dump.format(list(c0=-4.5, c=c(0.09,0.14,0.08,0.08), u.tau=0.39, cp1=4.5, cp2.temp=10,
+                             b0=-4.3, b=0.2, a=1.8, w.tau=0.56, ga=.25,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.5, c=c(0.1,0.1,0.1,0.1)+0.01, u.tau=0.6, cp1=4.6, cp2.temp=10.1,
-                                  b0=-2.6,b=0.3, a=1.4, w.tau=0.6, ga=0.5,
+  inits2 <- dump.format(list(c0=-4.6, c=c(0.09,0.14,0.08,0.08)+0.01, u.tau=0.4, cp1=4.6, cp2.temp=10,
+                             b0=-4.4,b=0.3, a=1.9, w.tau=0.66, ga=.26,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
-
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=10000, sample=14000, 
-                   monitor=c("B1", "B2","B3","c0", "c", "cp1", "cp2","u","u.tau.inv","u.tau","cp1.mu","cp1.tau", "cp2.temp",
-                             "b0","b", "a","v","ga","w","w.tau","w.tau.inv","ll.a","ll.e","dev.a","dev.e","dic"), 
-                   data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
+  res <- run.jags(model=modelrancp, burnin=5000, sample=5000, 
+                  monitor=c("B1", "B2","B3","c0", "c", "cp1", "cp2","u","u.tau.inv","u.tau","cp1.mu","cp1.tau", "cp2.temp",
+                            "b0","b", "a","v","ga","w","w.tau","w.tau.inv","ll.a","ll.e","dev.a","dev.e","dic"), 
+                  data=data, n.chains=2, inits=c(inits1,inits2), thin=2, module='dic')
   
   summary <- summary(res)
   ##sum <- as.data.frame(summary)
@@ -159,25 +168,24 @@ model {
   c1.mean <-summary[5,4] 
   c2.mean <-summary[6,4] 
   c3.mean <-summary[7,4]
-  cp1.mean <-summary[8,4] 
-  cp2.mean <-summary[9,4] 
-  u.mean <-mean(summary[10:409,4])
-  u.tau.inv.mean <-summary[410,4] 
-  cp1.mu <-summary[412,4]
-  cp1.tau <-summary[413,4]
-  cp2.temp <-summary[414,4]
+  c4.mean <-summary[8,4]
+  cp1.mean <-summary[9,4] 
+  cp2.mean <-summary[10,4] 
+  u.mean <-mean(summary[11:410,4])
+  u.tau.inv.mean <-summary[411,4] 
+  cp1.mu <-summary[413,4]
+  cp1.tau <-summary[414,4]
+  cp2.temp <-summary[415,4]
   
-  b0.mean <-summary[415,4] 
-  b1.mean <-summary[416,4] 
-  b2.mean <-summary[417,4] 
-  b3.mean <-summary[418,4]
-  a.mean <-summary[419,4] 
-  v.mean <-mean(summary[420:819,4])
-  ga.mean <-summary[820,4] 
-  w.mean <-mean(summary[821:1020,4])
-  w.tau.inv.mean <-summary[1022,4] 
+  b0.mean <-summary[416,4] 
+  b1.mean <-summary[417,4] 
+  a.mean <-summary[418,4] 
+  v.mean <-mean(summary[419:818,4])
+  ga.mean <-summary[819,4] 
+  w.mean <-mean(summary[820:1219,4])
+  w.tau.inv.mean <-summary[1221,4] 
   
 
 Sim.results=cbind(B1.mean,B2.mean,B3.mean,c0.mean,c1.mean,c2.mean,c3.mean,cp1.mean,cp2.mean,u.tau.inv.mean,u.mean,
-                  b0.mean,b1.mean,b2.mean,b3.mean,a.mean,v.mean,ga.mean,w.mean,w.tau.inv.mean)
+                  b0.mean,b1.mean,a.mean,v.mean,ga.mean,w.mean,w.tau.inv.mean)
 print(Sim.results)
