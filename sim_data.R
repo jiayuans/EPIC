@@ -14,7 +14,7 @@ last.tt <- long.time[,3]
 ####time of first visit and last visit#######
 N<-length(last.tt)
 ###set number of iterations#################################
-I=21
+I=101
 
 ###############set true values#########################################
 c0=-4.5

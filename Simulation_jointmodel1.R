@@ -153,10 +153,10 @@ model {
                              b0=-4.4,b=0.3, a=1.9, w.tau=0.66, ga=.26,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=5000, sample=5000, 
+  res <- run.jags(model=modelrancp, burnin=10000, sample=8000, 
                   monitor=c("B1", "B2","B3","c0", "c", "cp1", "cp2","u","u.tau.inv","u.tau","cp1.mu","cp1.tau", "cp2.temp",
                             "b0","b", "a","v","ga","w","w.tau","w.tau.inv","ll.a","ll.e","dev.a","dev.e","dic"), 
-                  data=data, n.chains=2, inits=c(inits1,inits2), thin=2, module='dic')
+                  data=data, n.chains=2, inits=c(inits1,inits2), thin=1, module='dic')
   
   summary <- summary(res)
   ##sum <- as.data.frame(summary)
