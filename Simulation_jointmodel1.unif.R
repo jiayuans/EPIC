@@ -3,6 +3,7 @@ library(coda)
 library(rjags)
 library(runjags)
 library(tidyverse)
+library(mcmcplots)
 
 long.time <- read.csv("long.time.csv")
 first.tt <- long.time[,2]
@@ -155,8 +156,9 @@ model {
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
   res <- run.jags(model=modelrancp, burnin=10000, sample=8000, 
-                  monitor=c("B1", "B2","B3","c0", "c", "cp1", "cp2","u","u.tau.inv","u.tau", "cp2.temp",
-                            "b0","b", "a","v","ga","w","w.tau","w.tau.inv","ll.a","ll.e","dev.a","dev.e","dic"), 
+                  monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
+                            "b0","b","a","ga","w.tau.inv","u","v","w",
+                            "w.tau","u.tau","cp2.temp","ll.a","ll.e","dev.a","dev.e","dic"), 
                   data=data, n.chains=2, inits=c(inits1,inits2), thin=1, module='dic')
   
   summary <- summary(res)
@@ -164,6 +166,14 @@ model {
   text <- list.files(pattern="X_data.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
   write.csv(result_df, paste0("result.",num,".csv"))
+  
+  res_jm <- res$mcmc
+  #dimnames(res_jm[[1]])
+  vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
+  #str(vars)
+  #plot(vars[,1])
+  #summary(vars)
+  traplot(vars)
   
   ##B1.mean <-summary[1,4] 
   ##B2.mean <-summary[2,4] 

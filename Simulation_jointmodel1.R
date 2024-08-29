@@ -3,6 +3,7 @@ library(coda)
 library(rjags)
 library(runjags)
 library(tidyverse)
+library(mcmcplots)
 
 long.time <- read.csv("long.time.csv")
 first.tt <- long.time[,2]
@@ -154,8 +155,9 @@ model {
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
   res <- run.jags(model=modelrancp, burnin=10000, sample=8000, 
-                  monitor=c("B1", "B2","B3","c0", "c", "cp1", "cp2","u","u.tau.inv","u.tau","cp1.mu","cp1.tau", "cp2.temp",
-                            "b0","b", "a","v","ga","w","w.tau","w.tau.inv","ll.a","ll.e","dev.a","dev.e","dic"), 
+                  monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
+                            "b0","b","a","ga","w.tau.inv","u","v","w",
+                            "w.tau","u.tau","cp1.mu","cp1.tau","cp2.temp","ll.a","ll.e","dev.a","dev.e","dic"), 
                   data=data, n.chains=2, inits=c(inits1,inits2), thin=1, module='dic')
   
   summary <- summary(res)
@@ -163,6 +165,14 @@ model {
   text <- list.files(pattern="X_data.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
   write.csv(result_df, paste0("result.",num,".csv"))
+  
+  res_jm <- res$mcmc
+  #dimnames(res_jm[[1]])
+  vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
+  #str(vars)
+  #plot(vars[,1])
+  #summary(vars)
+  traplot(vars)
   
   ##B1.mean <-summary[1,4] 
   ##B2.mean <-summary[2,4] 
@@ -176,9 +186,9 @@ model {
   ##cp2.mean <-summary[10,4] 
   ##u.mean <-mean(summary[11:410,4])
   ##u.tau.inv.mean <-summary[411,4] 
-  ##cp1.mu <-summary[413,4]
-  ##cp1.tau <-summary[414,4]
-  ##cp2.temp <-summary[415,4]
+  ##cp1.mu.mean <-summary[413,4]
+  ##cp1.tau.mean <-summary[414,4]
+  ##cp2.temp.mean <-summary[415,4]
   
   ##b0.mean <-summary[416,4] 
   ##b1.mean <-summary[417,4] 
@@ -189,6 +199,6 @@ model {
   ##w.tau.inv.mean <-summary[1221,4] 
   
 
-  ##Sim.results=cbind(B1.mean,B2.mean,B3.mean,c0.mean,c1.mean,c2.mean,c3.mean,cp1.mean,cp2.mean,u.tau.inv.mean,u.mean,
+  ##Sim.results=cbind(B1.mean,B2.mean,B3.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,cp1.mean,cp2.mean,u.tau.inv.mean,u.mean,
   ##                b0.mean,b1.mean,a.mean,v.mean,ga.mean,w.mean,w.tau.inv.mean)
 ##print(Sim.results)
