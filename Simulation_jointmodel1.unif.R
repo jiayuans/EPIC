@@ -1,0 +1,193 @@
+#!/usr/bin/env Rscript
+library(coda)
+library(rjags)
+library(runjags)
+library(tidyverse)
+
+long.time <- read.csv("long.time.csv")
+first.tt <- long.time[,2]
+last.tt <- long.time[,3]
+
+####time of first visit and last visit#######
+N<-length(last.tt)
+
+s=23###starting seed####
+
+#############################################################
+X <- as.matrix(read.csv(list.files(pattern="X_data.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_data.")))
+r <- as.numeric(read.csv(list.files(pattern="r_data.")))
+simdat.pe <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
+#############################################################
+
+  set.seed(s+100*(r-1))
+  t<-round(first.tt)
+  tt<-round(last.tt)
+  k.pa<-(tt-t)*4
+  
+  ##X1=c(rep(1,N/2),rep(0,N/2))
+  X1=sample(c(1,0),N, replace = TRUE)
+
+  timeS <- aggregate(simdat.pe$start, by=list(simdat.pe$id),
+                     FUN=min, na.rm=TRUE)
+  colnames(timeS) <- c("id","t0")
+  
+  timeE <-aggregate(simdat.pe$stop, by=list(simdat.pe$id),
+                    FUN=max, na.rm=TRUE)
+  colnames(timeE) <- c("id","tau")
+  
+  X.dat.pe <- simdat.pe[!duplicated(simdat.pe$id), ]
+  
+  time <- subset(simdat.pe,status==1)
+  time$t <- time$stop
+  time1 <- time[,c(1,8)]  
+  simdat.pe1 <- merge(timeS,timeE,all=TRUE)
+  simdat.pe2 <- merge(simdat.pe1,time1,all=TRUE)
+  simdat.pe2$t[which(is.na(simdat.pe2$t))] <- 0
+  
+  #length(which(simdat.pe2$t== 0))
+  
+  count <- simdat.pe2 %>% count(id)
+  max.count <- max(count$n) 
+  
+  ##########################Assigning unique number to each subject##########################
+  simdat.pe3 <- simdat.pe2 %>% group_by(id) %>% mutate(time = c(1:length(id)))
+  Yd.temp <- data.frame(id = rep(unique(simdat.pe$id),each=max.count), time = 1:max.count) 
+  Y.epic <- merge(simdat.pe3,Yd.temp,by=c('id','time'),all.y=TRUE)
+  
+  #################Readingin data for time matrix#############################
+  Ti <- matrix(Y.epic$t, N, max.count, byrow=TRUE)
+  Ti.n <- Ti
+  for (i in 1:N) {
+    if (Ti.n[i,1] !=0){
+      Ti.n[i,] <- Ti[i,]+t[i]   
+    }
+  }
+  #################Readingin data for X, t0, tau vectors#############################
+  ##X1 <- as.numeric(X.dat.pe[,2]) ## sexf: female
+  time.t0 <- timeS$t0+t
+  time.tau <- timeE$tau+t
+  
+  
+  #################input variables for simulation#####################
+  #### checking for how many individuals we have NAs in the middle of followup
+  sum.na <- rep(NA,N)
+  k.pe=rep(NA,N)
+  
+  ids <- unique(Y.epic$id) ## 103104 103125 103129 103145 103147
+  for (i in 1:N){
+    na.indices <- which(Y.epic$t[Y.epic$id==ids[i]] %in% NA)
+    if (length(na.indices)==0){
+      k.pe[i] <- max.count} else{
+        k.pe[i] <- min(na.indices)-1}
+  }
+  
+  
+  ############Model in the JAGS format#####################
+  ############Two fixed CP#####################  
+  modelrancp <- "
+data { 
+  for(i in 1:N){
+       zeros[i]<- 0
+  }
+}
+model { 
+  for(i in 1:N){ 
+        for(j in 1:k.pa[i]){
+  ### PA model
+        Y[i,j] ~ dbin(p2[i,j],1)
+        logit(p2[i,j]) <- c0 + c[1] * (X[i,j]-cp1) + c[2] * (X[i,j]-cp1) * (2*step(X[i,j]-cp1)-1) + c[3] * (X[i,j]-cp2) * (2*step(X[i,j]-cp2)-1) + c[4] * X1[i] + u[i]
+        }
+        for(j in 1:k.pe[i]){
+  ### PE model
+       ## Weibull baseline
+        lambda0[i,j] <- a*(Ti[i,j])^(a-1)
+        lambda[i,j] <- lambda0[i,j]*v[i]*exp(b0+b*X1[i])
+       }
+        u[i] ~ dnorm(0,u.tau)
+        L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
+        ll.a[i] <- log(L.a[i])
+        w[i] ~ dnorm(0,w.tau)
+        v[i] <- exp(ga*u[i]+w[i])
+        L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
+        ll.e[i] <- log(L.e[i])
+        phi[i] <- -log(L.e[i]) + 1000
+        zeros[i] ~ dpois(phi[i])
+  }
+  log_lik0.a <- sum(ll.a[])
+  log_lik0.e <- sum(ll.e[]) 
+  dev.a <- -2*log_lik0.a
+  dev.e <- -2*log_lik0.e
+  c0 ~ dnorm(0,0.0001)
+	for (k in 1:4){
+	      c[k] ~ dnorm(0,0.0001)	
+	}
+  ## prior distributions
+	u.tau ~ dgamma(0.001,0.001)
+	cp1 ~ dunif(0,max)
+	##cp1 ~ dnorm(cp1.mu,cp1.tau)	
+	cp2.temp ~ dunif(0,max)
+	cp2 <- cp1 + cp2.temp
+	##cp1.mu ~ dnorm(0,0.001)
+	##cp1.tau ~ dgamma(0.001,0.001)
+	B1 <-c[1]-c[2]-c[3]
+  B2 <-c[1]+c[2]-c[3]
+  B3 <-c[1]+c[2]+c[3]
+  u.tau.inv <- 1/u.tau  ## variance 
+  a ~ dgamma(0.01,0.01)
+  b0 ~ dnorm(0,0.0001)	
+  b ~ dnorm(0,0.0001)		
+	ga ~ dnorm(0,0.0001)
+	w.tau ~ dgamma(0.001,0.001)
+	w.tau.inv <- 1/w.tau  ## variance 
+}"
+
+  
+  ####Observed DATA
+  data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
+                           X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti.n)) 
+  ###initial Values
+  inits1 <- dump.format(list(c0=-4.5, c=c(0.09,0.14,0.08,0.08), u.tau=0.39, cp1=4.5, cp2.temp=10,
+                             b0=-4.3, b=0.2, a=1.8, w.tau=0.56, ga=.25,
+                             .RNG.name="base::Super-Duper", .RNG.seed=1))
+  inits2 <- dump.format(list(c0=-4.6, c=c(0.09,0.14,0.08,0.08)+0.01, u.tau=0.4, cp1=4.6, cp2.temp=10,
+                             b0=-4.4,b=0.3, a=1.9, w.tau=0.66, ga=.26,
+                             .RNG.name="base::Super-Duper", .RNG.seed=2))
+  #### Run the model and produce plots
+  res <- run.jags(model=modelrancp, burnin=10000, sample=8000, 
+                  monitor=c("B1", "B2","B3","c0", "c", "cp1", "cp2","u","u.tau.inv","u.tau", "cp2.temp",
+                            "b0","b", "a","v","ga","w","w.tau","w.tau.inv","ll.a","ll.e","dev.a","dev.e","dic"), 
+                  data=data, n.chains=2, inits=c(inits1,inits2), thin=1, module='dic')
+  
+  summary <- summary(res)
+  result_df <- as.data.frame(summary)
+  text <- list.files(pattern="X_data.")
+  num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
+  write.csv(result_df, paste0("result.",num,".csv"))
+  
+  ##B1.mean <-summary[1,4] 
+  ##B2.mean <-summary[2,4] 
+  ##B3.mean <-summary[3,4] 
+  ##c0.mean <-summary[4,4] 
+  ##c1.mean <-summary[5,4] 
+  ##c2.mean <-summary[6,4] 
+  ##c3.mean <-summary[7,4]
+  ##c4.mean <-summary[8,4]
+  ##cp1.mean <-summary[9,4] 
+  ##cp2.mean <-summary[10,4] 
+  ##u.mean <-mean(summary[11:410,4])
+  ##u.tau.inv.mean <-summary[411,4] 
+  ##cp2.temp.mean <-summary[415,4]
+  
+  ##b0.mean <-summary[416,4] 
+  ##b1.mean <-summary[417,4] 
+  ##a.mean <-summary[418,4] 
+  ##v.mean <-mean(summary[419:818,4])
+  ##ga.mean <-summary[819,4] 
+  ##w.mean <-mean(summary[820:1219,4])
+  ##w.tau.inv.mean <-summary[1221,4] 
+  
+
+  ##Sim.results=cbind(B1.mean,B2.mean,B3.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,cp1.mean,cp2.mean,u.tau.inv.mean,u.mean,
+  ##                b0.mean,b1.mean,a.mean,v.mean,ga.mean,w.mean,w.tau.inv.mean)
+##print(Sim.results)
