@@ -157,7 +157,7 @@ model {
   res <- run.jags(model=modelrancp, burnin=10000, sample=8000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
                             "b0","b","a","ga","w.tau.inv","u","v","w",
-                            "w.tau","u.tau","cp1.mu","cp1.tau","cp2.temp","ll.a","ll.e","dev.a","dev.e","dic"), 
+                            "u.tau","w.tau","cp1.mu","cp1.tau","cp2.temp","ll.a","ll.e","dev.a","dev.e","dic"), 
                   data=data, n.chains=2, inits=c(inits1,inits2), thin=1, module='dic')
   
   summary <- summary(res)
@@ -172,7 +172,11 @@ model {
   #str(vars)
   #plot(vars[,1])
   #summary(vars)
+  pdf(file = paste0("traceplot.",num,".pdf"),   # The directory you want to save the file in
+      width = 4, # The width of the plot in inches
+      height = 4) # The height of the plot in inches
   traplot(vars)
+  dev.off()
   
   ##B1.mean <-summary[1,4] 
   ##B2.mean <-summary[2,4] 
