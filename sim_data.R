@@ -14,7 +14,7 @@ last.tt <- long.time[,3]
 ####time of first visit and last visit#######
 N<-length(last.tt)
 ###set number of iterations#################################
-I=101
+I=201
 
 ###############set true values#########################################
 c0=-4.5
@@ -32,11 +32,12 @@ s=23###starting seed####
 #participant ID
 ID<-rep(1:N)
 length(ID)
+set.seed(123)
 
 #######################################################
 for (r in 2:I){
   ##r <- 2
-  set.seed(s+100*(r-1))
+  ##set.seed(s+100*(r-1))
   t<-round(first.tt)
   tt<-round(last.tt)
   k.pa<-(tt-t)*4

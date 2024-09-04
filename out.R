@@ -36,8 +36,8 @@ write.csv(df, "result_combined_n100.csv")
 
 ###########################################################################
 # Read csv files
-I=99
-data_frames <- lapply(c(0:30,32:99), function(i) {
+I=30
+data_frames <- lapply(c(0:29), function(i) {
   file_name <- paste0("result.", i, ".csv") 
   read.csv(file_name)
 })
@@ -69,7 +69,7 @@ w.mean<-rep(NA,I)
 w.tau.inv.mean<-rep(NA,I)
 
 
-for(i in 1:99){ 
+for(i in 1:30){ 
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 B3.mean[i] <-data_frames[[i]][3,5] 
