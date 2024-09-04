@@ -36,7 +36,7 @@ write.csv(df, "result_combined_n100.csv")
 
 ###########################################################################
 # Read csv files
-I=30
+I=200
 data_frames <- lapply(c(0:29), function(i) {
   file_name <- paste0("result.", i, ".csv") 
   read.csv(file_name)
