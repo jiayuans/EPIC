@@ -37,11 +37,12 @@ write.csv(df, "result_combined_n100.csv")
 ###########################################################################
 # Read csv files
 I=200
-data_frames <- lapply(c(0:29), function(i) {
+data_frames <- lapply(c(0:199), function(i) {
   file_name <- paste0("result.", i, ".csv") 
   read.csv(file_name)
 })
 
+Flag<-rep(NA,I)
 B1.mean<-rep(NA,I)
 B2.mean<-rep(NA,I)
 B3.mean<-rep(NA,I)
@@ -69,7 +70,8 @@ w.mean<-rep(NA,I)
 w.tau.inv.mean<-rep(NA,I)
 
 
-for(i in 1:30){ 
+for(i in 1:200){ 
+Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.1,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 B3.mean[i] <-data_frames[[i]][3,5] 
@@ -92,8 +94,9 @@ v.mean[i] <-mean(data_frames[[i]][417:816,5])
 w.mean[i] <-mean(data_frames[[i]][817:1216,5])
 }
 
-Sim.results=cbind(B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,u.tau.inv.mean,
+Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,u.tau.inv.mean,
                b0.mean,b1.mean,a.mean,ga.mean,w.tau.inv.mean,u.mean,v.mean,w.mean)
-print(Sim.results)
+Sim.results.1 <- subset(Sim.results,Flag==1)
+round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
 write.csv(Sim.results, "result_combined_n100_unif.csv")
