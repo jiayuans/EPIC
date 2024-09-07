@@ -96,6 +96,7 @@ w.mean[i] <-mean(data_frames[[i]][817:1216,5])
 
 Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,u.tau.inv.mean,
                b0.mean,b1.mean,a.mean,ga.mean,w.tau.inv.mean,u.mean,v.mean,w.mean)
+table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
