@@ -4,7 +4,7 @@ setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output"
 # Read csv files
 I=50
 data_frames <- lapply(c(0:49), function(i) {
-  file_name <- paste0("result.long.", i, ".csv") 
+  file_name <- paste0("long.result.", i, ".csv") 
   read.csv(file_name)
 })
 

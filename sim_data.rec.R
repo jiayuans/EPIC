@@ -30,7 +30,7 @@ for (r in 2:I){
   ##set.seed(s+100*(r-1))
   t<-round(first.tt)
   tt<-round(last.tt)
-
+  X1=c(rep(1,N/2),rep(0,N/2))
   #########################################################################
   # Function that generates observations from a NHPP- returns event times
   # Input: parameters for the mean of a poisson process: a(shape parameter),b, T (exposure time)
@@ -95,19 +95,10 @@ for (r in 2:I){
   
   Tei0 <- tt-0.25-t
   
-  simdat.pe <- poisson.d(alpha=1.78,beta=0.23,beta0=-4.32,x=X1,ph=.5,TTei=Tei0)
-  
-  
-  X_df <- as.data.frame(X)
-  filename <- paste0("X_data.", r-2, ".csv")
-  write.csv(X_df, file = filename, row.names = FALSE)
-  
-  Y_df <- as.data.frame(Y)
-  filename <- paste0("Y_data.", r-2, ".csv")
-  write.csv(Y_df, file = filename, row.names = FALSE)
+  simdat.pe <- poisson.d(alpha=1.73,beta=0.26,beta0=-1.34,x=X1,ph=.5,TTei=Tei0)
 
   simdat.pe_df <- as.data.frame(simdat.pe)
-  filename <- paste0("sim.pe_data.", r-2, ".csv")
+  filename <- paste0("rec.sim.pe_data.", r-2, ".csv")
   write.csv(simdat.pe_df, file = filename, row.names = FALSE)
 } 
  

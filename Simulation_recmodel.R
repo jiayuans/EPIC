@@ -15,7 +15,7 @@ N<-length(last.tt)
 #s=23###starting seed####
 
 #############################################################
-simdat.pe <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
+simdat.pe <- as.data.frame(read.csv(list.files(pattern="rec.sim.pe_data.")))
 #############################################################
 
   set.seed(123)
@@ -91,77 +91,45 @@ data {
 }
 model { 
   for(i in 1:N){ 
-        for(j in 1:k.pa[i]){
-  ### PA model
-        Y[i,j] ~ dbin(p2[i,j],1)
-        logit(p2[i,j]) <- c0 + c[1] * (X[i,j]-cp1) + c[2] * (X[i,j]-cp1) * (2*step(X[i,j]-cp1)-1) + c[3] * (X[i,j]-cp2) * (2*step(X[i,j]-cp2)-1) + c[4] * X1[i] + u[i]
-        }
         for(j in 1:k.pe[i]){
   ### PE model
        ## Weibull baseline
         lambda0[i,j] <- a*(Ti[i,j])^(a-1)
         lambda[i,j] <- lambda0[i,j]*v[i]*exp(b0+b*X1[i])
        }
-        u[i] ~ dnorm(0,u.tau)
-        L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
-        ll.a[i] <- log(L.a[i])
-        w[i] ~ dnorm(0,w.tau)
-        v[i] <- exp(ga*u[i]+w[i])
+        v[i] <- dgamma(1/ph,1/ph) ## include ph with priors ~ gamma 
         L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
         phi[i] <- -log(L.e[i]) + 1000
         zeros[i] ~ dpois(phi[i])
   }
-  log_lik0.a <- sum(ll.a[])
   log_lik0.e <- sum(ll.e[]) 
-  dev.a <- -2*log_lik0.a
   dev.e <- -2*log_lik0.e
-  c0 ~ dnorm(0,0.0001)
-	for (k in 1:4){
-	      c[k] ~ dnorm(0,0.0001)	
-	}
   ## prior distributions
-	u.tau ~ dgamma(0.001,0.001)
-	cp1 ~ dnorm(cp1.mu,cp1.tau)	
-	cp2.temp ~ dunif(0,max)
-	cp2 <- cp1 + cp2.temp
-	cp1.mu ~ dnorm(0,0.001)
-	cp1.tau ~ dgamma(0.001,0.001)
-	B1 <-c[1]-c[2]-c[3]
-  B2 <-c[1]+c[2]-c[3]
-  B3 <-c[1]+c[2]+c[3]
-  u.tau.inv <- 1/u.tau  ## variance 
   a ~ dgamma(0.01,0.01)
   b0 ~ dnorm(0,0.0001)	
   b ~ dnorm(0,0.0001)		
-	ga ~ dnorm(0,0.0001)
-	w.tau ~ dgamma(0.001,0.001)
-	w.tau.inv <- 1/w.tau  ## variance 
+	ph ~ dgamma(0.001,0.001)
 }"
 
   
   ####Observed DATA
-  data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
-                           X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti.n)) 
+  data <- dump.format(list(X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti.n)) 
   ###initial Values
-  inits1 <- dump.format(list(c0=-4.5, c=c(0.09,0.14,0.08,0.08), u.tau=1/(1.6^2), cp1=4.4, cp2.temp=10,
-                             b0=-4.32, b=0.23, a=1.78, w.tau=1/(1.3^2), ga=.25,
+  inits1 <- dump.format(list(b0=-1.34, b=0.26, a=1.73, ph=.5,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.51, c=c(0.09,0.14,0.08,0.08)+0.01, u.tau=1/(1.6^2), cp1=4.5, cp2.temp=10,
-                             b0=-4.33,b=0.24, a=1.79, w.tau=1/(1.3^2), ga=.26,
+  inits2 <- dump.format(list(b0=-1.33,b=0.27, a=1.74, ph=.5,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
   res <- run.jags(model=modelrancp, burnin=8000, sample=6000, 
-                  monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
-                            "b0","b","a","ga","w.tau.inv","u","v","w",
-                            "u.tau","w.tau","cp1.mu","cp1.tau","cp2.temp","ll.a","ll.e","dev.a","dev.e","dic"), 
+                  monitor=c("b0","b","a","ph","v","ll.e","dev.e","dic"), 
                   data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
-  
+
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data.")
+  text <- list.files(pattern="rec.sim.pe_data.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result.",num,".csv"))
+  write.csv(result_df, paste0("rec.result.",num,".csv"))
   
   res_jm <- res$mcmc
   #dimnames(res_jm[[1]])
@@ -169,7 +137,7 @@ model {
   #str(vars)
   #plot(vars[,1])
   #summary(vars)
-  pdf(file = paste0("traceplot.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("rec.traceplot.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)

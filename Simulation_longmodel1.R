@@ -15,8 +15,8 @@ N<-length(last.tt)
 #s=23###starting seed####
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data.")))
+X <- as.matrix(read.csv(list.files(pattern="long.X_data.")))
+Y <- as.matrix(read.csv(list.files(pattern="long.Y_data.")))
 #############################################################
 
   set.seed(123)
@@ -75,9 +75,9 @@ model {
                   data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data.")
+  text <- list.files(pattern="long.X_data.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result.long.",num,".csv"))
+  write.csv(result_df, paste0("long.result.",num,".csv"))
   
   res_jm <- res$mcmc
   #dimnames(res_jm[[1]])
@@ -85,7 +85,7 @@ model {
   #str(vars)
   #plot(vars[,1])
   #summary(vars)
-  pdf(file = paste0("traceplot.long.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("long.traceplot.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)

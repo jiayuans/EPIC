@@ -1,8 +1,8 @@
 +SingularityImage = "osdf:///ospool/ap40/data/jiayuan.shi/libr.sif"
 executable        = Simulation_longmodel1.R
-arguments = X_data.$(Process).csv Y_data.$(Process).csv long.time.csv
-transfer_input_files = X_data.$(Process).csv, Y_data.$(Process).csv, long.time.csv
-transfer_output_files = result.long.$(Process).csv, traceplot.long.$(Process).pdf
+arguments = long.X_data.$(Process).csv long.Y_data.$(Process).csv long.time.csv
+transfer_input_files = long.X_data.$(Process).csv, long.Y_data.$(Process).csv, long.time.csv
+transfer_output_files = long.result.$(Process).csv, long.traceplot.$(Process).pdf
 
 log    = R.log.$(Cluster).$(Process)
 error  = R.err.$(Cluster).$(Process)

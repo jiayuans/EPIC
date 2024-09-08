@@ -66,11 +66,11 @@ for (r in 2:I){
   }
   
   X_df <- as.data.frame(X)
-  filename <- paste0("X_data.", r-2, ".csv")
+  filename <- paste0("long.X_data.", r-2, ".csv")
   write.csv(X_df, file = filename, row.names = FALSE)
   
   Y_df <- as.data.frame(Y)
-  filename <- paste0("Y_data.", r-2, ".csv")
+  filename <- paste0("long.Y_data.", r-2, ".csv")
   write.csv(Y_df, file = filename, row.names = FALSE)
 
 } 
