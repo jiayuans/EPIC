@@ -14,7 +14,7 @@ last.tt <- long.time[,3]
 ####time of first visit and last visit#######
 N<-length(last.tt)
 ###set number of iterations#################################
-I=201
+I=101
 
 ###############set true values#########################################
 c0=-4.5
@@ -26,7 +26,7 @@ Verror=1
 cp1.true=4.5
 cp2.true=14.4
 
-s=23###starting seed####
+#s=23###starting seed####
 #############################################################
 
 #participant ID
@@ -44,8 +44,8 @@ for (r in 2:I){
   kk=max(k.pa)
   
   b_0i<-rnorm(N,0,1.6)
-  ##X1=c(rep(1,N/2),rep(0,N/2))
-  X1=sample(c(1,0),N, replace = TRUE)
+  X1=c(rep(1,N/2),rep(0,N/2))
+  ##X1=sample(c(1,0),N, replace = TRUE)
   
   I1<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
   I2<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)

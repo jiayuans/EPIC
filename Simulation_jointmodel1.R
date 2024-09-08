@@ -12,7 +12,7 @@ last.tt <- long.time[,3]
 ####time of first visit and last visit#######
 N<-length(last.tt)
 
-s=23###starting seed####
+#s=23###starting seed####
 
 #############################################################
 X <- as.matrix(read.csv(list.files(pattern="X_data.")))
@@ -21,13 +21,13 @@ r <- as.numeric(read.csv(list.files(pattern="r_data.")))
 simdat.pe <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
 #############################################################
 
-  set.seed(s+100*(r-1))
+  set.seed(123)
   t<-round(first.tt)
   tt<-round(last.tt)
   k.pa<-(tt-t)*4
   
-  ##X1=c(rep(1,N/2),rep(0,N/2))
-  X1=sample(c(1,0),N, replace = TRUE)
+  X1=c(rep(1,N/2),rep(0,N/2))
+  ##X1=sample(c(1,0),N, replace = TRUE)
 
   timeS <- aggregate(simdat.pe$start, by=list(simdat.pe$id),
                      FUN=min, na.rm=TRUE)
