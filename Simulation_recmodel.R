@@ -15,8 +15,6 @@ N<-length(last.tt)
 #s=23###starting seed####
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data.")))
 simdat.pe <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
 #############################################################
 

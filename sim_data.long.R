@@ -72,8 +72,6 @@ for (r in 2:I){
   Y_df <- as.data.frame(Y)
   filename <- paste0("Y_data.", r-2, ".csv")
   write.csv(Y_df, file = filename, row.names = FALSE)
-  
-  filename <- paste0("r_data.", r-2, ".csv")
-  write.csv(r, file = filename, row.names = FALSE)
+
 } 
  

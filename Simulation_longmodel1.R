@@ -17,7 +17,6 @@ N<-length(last.tt)
 #############################################################
 X <- as.matrix(read.csv(list.files(pattern="X_data.")))
 Y <- as.matrix(read.csv(list.files(pattern="Y_data.")))
-r <- as.numeric(read.csv(list.files(pattern="r_data.")))
 #############################################################
 
   set.seed(123)

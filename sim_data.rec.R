@@ -14,17 +14,7 @@ last.tt <- long.time[,3]
 ####time of first visit and last visit#######
 N<-length(last.tt)
 ###set number of iterations#################################
-I=101
-
-###############set true values#########################################
-c0=-4.5
-c1=0.09
-c2=0.14
-c3=0.08
-c4=0.08
-Verror=1
-cp1.true=4.5
-cp2.true=14.4
+I=51
 
 #s=23###starting seed####
 #############################################################
@@ -40,32 +30,7 @@ for (r in 2:I){
   ##set.seed(s+100*(r-1))
   t<-round(first.tt)
   tt<-round(last.tt)
-  k.pa<-(tt-t)*4
-  kk=max(k.pa)
-  
-  b_0i<-rnorm(N,0,1.6)
-  X1=c(rep(1,N/2),rep(0,N/2))
-  ##X1=sample(c(1,0),N, replace = TRUE)
-  
-  I1<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  I2<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  p2<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  Y<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  X<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
-  for (i in 1:N){
-    X[i,1:k.pa[i]]<-c(seq(t[i],tt[i]-0.25,0.25))
-  }
-  
-  for (i in 1:N){
-    for (j in 1:k.pa[i]){
-      I1[i,j]<-ifelse(X[i,j]< cp1.true,-1,1)
-      I2[i,j]<-ifelse(X[i,j]< cp2.true,-1,1)
-      p2[i,j]=exp(c0+c1*(X[i,j]-cp1.true)+c2*(X[i,j]-cp1.true)*I1[i,j]+c3*(X[i,j]-cp2.true)*I2[i,j]+c4*X1[i]+b_0i[i])/(1+exp(c0+c1*(X[i,j]-cp1.true)+c2*(X[i,j]-cp1.true)*I1[i,j]+c3*(X[i,j]-cp2.true)*I2[i,j]+c4*X1[i]+b_0i[i]))
-      Y[i,j]=rbinom(Verror, 1, p2[i,j])
-    }
-  }
-  
-  
+
   #########################################################################
   # Function that generates observations from a NHPP- returns event times
   # Input: parameters for the mean of a poisson process: a(shape parameter),b, T (exposure time)
@@ -96,11 +61,11 @@ for (r in 2:I){
   # Output: A dataset with variables
   # 		 id, xi (treatment),Tei, time, status
   # -------------- Building the simulated poisson data -----
-  poisson.d <- function(alpha,beta,beta0,x,ga,TTei){
+  poisson.d <- function(alpha,beta,beta0,x,ph,TTei){
     le <- length(x)
     c_0i <- rnorm(le,0,1.3)
-    vi <- exp(ga*b_0i+c_0i)
-    ##vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
+    ##vi <- exp(ga*b_0i+c_0i)
+    vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
     
     times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
     start <-  times[,1]
@@ -130,7 +95,7 @@ for (r in 2:I){
   
   Tei0 <- tt-0.25-t
   
-  simdat.pe <- poisson.d(alpha=1.78,beta=0.23,beta0=-4.32,x=X1,ga=.25,TTei=Tei0)
+  simdat.pe <- poisson.d(alpha=1.78,beta=0.23,beta0=-4.32,x=X1,ph=.5,TTei=Tei0)
   
   
   X_df <- as.data.frame(X)
@@ -140,7 +105,7 @@ for (r in 2:I){
   Y_df <- as.data.frame(Y)
   filename <- paste0("Y_data.", r-2, ".csv")
   write.csv(Y_df, file = filename, row.names = FALSE)
-  
+
   simdat.pe_df <- as.data.frame(simdat.pe)
   filename <- paste0("sim.pe_data.", r-2, ".csv")
   write.csv(simdat.pe_df, file = filename, row.names = FALSE)
