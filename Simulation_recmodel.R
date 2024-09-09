@@ -128,7 +128,7 @@ model {
   summary <- summary(res)
   result_df <- as.data.frame(summary)
   text <- list.files(pattern="rec.sim.pe_data.")
-  num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
+  num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[4]]))
   write.csv(result_df, paste0("rec.result.",num,".csv"))
   
   res_jm <- res$mcmc

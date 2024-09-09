@@ -76,7 +76,7 @@ model {
   summary <- summary(res)
   result_df <- as.data.frame(summary)
   text <- list.files(pattern="long.X_data.")
-  num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
+  num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
   write.csv(result_df, paste0("long.result.",num,".csv"))
   
   res_jm <- res$mcmc
