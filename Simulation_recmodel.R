@@ -34,7 +34,7 @@ simdat.pe <- as.data.frame(read.csv(list.files(pattern="rec.sim.pe_data.")))
                     FUN=max, na.rm=TRUE)
   colnames(timeE) <- c("id","tau")
   
-  X.dat.pe <- simdat.pe[!duplicated(simdat.pe$id), ]
+  ##X.dat.pe <- simdat.pe[!duplicated(simdat.pe$id), ]
   
   time <- subset(simdat.pe,status==1)
   time$t <- time$stop

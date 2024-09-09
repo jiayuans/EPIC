@@ -69,7 +69,7 @@ model {
   inits2 <- dump.format(list(c0=-4.45, c=c(0.10,0.13,0.08,0.08)+0.01, u.tau=1/(1.6^2), cp1=4.6, cp2.temp=10,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=6000, sample=6000, 
+  res <- run.jags(model=modelrancp, burnin=8000, sample=8000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv","u",
                             "u.tau","cp1.mu","cp1.tau","cp2.temp","ll.a","dev.a","dic"), 
                   data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
