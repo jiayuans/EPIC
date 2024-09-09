@@ -64,9 +64,9 @@ model {
   ####Observed DATA
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt), X1=X1)) 
   ###initial Values
-  inits1 <- dump.format(list(c0=-4.44, c=c(0.10,0.13,0.08,0.08), u.tau=1/(1.6^2), cp1=4.5, cp2.temp=10,
+  inits1 <- dump.format(list(c0=-4.44, c=c(0.10,0.13,0.08,0.08), u.tau=1, cp1=4.5, cp2.temp=10,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.45, c=c(0.10,0.13,0.08,0.08)+0.01, u.tau=1/(1.6^2), cp1=4.6, cp2.temp=10,
+  inits2 <- dump.format(list(c0=-4.45, c=c(0.10,0.13,0.08,0.08)+0.01, u.tau=1, cp1=4.6, cp2.temp=10,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
   res <- run.jags(model=modelrancp, burnin=8000, sample=8000, 

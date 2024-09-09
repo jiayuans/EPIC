@@ -1,76 +1,40 @@
 setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
 
-filenames = list.files(path=getwd(),pattern="R.out.796099.")
-df <- matrix(NA,100,18)
-
-for(i in 1:100){ 
-  dat <- read.delim(filenames[i])
-  nrow <- nrow(dat)
-  char <- dat[c((nrow-5):nrow),]
-  
-  # Extract the values (excluding the row index)
-  values1 <- strsplit(trimws(char[2]), "\\s+")[[1]][-1]
-  values2 <- strsplit(trimws(char[4]), "\\s+")[[1]][-1]
-  values3 <- strsplit(trimws(char[6]), "\\s+")[[1]][-1]
-  
-  # Convert values to numeric
-  numeric_values <- as.numeric(c(values1,values2,values3))
-  
-  # Create the data frame
-  df[i,] <- t(numeric_values)
-  
-}
-
-# Extract the column names
-column_names1 <- strsplit(trimws(char[1]), "\\s+")[[1]]
-column_names2 <- strsplit(trimws(char[3]), "\\s+")[[1]]
-column_names3 <- strsplit(trimws(char[5]), "\\s+")[[1]]
-df <- as.data.frame(df)
-colnames(df) <- c(column_names1,column_names2,column_names3)
-
-# Print the data frame
-print(df)
-round(colMeans(df),2)
-write.csv(df, "result_combined_n100.csv")
-
-
 ###########################################################################
 # Read csv files
-I=200
-data_frames <- lapply(c(0:199), function(i) {
+text <- list.files(pattern="result.")
+num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]])))
+
+data_frames <- lapply(num, function(i) {
   file_name <- paste0("result.", i, ".csv") 
   read.csv(file_name)
 })
+
+I=length(data_frames)
 
 Flag<-rep(NA,I)
 B1.mean<-rep(NA,I)
 B2.mean<-rep(NA,I)
 B3.mean<-rep(NA,I)
+cp1.mean<-rep(NA,I)
+cp2.mean<-rep(NA,I)
 c0.mean<-rep(NA,I)
 c1.mean<-rep(NA,I)
 c2.mean<-rep(NA,I)
 c3.mean<-rep(NA,I)
 c4.mean<-rep(NA,I)
-cp1.mean<-rep(NA,I)
-cp2.mean<-rep(NA,I)
-u.mean<-rep(NA,I)
-u.tau.inv.mean<-rep(NA,I)
-cp1.mu.mean<-rep(NA,I)
-cp1.tau.mean<-rep(NA,I)
-cp2.temp.mean<-rep(NA,I)
 
+u.tau.inv.mean<-rep(NA,I)
 b0.mean<-rep(NA,I)
 b1.mean<-rep(NA,I)
-b2.mean<-rep(NA,I)
-b3.mean<-rep(NA,I)
 a.mean<-rep(NA,I)
-v.mean<-rep(NA,I)
 ga.mean<-rep(NA,I)
-w.mean<-rep(NA,I)
 w.tau.inv.mean<-rep(NA,I)
+u.mean<-rep(NA,I)
+v.mean<-rep(NA,I)
+w.mean<-rep(NA,I)
 
-
-for(i in 1:200){ 
+for(i in 1:I){ 
 Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.1,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
