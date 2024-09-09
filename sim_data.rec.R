@@ -63,7 +63,7 @@ for (r in 2:I){
   # -------------- Building the simulated poisson data -----
   poisson.d <- function(alpha,beta,beta0,x,ph,TTei){
     le <- length(x)
-    c_0i <- rnorm(le,0,1.3)
+    #c_0i <- rnorm(le,0,1.3)
     ##vi <- exp(ga*b_0i+c_0i)
     vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
     
