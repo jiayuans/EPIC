@@ -97,7 +97,7 @@ model {
         lambda0[i,j] <- a*(Ti[i,j])^(a-1)
         lambda[i,j] <- lambda0[i,j]*v[i]*exp(b0+b*X1[i])
        }
-        v[i] <- dgamma(1/ph,1/ph) ## include ph with priors ~ gamma 
+        v[i] ~ dgamma(1/ph,1/ph) ## include ph with priors ~ gamma 
         L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
         phi[i] <- -log(L.e[i]) + 1000
