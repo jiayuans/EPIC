@@ -114,7 +114,7 @@ model {
 
   
   ####Observed DATA
-  data <- dump.format(list(X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti.n)) 
+  data <- dump.format(list(N=N, X1=X1,k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti.n)) 
   ###initial Values
   inits1 <- dump.format(list(b0=-1.34, b=0.26, a=1.73, ph=.5,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
