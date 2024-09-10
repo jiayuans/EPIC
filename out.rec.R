@@ -33,4 +33,7 @@ table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
-write.csv(Sim.results, "result_combined_n100.csv")
+
+##> round(colMeans(Sim.results),2)
+##Flag b0.mean b1.mean  a.mean ph.mean  v.mean 
+##1.00   -2.44   -0.36    2.03    0.74    1.00 

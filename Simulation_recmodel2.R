@@ -12,75 +12,60 @@ last.tt <- long.time[,3]
 ####time of first visit and last visit#######
 N<-length(last.tt)
 
-#s=23###starting seed####
+t<-round(first.tt)
+tt<-round(last.tt)-0.25
+X1=c(rep(1,N/2),rep(0,N/2))
+##X1=sample(c(1,0),N, replace = TRUE)
+
+set.seed(123)
 
 #############################################################
-simdat.pe <- as.data.frame(read.csv(list.files(pattern="rec.sim.pe_data.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="rec.sim.pe_data.")))
 #############################################################
 
-  set.seed(123)
-  t<-round(first.tt)
-  tt<-round(last.tt)
-  k.pa<-(tt-t)*4
-  
-  X1=c(rep(1,N/2),rep(0,N/2))
-  ##X1=sample(c(1,0),N, replace = TRUE)
+timeS <- as.data.frame(cbind(id,t)) ## left truncation time
+timeE <- as.data.frame(cbind(id,tt))
 
-  timeS <- aggregate(simdat.pe$start, by=list(simdat.pe$id),
-                     FUN=min, na.rm=TRUE)
-  colnames(timeS) <- c("id","t0")
-  
-  timeE <-aggregate(simdat.pe$stop, by=list(simdat.pe$id),
-                    FUN=max, na.rm=TRUE)
-  colnames(timeE) <- c("id","tau")
-  
-  ##X.dat.pe <- simdat.pe[!duplicated(simdat.pe$id), ]
-  
-  time <- subset(simdat.pe,status==1)
-  time$t <- time$stop
-  time1 <- time[,c(1,8)]  
-  simdat.pe1 <- merge(timeS,timeE,all=TRUE)
-  simdat.pe2 <- merge(simdat.pe1,time1,all=TRUE)
-  simdat.pe2$t[which(is.na(simdat.pe2$t))] <- 0
-  
-  #length(which(simdat.pe2$t== 0))
-  
-  count <- simdat.pe2 %>% count(id)
-  max.count <- max(count$n) 
-  
-  ##########################Assigning unique number to each subject##########################
-  simdat.pe3 <- simdat.pe2 %>% group_by(id) %>% mutate(time = c(1:length(id)))
-  Yd.temp <- data.frame(id = rep(unique(simdat.pe$id),each=max.count), time = 1:max.count) 
-  Y.epic <- merge(simdat.pe3,Yd.temp,by=c('id','time'),all.y=TRUE)
-  
-  #################Readingin data for time matrix#############################
-  Ti <- matrix(Y.epic$t, N, max.count, byrow=TRUE)
-  Ti.n <- Ti
-  for (i in 1:N) {
-    if (Ti.n[i,1] !=0){
-      Ti.n[i,] <- Ti[i,]+t[i]   
-    }
-  }
-  #################Readingin data for X, t0, tau vectors#############################
-  ##X1 <- as.numeric(X.dat.pe[,2]) ## sexf: female
-  time.t0 <- timeS$t0+t
-  time.tau <- timeE$tau+t
-  
-  
-  #################input variables for simulation#####################
-  #### checking for how many individuals we have NAs in the middle of followup
-  sum.na <- rep(NA,N)
-  k.pe=rep(NA,N)
-  
-  ids <- unique(Y.epic$id) ## 103104 103125 103129 103145 103147
-  for (i in 1:N){
-    na.indices <- which(Y.epic$t[Y.epic$id==ids[i]] %in% NA)
-    if (length(na.indices)==0){
-      k.pe[i] <- max.count} else{
-        k.pe[i] <- min(na.indices)-1}
-  }
-  
-  
+simdat.pe0 <- merge(simdat.pe00, timeS, by="id")
+simdat.pe <- subset(simdat.pe0, stop >= t)
+
+time <- subset(simdat.pe,status==1)
+time1 <- time[,c("id","stop")]  
+simdat.pe1 <- merge(timeS,timeE,all=TRUE)
+simdat.pe2 <- merge(simdat.pe1,time1,all=TRUE)
+simdat.pe2$stop[which(is.na(simdat.pe2$stop))] <- 0
+
+#length(which(simdat.pe2$stop== 0))
+
+count <- simdat.pe2 %>% count(id)
+max.count <- max(count$n) 
+
+##########################Assigning unique number to each subject##########################
+simdat.pe3 <- simdat.pe2 %>% group_by(id) %>% mutate(time = c(1:length(id)))
+Yd.temp <- data.frame(id = rep(unique(simdat.pe00$id),each=max.count), time = 1:max.count) 
+Y.epic <- merge(simdat.pe3,Yd.temp,by=c('id','time'),all.y=TRUE)
+
+#################Readingin data for time matrix#############################
+Ti <- matrix(Y.epic$stop, N, max.count, byrow=TRUE)
+
+#################Readingin data for X, t0, tau vectors#############################
+##X1 <- as.numeric(X.dat.pe[,2]) ## sexf: female
+time.t0 <- t
+time.tau <- tt
+
+#################input variables for simulation#####################
+#### checking for how many individuals we have NAs in the middle of followup
+sum.na <- rep(NA,N)
+k.pe=rep(NA,N)
+
+ids <- unique(Y.epic$id) ## 103104 103125 103129 103145 103147
+for (i in 1:N){
+  na.indices <- which(Y.epic$t[Y.epic$id==ids[i]] %in% NA)
+  if (length(na.indices)==0){
+    k.pe[i] <- max.count} else{
+      k.pe[i] <- min(na.indices)-1}
+}
+
   ############Model in the JAGS format#####################
   ############Two fixed CP#####################  
   modelrancp <- "
@@ -99,7 +84,6 @@ model {
        }
         v[i] ~ dgamma(1/ph,1/ph) ## include ph with priors ~ gamma 
         L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
-        
         ll.e[i] <- log(L.e[i])
         phi[i] <- -log(L.e[i]) + 1000
         zeros[i] ~ dpois(phi[i])
@@ -115,17 +99,17 @@ model {
 
   
   ####Observed DATA
-  data <- dump.format(list(N=N, X1=X1,k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti.n)) 
+  data <- dump.format(list(N=N, X1=X1,k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ###initial Values
   inits1 <- dump.format(list(b0=-1.34, b=0.26, a=1.73, ph=.5,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
   inits2 <- dump.format(list(b0=-1.33,b=0.27, a=1.74, ph=.5,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=8000, sample=6000, 
+  res <- run.jags(model=modelrancp, burnin=6000, sample=6000, 
                   monitor=c("b0","b","a","ph","v","ll.e","dev.e","dic"), 
                   data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
-
+  
   summary <- summary(res)
   result_df <- as.data.frame(summary)
   text <- list.files(pattern="rec.sim.pe_data.")

@@ -96,7 +96,8 @@ for (r in 2:I){
   Tei0 <- tt-0.25-t
   
   simdat.pe <- poisson.d(alpha=1.73,beta=0.26,beta0=-1.34,x=X1,ph=.5,TTei=Tei0)
-
+  #simdat.pe <- poisson.d(alpha=1.26,beta=0.23,beta0=0.39,x=X1,ph=.5,TTei=Tei0)
+  
   simdat.pe_df <- as.data.frame(simdat.pe)
   filename <- paste0("rec.sim.pe_data.", r-2, ".csv")
   write.csv(simdat.pe_df, file = filename, row.names = FALSE)
