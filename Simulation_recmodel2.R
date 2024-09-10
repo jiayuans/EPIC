@@ -17,12 +17,12 @@ length(id)
 
 t<-round(first.tt)
 tt<-round(last.tt)-0.25
-X1=c(rep(1,N/2),rep(0,N/2))
-##X1=sample(c(1,0),N, replace = TRUE)
+#X1=c(rep(1,N/2),rep(0,N/2))
 
 set.seed(123)
 
 #############################################################
+X1 <- as.data.frame(read.csv(list.files(pattern="X1_data.")))[,1]
 simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="rec.sim.pe_data.")))
 #############################################################
 
@@ -117,7 +117,7 @@ model {
   result_df <- as.data.frame(summary)
   text <- list.files(pattern="rec.sim.pe_data.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[4]]))
-  write.csv(result_df, paste0("rec.result.",num,".csv"))
+  write.csv(result_df, paste0("rec0.result.",num,".csv"))
   
   res_jm <- res$mcmc
   #dimnames(res_jm[[1]])
@@ -125,7 +125,7 @@ model {
   #str(vars)
   #plot(vars[,1])
   #summary(vars)
-  pdf(file = paste0("rec.traceplot.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("rec0.traceplot.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)

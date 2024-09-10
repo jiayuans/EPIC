@@ -19,7 +19,6 @@ length(id)
 
 t<-round(first.tt)
 tt<-round(last.tt)-0.25
-X1=c(rep(1,N/2),rep(0,N/2))
 
 ###set number of iterations#################################
 I=51
@@ -89,8 +88,13 @@ poisson.d <- function(alpha,beta,beta0,x,ph,TTei){
 
 #######################################################
 for (r in 2:I){
+  X1=sample(c(1,0),N, replace = TRUE)
   simdat.pe00 <- poisson.d(alpha=1.73,beta=0.26,beta0=-1.34,x=X1,ph=.5,TTei=tt)
 
+  X1_df <- as.data.frame(X1)
+  filename <- paste0("X1_data.", r-2, ".csv")
+  write.csv(X1_df, file = filename, row.names = FALSE)
+  
   simdat.pe_df <- as.data.frame(simdat.pe00)
   filename <- paste0("rec.sim.pe_data.", r-2, ".csv")
   write.csv(simdat.pe_df, file = filename, row.names = FALSE)

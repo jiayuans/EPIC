@@ -47,6 +47,12 @@ Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
 #This result not looks good.
-#   Flag b0.mean b1.mean  a.mean ph.mean  v.mean 
-#1.00   -1.36    0.26    1.73    0.50    1.00 
+#> round(colMeans(Sim.results.1),2)
+#Flag        b0.mean        b1.mean         a.mean        ga.mean u.tau.inv.mean w.tau.inv.mean         u.mean         v.mean         w.mean     u.tau.mean     w.tau.mean 
+#1.00          -4.29           0.23           1.77          -0.07           0.12           0.09           0.00           1.15           0.00         503.75         159.05 
+#> round(colMeans(Sim.results),2)
+#Flag        b0.mean        b1.mean         a.mean        ga.mean u.tau.inv.mean w.tau.inv.mean         u.mean         v.mean         w.mean     u.tau.mean     w.tau.mean 
+#0.12          -4.34           0.22           1.79           0.08           0.49           0.08           0.00           1.14           0.00         473.11         163.36
 #poisson.d(alpha=1.78,beta=0.23,beta0=-4.32,x=X1,ga=.25,TTei=tt)
+#  b_0i <- rnorm(le,0,0.5)
+#c_0i <- rnorm(le,0,0.5)
