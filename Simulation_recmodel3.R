@@ -111,12 +111,12 @@ model {
   ####Observed DATA
   data <- dump.format(list(N=N, X1=X1,k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ###initial Values
-  inits1 <- dump.format(list(b0=-1.34, b=0.26, a=1.73, ga=.25, u.tau=1/(1.6^2), w.tau=1/(1.3^2),
+  inits1 <- dump.format(list(b0=-1.34, b=0.26, a=1.73, ga=.25, u.tau=1/(0.5^2), w.tau=1/(0.5^2),
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(b0=-1.33,b=0.27, a=1.74, ga=.25, u.tau=1/(1.6^2), w.tau=1/(1.3^2),
+  inits2 <- dump.format(list(b0=-1.33,b=0.27, a=1.74, ga=.25, u.tau=1/(0.5^2), w.tau=1/(0.5^2),
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=6000, sample=6000, 
+  res <- run.jags(model=modelrancp, burnin=10000, sample=12000, 
                   monitor=c("b0","b","a","ga","u.tau.inv","w.tau.inv","u","v","w","u.tau","w.tau","ll.e","dev.e","dic"), 
                   data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
   

@@ -57,8 +57,8 @@ NHPP<-function(a,b,T){
 # -------------- Building the simulated poisson data -----
 poisson.d <- function(alpha,beta,beta0,x,ga,TTei){
   le <- length(x)
-  b_0i <- rnorm(le,0,1.6)
-  c_0i <- rnorm(le,0,1.3)
+  b_0i <- rnorm(le,0,0.5)
+  c_0i <- rnorm(le,0,0.5)
   vi <- exp(ga*b_0i+c_0i)
   ##vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
   
