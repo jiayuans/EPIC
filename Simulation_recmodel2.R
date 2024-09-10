@@ -11,6 +11,9 @@ last.tt <- long.time[,3]
 
 ####time of first visit and last visit#######
 N<-length(last.tt)
+#participant ID
+id<-rep(1:N)
+length(id)
 
 t<-round(first.tt)
 tt<-round(last.tt)-0.25
