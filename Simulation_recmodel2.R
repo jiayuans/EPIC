@@ -26,7 +26,7 @@ simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="rec.sim.pe_data.")))
 timeS <- as.data.frame(cbind(id,t)) ## left truncation time
 timeE <- as.data.frame(cbind(id,tt))
 
-simdat.pe0 <- merge(simdat.pe00, timeS, by="id")
+simdat.pe0 <- merge(simdat.pe00, timeS,all=TRUE)
 simdat.pe <- subset(simdat.pe0, stop >= t)
 
 time <- subset(simdat.pe,status==1)
