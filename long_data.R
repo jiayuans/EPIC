@@ -1,5 +1,5 @@
-
-dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Data/Source"
+dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC/"
+setwd(dirg)
 ##################################################################
 ##    Functions to Read data
 ## 
@@ -23,8 +23,10 @@ dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Data/Source"
 ##tt <- cbind(first.tt,last.tt)
 ##write.csv(tt,"long.time.csv")
 
-dat.pa <- read.csv(file=paste(dirg,"/Data-PA-cohort.csv",sep=""))
+dat.pa <- read.csv(file=paste("C:/UCHealth/RA/Project/EPIC-CF/Data/Source","/Data-PA-cohort.csv",sep=""))
 dat.pa <- dat.pa[,-1]
+
+sexf <- dat.pa[!duplicated(dat.pa$cffidno,dat.pa$sexf),5]
 
 dat.pa1 <-aggregate(dat.pa$VisitAge, by=list(dat.pa$cffidno),
                     FUN=max, na.rm=TRUE)
@@ -38,8 +40,12 @@ first.t<-dat.pa2$age.min
 last.t<-dat.pa1$age.max
 first.tt<-first.t[c(1:401)]
 last.tt<-last.t[c(1:401)]
+sexf<-sexf[c(1:401)]
+
 first.tt<-first.tt[-359]
 last.tt<-last.tt[-359]
+sexf<-sexf[-359]
 
-tt <- cbind(first.tt,last.tt)
-write.csv(tt,"long.time.csv")
+tt <- cbind(first.tt,last.tt,sexf)
+
+write.csv(tt,"long.time1.csv")

@@ -19,15 +19,16 @@ t<-round(first.tt)
 tt<-round(last.tt)
 k.pa<-(tt-t)*4
 
-X1=c(rep(1,N/2),rep(0,N/2))
+##X1=c(rep(1,N/2),rep(0,N/2))
 ##X1=sample(c(1,0),N, replace = TRUE)
 
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data_j.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data_j.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data_j.")))
+X1 <- as.data.frame(read.csv(list.files(pattern="X1_data1.")))[,1]
+X <- as.matrix(read.csv(list.files(pattern="X_data1.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_data1.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data1.")))
 #############################################################
 
 tt<-tt-0.25
@@ -145,7 +146,7 @@ model {
                              b0=-4.33,b=0.24, a=1.79, w.tau=1/(1.3^2), ga=.26,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=10000, sample=10000, 
+  res <- run.jags(model=modelrancp, burnin=20000, sample=1000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
                             "b0","b","a","ga","w.tau.inv","u","v","w",
                             "u.tau","w.tau","cp1.mu","cp1.tau","cp2.temp","ll.a","ll.e","dev.a","dev.e","dic"), 
@@ -153,9 +154,9 @@ model {
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data_j.")
+  text <- list.files(pattern="X_data1.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result.",num,".csv"))
+  write.csv(result_df, paste0("result1.",num,".csv"))
   
   res_jm <- res$mcmc
   #dimnames(res_jm[[1]])
@@ -163,7 +164,7 @@ model {
   #str(vars)
   #plot(vars[,1])
   #summary(vars)
-  pdf(file = paste0("traceplot.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("traceplot1.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)

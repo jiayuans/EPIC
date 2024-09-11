@@ -1,8 +1,8 @@
 +SingularityImage = "osdf:///ospool/ap40/data/jiayuan.shi/libr.sif"
-executable        = Simulation_jointmodel11.R
-arguments = X1_data.$(Process).csv X_data.$(Process).csv Y_data.$(Process).csv sim.pe_data.$(Process).csv long.time.csv
-transfer_input_files = X1_data.$(Process).csv, X_data.$(Process).csv, Y_data.$(Process).csv, sim.pe_data.$(Process).csv, long.time.csv
-transfer_output_files = jm.result.$(Process).csv, jm.traceplot.$(Process).pdf
+executable        = Simulation_jointmodel1.R
+arguments = X1_data1.$(Process).csv X_data1.$(Process).csv Y_data1.$(Process).csv sim.pe_data1.$(Process).csv long.time.csv
+transfer_input_files = X1_data1.$(Process).csv, X_data1.$(Process).csv, Y_data1.$(Process).csv, sim.pe_data1.$(Process).csv, long.time.csv
+transfer_output_files = result1.$(Process).csv, traceplot1.$(Process).pdf
 
 log    = R.log.$(Cluster).$(Process)
 error  = R.err.$(Cluster).$(Process)
@@ -14,4 +14,4 @@ request_cpus   = 1
 request_memory = 12GB
 request_disk   = 1GB
 
-queue 50
+queue 100

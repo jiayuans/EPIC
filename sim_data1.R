@@ -23,7 +23,7 @@ k.pa<-(tt-t)*4
 kk=max(k.pa)
 
 ###set number of iterations#################################
-I=51
+I=101
 
 ###############set true values#########################################
 c0=-4.5
@@ -104,7 +104,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga,TTei){
 #######################################################
 for (r in 2:I){
   b_0i<-rnorm(N,0,1.6)
-  ##X1=c(rep(1,N/2),rep(0,N/2))
+  ##X1=c(rep(1,N/2),rep(0,N/2)) ##use this
   X1=sample(c(1,0),N, replace = TRUE)
   
   I1<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
@@ -128,19 +128,19 @@ for (r in 2:I){
   simdat.pe00 <- poisson.d(alpha=1.78,beta=0.23,beta0=-4.32,x=X1,ga=.25,TTei=tt-0.25)
   
   X1_df <- as.data.frame(X1)
-  filename <- paste0("X1_data.", r-2, ".csv")
+  filename <- paste0("X1_data1.", r-2, ".csv")
   write.csv(X1_df, file = filename, row.names = FALSE)
   
   X_df <- as.data.frame(X)
-  filename <- paste0("X_data.", r-2, ".csv")
+  filename <- paste0("X_data1.", r-2, ".csv")
   write.csv(X_df, file = filename, row.names = FALSE)
   
   Y_df <- as.data.frame(Y)
-  filename <- paste0("Y_data.", r-2, ".csv")
+  filename <- paste0("Y_data1.", r-2, ".csv")
   write.csv(Y_df, file = filename, row.names = FALSE)
   
   simdat.pe_df <- as.data.frame(simdat.pe00)
-  filename <- paste0("sim.pe_data.", r-2, ".csv")
+  filename <- paste0("sim.pe_data1.", r-2, ".csv")
   write.csv(simdat.pe_df, file = filename, row.names = FALSE)
 } 
  
