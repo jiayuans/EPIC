@@ -2,11 +2,11 @@ setwd("C:/Users/jiayu/OneDrive/Desktop/Output")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="rec.result.")
+text <- list.files(pattern="rec0.result.")
 num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("rec.result.", i, ".csv") 
+  file_name <- paste0("rec0.result.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -33,7 +33,7 @@ table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
-#This reult looks good.
+#This result looks good.
 #   Flag b0.mean b1.mean  a.mean ph.mean  v.mean 
 #1.00   -1.36    0.26    1.73    0.50    1.00 
 #poisson.d(alpha=1.73,beta=0.26,beta0=-1.34,x=X1,ph=.5,TTei=tt)

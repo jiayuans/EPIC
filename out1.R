@@ -3,11 +3,11 @@ setwd("C:/Users/jiayu/OneDrive/Desktop/Output")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="result.")
+text <- list.files(pattern="jm.result.")
 num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("result.", i, ".csv") 
+  file_name <- paste0("jm.result.", i, ".csv") 
   read.csv(file_name)
 })
 

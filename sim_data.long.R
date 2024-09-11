@@ -43,7 +43,7 @@ for (r in 2:I){
   k.pa<-(tt-t)*4
   kk=max(k.pa)
   
-  b_0i<-rnorm(N,0,1) ##1.6
+  b_0i<-rnorm(N,0,1.6) 
   X1=c(rep(1,N/2),rep(0,N/2))
   ##X1=sample(c(1,0),N, replace = TRUE)
   
