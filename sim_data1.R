@@ -7,7 +7,7 @@ setwd(dirg)
 ## 
 ##################################################################
 
-long.time <- read.csv("long.time.csv")
+long.time <- read.csv("long.data.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 

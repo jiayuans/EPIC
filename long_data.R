@@ -46,6 +46,7 @@ first.tt<-first.tt[-359]
 last.tt<-last.tt[-359]
 sexf<-sexf[-359]
 
-tt <- cbind(first.tt,last.tt,sexf)
-
-write.csv(tt,"long.time1.csv")
+lt1 <- cbind(first.tt,last.tt)
+lt2 <- cbind(first.tt,last.tt,sexf)
+write.csv(lt1,"long.data.csv")
+write.csv(lt2,"long.data1.csv")
