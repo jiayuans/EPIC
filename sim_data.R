@@ -27,13 +27,13 @@ I=201
 
 ###############set true values#########################################
 c0=-4.5
-c1=0.09
-c2=0.14
-c3=0.08
-c4=0.08
+c1=0.1
+c2=0.15
+c3=0.1
+c4=0.1
 Verror=1
 cp1.true=4.5
-cp2.true=14.4
+cp2.true=14.5
 
 #############################################################
 set.seed(123)
@@ -125,7 +125,7 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.78,beta=0.23,beta0=-4.32,x=X1,ga=.25,TTei=tt-0.25)
+  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.25,beta0=-4.5,x=X1,ga=0.25,TTei=tt-0.25)
   
   X_df <- as.data.frame(X)
   filename <- paste0("X_data.", r-2, ".csv")
