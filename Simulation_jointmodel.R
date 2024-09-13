@@ -6,8 +6,8 @@ library(tidyverse)
 library(mcmcplots)
 
 long.time <- read.csv("long.data.csv")
-first.tt <- long.time[1:200,2]
-last.tt <- long.time[1:200,3]
+first.tt <- long.time[,2]
+last.tt <- long.time[,3]
 
 ####time of first visit and last visit#######
 N<-length(last.tt)
@@ -138,11 +138,11 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ###initial Values
-  inits1 <- dump.format(list(c0=-4.5, c=c(0.09,0.14,0.08,0.08), u.tau=1/(1.6^2), cp1=4.4, cp2.temp=10,
-                             b0=-4.32, b=0.23, a=1.78, w.tau=1/(1.3^2), ga=.25,
+  inits1 <- dump.format(list(c0=-4.5, c=c(0.09,0.14,0.08,0.08), u.tau=1, cp1=4.4, cp2.temp=10,
+                             b0=-4.32, b=0.23, a=1.78, w.tau=1, ga=.25,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.51, c=c(0.09,0.14,0.08,0.08)+0.01, u.tau=1/(1.6^2), cp1=4.5, cp2.temp=10,
-                             b0=-4.33,b=0.24, a=1.79, w.tau=1/(1.3^2), ga=.26,
+  inits2 <- dump.format(list(c0=-4.51, c=c(0.09,0.14,0.08,0.08)+0.01, u.tau=1, cp1=4.5, cp2.temp=10,
+                             b0=-4.33,b=0.24, a=1.79, w.tau=1, ga=.26,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   #### Run the model and produce plots
   res <- run.jags(model=modelrancp, burnin=20000, sample=1000, 

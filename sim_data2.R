@@ -8,9 +8,9 @@ setwd(dirg)
 ##################################################################
 
 long.time <- read.csv("long.data1.csv")
-first.tt <- long.time[1:200,2]
-last.tt <- long.time[1:200,3]
-X1 <- long.time[1:200,4]
+first.tt <- long.time[,2]
+last.tt <- long.time[,3]
+X1 <- long.time[,4]
 
 ####time of first visit and last visit#######
 N<-length(last.tt)
@@ -24,7 +24,7 @@ k.pa<-(tt-t)*4
 kk=max(k.pa)
 
 ###set number of iterations#################################
-I=101
+I=201
 
 ###############set true values#########################################
 c0=-4.5
@@ -71,7 +71,7 @@ NHPP<-function(a,b,T){
 # -------------- Building the simulated poisson data -----
 poisson.d <- function(alpha,beta,beta0,x,ga,TTei){
   le <- length(x)
-  c_0i <- rnorm(le,0,1.3)
+  c_0i <- rnorm(le,0,1)
   vi <- exp(ga*b_0i+c_0i)
   ##vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
   
@@ -104,7 +104,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,1.6)
+  b_0i<-rnorm(N,0,1)
 
   I1<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
   I2<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
