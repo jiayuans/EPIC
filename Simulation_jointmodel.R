@@ -6,8 +6,8 @@ library(tidyverse)
 library(mcmcplots)
 
 long.time <- read.csv("long.data.csv")
-first.tt <- long.time[,2]
-last.tt <- long.time[,3]
+first.tt <- long.time[1:200,2]
+last.tt <- long.time[1:200,3]
 
 ####time of first visit and last visit#######
 N<-length(last.tt)

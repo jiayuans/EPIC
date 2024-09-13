@@ -1,10 +1,12 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/Users/jiayu/OneDrive/Desktop/Output/jm1")
+setwd("C:/Users/jiayu/OneDrive/Desktop/Output")
 
 ###########################################################################
 # Read csv files
 text <- list.files(pattern="result.")
-num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]])))
+text1 <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[1]]))
+ind <- which(text1=="result")
+num <- as.numeric(unlist(lapply(strsplit(text[ind],'.',fixed=TRUE),function(x) x[[2]])))
 
 data_frames <- lapply(num, function(i) {
   file_name <- paste0("result.", i, ".csv") 
@@ -36,7 +38,7 @@ v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
 
 for(i in 1:I){ 
-Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.1,1,0)
+Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.2,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 B3.mean[i] <-data_frames[[i]][3,5] 
@@ -62,6 +64,18 @@ w.mean[i] <-mean(data_frames[[i]][817:1216,5])
 Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,u.tau.inv.mean,
                b0.mean,b1.mean,a.mean,ga.mean,w.tau.inv.mean,u.mean,v.mean,w.mean)
 table(Flag)
+#Flag
+#0  1 
+#72 28
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
+#          Flag        B1.mean        B2.mean        B3.mean       cp1.mean       cp2.mean        c0.mean        c1.mean        c2.mean        c3.mean        c4.mean 
+#1.00          -0.19           0.15           0.35           4.45          14.73          -4.75           0.08           0.17           0.10           0.11 
+#u.tau.inv.mean        b0.mean        b1.mean         a.mean        ga.mean w.tau.inv.mean         u.mean         v.mean         w.mean 
+#2.58          -4.31           0.22           1.78           0.25           1.63           0.00           2.43           0.00 
+
 round(colMeans(Sim.results),2)
+#Flag        B1.mean        B2.mean        B3.mean       cp1.mean       cp2.mean        c0.mean        c1.mean        c2.mean        c3.mean        c4.mean 
+#0.13          -0.22           0.13           0.33           3.16          14.46          -4.71           0.06           0.17           0.10           0.01 
+#u.tau.inv.mean        b0.mean        b1.mean         a.mean        ga.mean w.tau.inv.mean         u.mean         v.mean         w.mean 
+#2.59          -4.34           0.22           1.79           0.25           1.68           0.00           2.49           0.00 

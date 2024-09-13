@@ -36,7 +36,7 @@ v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
 
 for(i in 1:I){ 
-Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.1,1,0)
+Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.15,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 B3.mean[i] <-data_frames[[i]][3,5] 
@@ -62,6 +62,17 @@ w.mean[i] <-mean(data_frames[[i]][817:1216,5])
 Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,u.tau.inv.mean,
                b0.mean,b1.mean,a.mean,ga.mean,w.tau.inv.mean,u.mean,v.mean,w.mean)
 table(Flag)
+#Flag
+#0  1 
+#88 17  
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
+#          Flag        B1.mean        B2.mean        B3.mean       cp1.mean       cp2.mean        c0.mean        c1.mean        c2.mean        c3.mean        c4.mean 
+# 1.00          -0.15           0.15           0.34           4.70          14.66          -4.62           0.10           0.15           0.10           0.02 
+# u.tau.inv.mean        b0.mean        b1.mean         a.mean        ga.mean w.tau.inv.mean         u.mean         v.mean         w.mean 
+# 2.60          -4.31           0.22           1.77           0.23           1.64           0.00           2.44           0.00 
 round(colMeans(Sim.results),2)
+#Flag        B1.mean        B2.mean        B3.mean       cp1.mean       cp2.mean        c0.mean        c1.mean        c2.mean        c3.mean        c4.mean 
+#0.12          -0.13           0.14           0.36           3.94          14.96          -4.82           0.12           0.13           0.11           0.05 
+#u.tau.inv.mean        b0.mean        b1.mean         a.mean        ga.mean w.tau.inv.mean         u.mean         v.mean         w.mean 
+#2.59          -4.33           0.23           1.78           0.24           1.72           0.00           2.52           0.00 
