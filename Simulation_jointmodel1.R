@@ -139,13 +139,13 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ###initial Values
-  inits1 <- dump.format(list(c0=-4.5, c=c(0.1,0.15,0.1,0.1), u.tau=1, cp1=4.5, cp2.temp=10,
+  inits1 <- dump.format(list(c0=-4.6, c=c(0.1,0.17,0.1,0.1), u.tau=1, cp1=4.5, cp2.temp=10,
                              b0=-4.5, b=0.25, a=1.8, w.tau=1, ga=0.25,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.51, c=c(0.1,0.15,0.1,0.1)+0.01, u.tau=1, cp1=4.6, cp2.temp=10,
+  inits2 <- dump.format(list(c0=-4.61, c=c(0.1,0.17,0.1,0.1)+0.01, u.tau=1, cp1=4.6, cp2.temp=10,
                              b0=-4.51, b=0.26, a=1.81, w.tau=1, ga=0.26,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
-  
+
   #### Run the model and produce plots
   res <- run.jags(model=modelrancp, burnin=20000, sample=1000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
