@@ -1,5 +1,5 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/Users/jiayu/OneDrive/Desktop/Output")
+setwd("C:/Users/jiayu/OneDrive/Desktop/Output1")
 
 ###########################################################################
 # Read csv files
@@ -38,7 +38,7 @@ v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
 
 for(i in 1:I){ 
-Flag[i] <- ifelse(max(data_frames[[i]][,12])<2,1,0)
+Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.5,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 B3.mean[i] <-data_frames[[i]][3,5] 
