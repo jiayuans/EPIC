@@ -1,5 +1,5 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/Users/jiayu/OneDrive/Desktop/Output3")
+setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output/jm")
 
 ###########################################################################
 # Read csv files
@@ -65,3 +65,8 @@ table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
+
+#x10 <- round(colMeans(Sim.results.1),2)
+#x <- round(colMeans(Sim.results),2)
+#dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
+#write.csv(dat, "resultall1.csv")
