@@ -197,4 +197,4 @@ model {
 
   ##Sim.results=cbind(B1.mean,B2.mean,B3.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,cp1.mean,cp2.mean,u.tau.inv.mean,u.mean,
   ##                b0.mean,b1.mean,a.mean,v.mean,ga.mean,w.mean,w.tau.inv.mean)
-##print(Sim.results) 
+##print(Sim.results)
