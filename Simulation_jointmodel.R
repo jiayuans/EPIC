@@ -35,7 +35,7 @@ tt<-tt-0.25
   timeE <- as.data.frame(cbind(id,tt))
   
   simdat.pe0 <- merge(simdat.pe00, timeS,all=TRUE)
-  simdat.pe <- subset(simdat.pe0, stop >= t)
+  simdat.pe <- subset(simdat.pe0, start >= t)
   
   time <- subset(simdat.pe,status==1)
   time1 <- time[,c("id","stop")]  
