@@ -170,31 +170,3 @@ model {
   traplot(vars)
   dev.off()
   
-  ##B1.mean <-summary[1,4] 
-  ##B2.mean <-summary[2,4] 
-  ##B3.mean <-summary[3,4] 
-  ##c0.mean <-summary[4,4] 
-  ##c1.mean <-summary[5,4] 
-  ##c2.mean <-summary[6,4] 
-  ##c3.mean <-summary[7,4]
-  ##c4.mean <-summary[8,4]
-  ##cp1.mean <-summary[9,4] 
-  ##cp2.mean <-summary[10,4] 
-  ##u.mean <-mean(summary[11:410,4])
-  ##u.tau.inv.mean <-summary[411,4] 
-  ##cp1.mu.mean <-summary[413,4]
-  ##cp1.tau.mean <-summary[414,4]
-  ##cp2.temp.mean <-summary[415,4]
-  
-  ##b0.mean <-summary[416,4] 
-  ##b1.mean <-summary[417,4] 
-  ##a.mean <-summary[418,4] 
-  ##v.mean <-mean(summary[419:818,4])
-  ##ga.mean <-summary[819,4] 
-  ##w.mean <-mean(summary[820:1219,4])
-  ##w.tau.inv.mean <-summary[1221,4] 
-  
-
-  ##Sim.results=cbind(B1.mean,B2.mean,B3.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,cp1.mean,cp2.mean,u.tau.inv.mean,u.mean,
-  ##                b0.mean,b1.mean,a.mean,v.mean,ga.mean,w.mean,w.tau.inv.mean)
-##print(Sim.results) 
