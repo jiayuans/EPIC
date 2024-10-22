@@ -169,4 +169,4 @@ model {
       height = 4) # The height of the plot in inches
   traplot(vars)
   dev.off()
-  
+   
