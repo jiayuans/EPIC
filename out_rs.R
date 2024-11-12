@@ -75,7 +75,18 @@ Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
 
-#x10 <- round(colMeans(Sim.results.1),2)
-#x <- round(colMeans(Sim.results),2)
-#dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
-#write.csv(dat, "resultall.csv")
+# not match the true results for some parameters, need to correct
+#> round(colMeans(Sim.results.1),2)
+#Flag         B1.mean         B2.mean         B3.mean        cp1.mean        cp2.mean         c0.mean         c1.mean         c2.mean 
+#1.00           -0.01           -0.04            0.22            6.83           14.53           -4.05            0.10           -0.01 
+#c3.mean         c4.mean  u.tau.inv.mean u.tau1.inv.mean u.tau2.inv.mean u.tau3.inv.mean         b0.mean         b1.mean          a.mean 
+#0.13            0.18            0.71            1.02            1.01            1.01           -4.49            0.21            1.81 
+#ga.mean        ga1.mean        ga2.mean        ga3.mean  w.tau.inv.mean 
+#0.99            0.01            1.15            0.98            0.32 
+#> round(colMeans(Sim.results),2)
+#Flag         B1.mean         B2.mean         B3.mean        cp1.mean        cp2.mean         c0.mean         c1.mean         c2.mean 
+#0.10           -0.01            0.00            0.22            6.87           14.52           -4.14            0.11            0.00 
+#c3.mean         c4.mean  u.tau.inv.mean u.tau1.inv.mean u.tau2.inv.mean u.tau3.inv.mean         b0.mean         b1.mean          a.mean 
+#0.11            0.17            0.72            1.05            0.98            1.03           -4.53            0.27            1.80 
+#ga.mean        ga1.mean        ga2.mean        ga3.mean  w.tau.inv.mean 
+#0.08            0.08            1.12            1.00            0.44 
