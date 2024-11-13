@@ -145,10 +145,10 @@ model {
   #                           b0=-4.51, b=0.26, a=1.81, w.tau=1, ga=0.26,
   #                           .RNG.name="base::Super-Duper", .RNG.seed=2))
 
-  inits1 <- dump.format(list(c0=-4.6, c=c(0.1,0.17,0.1,0.1), u.tau=1, cp1=7, cp2.temp=7.4,
+  inits1 <- dump.format(list(c0=-3.81, c=c(0.17,-0.02,0.1,0.06), u.tau=1, cp1=6.9, cp2.temp=7.5,
                              b0=-4.5, b=0.25, a=1.8, w.tau=1, ga=0.25,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.61, c=c(0.1,0.17,0.1,0.1)+0.01, u.tau=1, cp1=7.1, cp2.temp=7.5,
+  inits2 <- dump.format(list(c0=-3.82, c=c(0.17,-0.02,0.1,0.1)+0.06, u.tau=1, cp1=7, cp2.temp=7.5,
                              b0=-4.51, b=0.26, a=1.81, w.tau=1, ga=0.26,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   
