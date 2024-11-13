@@ -1,5 +1,6 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output/jm")
+#setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output/jm")
+setwd("C:/Users/jiayu/OneDrive/Desktop/Output_test")
 
 ###########################################################################
 # Read csv files
