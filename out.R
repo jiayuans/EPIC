@@ -1,6 +1,6 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-#setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output/jm")
-setwd("C:/Users/jiayu/OneDrive/Desktop/Output_test")
+setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output/jm")
+#setwd("C:/Users/jiayu/OneDrive/Desktop/Output_test")
 
 ###########################################################################
 # Read csv files
@@ -198,4 +198,4 @@ cp <- c(sum(dat1$B1.cp)/I,sum(dat1$B2.cp)/I,sum(dat1$B3.cp)/I,sum(dat1$cp1.cp)/I
         sum(dat1$c1.cp)/I,sum(dat1$c2.cp)/I,sum(dat1$c3.cp)/I,sum(dat1$c4.cp)/I,sum(dat1$u.tau.inv.cp)/I,
         sum(dat1$b0.cp)/I,sum(dat1$b1.cp)/I,sum(dat1$a.cp)/I,sum(dat1$ga.cp)/I,sum(dat1$w.tau.inv.cp)/I)
 
-cbind(round(bias,4),round(mse,4),round(cp,4))
+cbind(round(bias,3),round(mse,3),round(cp,3))
