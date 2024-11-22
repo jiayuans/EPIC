@@ -98,7 +98,7 @@ model {
        }
         u[i] ~ dnorm(0,u.tau)
         cp1[i] ~ dnorm(cp1.mu,cp1.tau)	
-	      cp2.temp[i] ~ dunif(0,max[i])
+	      cp2.temp[i] ~ dunif(0,13) ## max[i]
 	      cp2[i] <- cp1[i] + cp2.temp[i]
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
@@ -137,7 +137,7 @@ model {
 }"
   
   ####Observed DATA
-  data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=tt,
+  data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, 
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
   inits1 <- dump.format(list(c0=-2, c=c(0.2,0.4,-0.2,-0.1), u.tau=1, cp1.mu=17, cp1.tau=1, 
