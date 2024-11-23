@@ -25,9 +25,9 @@ X1=c(rep(1,N/2),rep(0,N/2))
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
+X <- as.matrix(read.csv(list.files(pattern="X_data1.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_data1.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data1.")))
 #############################################################
 
 tt<-tt-0.25
@@ -139,7 +139,7 @@ model {
   inits1 <- dump.format(list(c0=-3, c=c(0.4,0.4,-0.05), u.tau=1, cp1.mu=18, cp1.tau=49, 
                              b0=-3, b=0.2, a=1.7, w.tau=1, ga=0.3, ga1=-0.05,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-2.1, c=c0.4,0.4,-0.05)+0.01, u.tau=1, cp1.mu=18, cp1.tau=49, 
+  inits2 <- dump.format(list(c0=-2.1, c=c(0.4,0.4,-0.05)+0.01, u.tau=1, cp1.mu=18, cp1.tau=49, 
                              b0=-3.1, b=0.21, a=1.71, w.tau=1, ga=0.3, ga1=-0.05,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
@@ -154,9 +154,9 @@ model {
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data.")
+  text <- list.files(pattern="X_data1.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result.",num,".csv"))
+  write.csv(result_df, paste0("result1.",num,".csv"))
   
   res_jm <- res$mcmc
   #dimnames(res_jm[[1]])
@@ -164,7 +164,7 @@ model {
   #str(vars)
   #plot(vars[,1])
   #summary(vars)
-  pdf(file = paste0("traceplot.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("traceplot1.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)

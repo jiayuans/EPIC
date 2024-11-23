@@ -26,13 +26,12 @@ kk=max(k.pa)
 I=201
 
 ###############set true values#########################################
-c0=-2 
-c1=0.2
+c0=-3 
+c1=0.4
 c2=0.4
-c3=-0.2
-c4=-0.1
+c3=-0.05
 Verror=1
-cp1.mu=17
+cp1.mu=18
 cp1.sd=7
 
 #############################################################
@@ -68,10 +67,10 @@ NHPP<-function(a,b,T){
 # Output: A dataset with variables
 # 		 id, xi (treatment),Tei, time, status
 # -------------- Building the simulated poisson data -----
-poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,TTei){
+poisson.d <- function(alpha,beta,beta0,x,ga,ga1,TTei){
   le <- length(x)
   c_0i <- rnorm(le,0,1) 
-  vi <- exp(ga*b_0i+c_0i+ga1*cp_1i+ga2*cp_2i)
+  vi <- exp(ga*b_0i+c_0i+ga1*cp_1i)
   ##vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
   
   times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
@@ -105,9 +104,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,TTei){
 for (r in 2:I){
   b_0i<-rnorm(N,0,1) #1.6
   cp_1i <- rnorm(N,cp1.mu,cp1.sd)
-  cp2.tempi <- runif(N,0,last.tt)
-  cp_2i <- cp_1i + cp2.tempi
-  
+
   X1=c(rep(1,N/2),rep(0,N/2))
   ##X1=sample(c(1,0),N, replace = TRUE)
   
@@ -123,24 +120,24 @@ for (r in 2:I){
   for (i in 1:N){
     for (j in 1:k.pa[i]){
       I1[i,j]<-ifelse(X[i,j]< cp_1i[i],-1,1)
-      I2[i,j]<-ifelse(X[i,j]< cp_2i[i],-1,1)
-      p2[i,j]=exp(c0+c1*(X[i,j]-cp_1i[i])+c2*(X[i,j]-cp_1i[i])*I1[i,j]+c3*(X[i,j]-cp_2i[i])*I2[i,j]+c4*X1[i]+b_0i[i])/(1+exp(c0+c1*(X[i,j]-cp_1i[i])+c2*(X[i,j]-cp_1i[i])*I1[i,j]+c3*(X[i,j]-cp_2i[i])*I2[i,j]+c4*X1[i]+b_0i[i]))
+      p2[i,j]=exp(c0+c1*(X[i,j]-cp_1i[i])+c2*(X[i,j]-cp_1i[i])*I1[i,j]+c3*X1[i]+b_0i[i])/(1+exp(c0+c1*(X[i,j]-cp_1i[i])+c2*(X[i,j]-cp_1i[i])*I1[i,j]+c3*X1[i]+b_0i[i]))
       Y[i,j]=rbinom(Verror, 1, p2[i,j])
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.7,beta=0.2,beta0=-3.4,x=X1,ga=0.85,ga1=-0.03,ga2=-0.006,TTei=tt-0.25)
+  simdat.pe00 <- poisson.d(alpha=1.7,beta=0.2,beta0=-3,x=X1,ga=0.3,ga1=-0.05,TTei=tt-0.25)
+  
   
   X_df <- as.data.frame(X)
-  filename <- paste0("X_data.", r-2, ".csv")
+  filename <- paste0("X_data1.", r-2, ".csv")
   write.csv(X_df, file = filename, row.names = FALSE)
   
   Y_df <- as.data.frame(Y)
-  filename <- paste0("Y_data.", r-2, ".csv")
+  filename <- paste0("Y_data1.", r-2, ".csv")
   write.csv(Y_df, file = filename, row.names = FALSE)
   
   simdat.pe_df <- as.data.frame(simdat.pe00)
-  filename <- paste0("sim.pe_data.", r-2, ".csv")
+  filename <- paste0("sim.pe_data1.", r-2, ".csv")
   write.csv(simdat.pe_df, file = filename, row.names = FALSE)
 } 
  
