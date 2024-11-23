@@ -105,7 +105,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,TTei){
 for (r in 2:I){
   b_0i<-rnorm(N,0,1) #1.6
   cp_1i <- rnorm(N,cp1.mu,cp1.sd)
-  cp2.tempi <- runif(N,0,last.tt)
+  cp2.tempi <- runif(N,0,13) #last.tt
   cp_2i <- cp_1i + cp2.tempi
   
   X1=c(rep(1,N/2),rep(0,N/2))
