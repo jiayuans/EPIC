@@ -140,10 +140,10 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, 
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-2, c=c(0.2,0.4,-0.2,-0.1), u.tau=1, cp1.mu=17, cp1.tau=49, 
+  inits1 <- dump.format(list(c0=-2, c=c(0.2,0.4,-0.2,-0.1), u.tau=1, cp1.mu=17, cp1.tau=1, 
                              b0=-3.4, b=0.2, a=1.7, w.tau=1, ga=0.85, ga1=-0.03, ga2=-0.006,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-2.1, c=c(0.2,0.4,-0.2,-0.1)+0.01, u.tau=1, cp1.mu=17, cp1.tau=49, 
+  inits2 <- dump.format(list(c0=-2.1, c=c(0.2,0.4,-0.2,-0.1)+0.01, u.tau=1, cp1.mu=17, cp1.tau=1, 
                              b0=-3.41, b=0.21, a=1.71, w.tau=1, ga=0.85, ga1=-0.03, ga2=-0.006,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 

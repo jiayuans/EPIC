@@ -1,15 +1,15 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/Users/jiayu/OneDrive/Desktop/randomcp2")
+setwd("C:/Users/jiayu/OneDrive/Desktop/randomcp1")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="result.")
+text <- list.files(pattern="result1.")
 text1 <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[1]]))
-ind <- which(text1=="result")
+ind <- which(text1=="result1")
 num <- as.numeric(unlist(lapply(strsplit(text[ind],'.',fixed=TRUE),function(x) x[[2]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("result.", i, ".csv") 
+  file_name <- paste0("result1.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -17,14 +17,11 @@ I=length(data_frames)
 
 B1.mean<-rep(NA,I)
 B2.mean<-rep(NA,I)
-B3.mean<-rep(NA,I)
 cp1.mean<-rep(NA,I)
-cp2.mean<-rep(NA,I)
 c0.mean<-rep(NA,I)
 c1.mean<-rep(NA,I)
 c2.mean<-rep(NA,I)
 c3.mean<-rep(NA,I)
-c4.mean<-rep(NA,I)
 
 u.tau.inv.mean<-rep(NA,I)
 b0.mean<-rep(NA,I)
@@ -32,11 +29,9 @@ b1.mean<-rep(NA,I)
 a.mean<-rep(NA,I)
 ga.mean<-rep(NA,I)
 ga1.mean<-rep(NA,I)
-ga2.mean<-rep(NA,I)
 w.tau.inv.mean<-rep(NA,I)
 cp1.mu.mean<-rep(NA,I)
 cp1.tau.inv.mean<-rep(NA,I)
-cp2.temp.mean<-rep(NA,I)
 
 u.mean<-rep(NA,I)
 v.mean<-rep(NA,I)
@@ -45,34 +40,29 @@ w.mean<-rep(NA,I)
 for(i in 1:I){ 
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
-B3.mean[i] <-data_frames[[i]][3,5] 
-cp1.mean[i] <-mean(data_frames[[i]][4:403,5])
-cp2.mean[i] <-mean(data_frames[[i]][404:803,5])
-c0.mean[i] <-data_frames[[i]][804,5] 
-c1.mean[i] <-data_frames[[i]][805,5] 
-c2.mean[i] <-data_frames[[i]][806,5] 
-c3.mean[i] <-data_frames[[i]][807,5]
-c4.mean[i] <-data_frames[[i]][808,5]
+cp1.mean[i] <-mean(data_frames[[i]][3:402,5])
+c0.mean[i] <-data_frames[[i]][403,5] 
+c1.mean[i] <-data_frames[[i]][404,5] 
+c2.mean[i] <-data_frames[[i]][405,5] 
+c3.mean[i] <-data_frames[[i]][406,5]
 
-u.tau.inv.mean[i] <-data_frames[[i]][809,5] 
-b0.mean[i] <-data_frames[[i]][810,5] 
-b1.mean[i] <-data_frames[[i]][811,5] 
-a.mean[i] <-data_frames[[i]][812,5] 
-ga.mean[i] <-data_frames[[i]][813,5] 
-ga1.mean[i] <-data_frames[[i]][814,5] 
-ga2.mean[i] <-data_frames[[i]][815,5] 
-w.tau.inv.mean[i] <-data_frames[[i]][816,5] 
-cp1.mu.mean[i] <-data_frames[[i]][817,5] 
-cp1.tau.inv.mean[i] <-data_frames[[i]][818,5] 
-cp2.temp.mean[i] <-mean(data_frames[[i]][819:1218,5])
+u.tau.inv.mean[i] <-data_frames[[i]][407,5] 
+b0.mean[i] <-data_frames[[i]][408,5] 
+b1.mean[i] <-data_frames[[i]][409,5] 
+a.mean[i] <-data_frames[[i]][410,5] 
+ga.mean[i] <-data_frames[[i]][411,5] 
+ga1.mean[i] <-data_frames[[i]][412,5] 
+w.tau.inv.mean[i] <-data_frames[[i]][413,5] 
+cp1.mu.mean[i] <-data_frames[[i]][414,5] 
+cp1.tau.inv.mean[i] <-data_frames[[i]][415,5] 
 
-u.mean[i] <-mean(data_frames[[i]][1219:1618,5])
-v.mean[i] <-mean(data_frames[[i]][1619:2018,5])
-w.mean[i] <-mean(data_frames[[i]][2019:2418,5])
+u.mean[i] <-mean(data_frames[[i]][416:815,5])
+v.mean[i] <-mean(data_frames[[i]][816:1215,5])
+w.mean[i] <-mean(data_frames[[i]][1216:1615,5])
 }
 
-Sim.results=cbind(B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,u.tau.inv.mean,
-               b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,ga2.mean,w.tau.inv.mean,cp1.mu.mean,cp1.tau.inv.mean,cp2.temp.mean,u.mean,v.mean,w.mean)
+Sim.results=cbind(B1.mean,B2.mean,cp1.mean,c0.mean,c1.mean,c2.mean,c3.mean,u.tau.inv.mean,
+               b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,w.tau.inv.mean,cp1.mu.mean,cp1.tau.inv.mean,u.mean,v.mean,w.mean)
 est<-round(colMeans(Sim.results),2)
 est
 
