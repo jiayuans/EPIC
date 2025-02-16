@@ -7,7 +7,7 @@ setwd(dirg)
 ## 
 ##################################################################
 
-long.time <- read.csv("long.data.csv")
+long.time <- read.csv("long.data_new.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
@@ -128,15 +128,15 @@ for (r in 2:I){
   simdat.pe00 <- poisson.d(alpha=1.8,beta=0.25,beta0=-4.5,x=X1,ga=0.25,TTei=tt-0.25)
   
   X_df <- as.data.frame(X)
-  filename <- paste0("X_data.", r-2, ".csv")
+  filename <- paste0("X_dataJM.", r-2, ".csv")
   write.csv(X_df, file = filename, row.names = FALSE)
   
   Y_df <- as.data.frame(Y)
-  filename <- paste0("Y_data.", r-2, ".csv")
+  filename <- paste0("Y_dataJM.", r-2, ".csv")
   write.csv(Y_df, file = filename, row.names = FALSE)
   
   simdat.pe_df <- as.data.frame(simdat.pe00)
-  filename <- paste0("sim.pe_data.", r-2, ".csv")
+  filename <- paste0("sim.pe_dataJM.", r-2, ".csv")
   write.csv(simdat.pe_df, file = filename, row.names = FALSE)
 } 
  

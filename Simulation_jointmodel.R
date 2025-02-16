@@ -5,7 +5,7 @@ library(runjags)
 library(tidyverse)
 library(mcmcplots)
 
-long.time <- read.csv("long.data.csv")
+long.time <- read.csv("long.data_new.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
@@ -25,9 +25,9 @@ X1=c(rep(1,N/2),rep(0,N/2))
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
+X <- as.matrix(read.csv(list.files(pattern="X_dataJM.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_dataJM.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_dataJM.")))
 #############################################################
 
 tt<-tt-0.25
@@ -154,9 +154,9 @@ model {
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data.")
+  text <- list.files(pattern="X_dataJM.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result.",num,".csv"))
+  write.csv(result_df, paste0("resultJM.",num,".csv"))
   
   res_jm <- res$mcmc
   #dimnames(res_jm[[1]])
@@ -164,7 +164,7 @@ model {
   #str(vars)
   #plot(vars[,1])
   #summary(vars)
-  pdf(file = paste0("traceplot.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("traceplotJM.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)
