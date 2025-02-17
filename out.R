@@ -1,16 +1,16 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output/jm")
+setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP_JM")
 #setwd("C:/Users/jiayu/OneDrive/Desktop/Output_test")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="result.")
+text <- list.files(pattern="resultJM.")
 text1 <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[1]]))
-ind <- which(text1=="result")
+ind <- which(text1=="resultJM")
 num <- as.numeric(unlist(lapply(strsplit(text[ind],'.',fixed=TRUE),function(x) x[[2]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("result.", i, ".csv") 
+  file_name <- paste0("resultJM.", i, ".csv") 
   read.csv(file_name)
 })
 
