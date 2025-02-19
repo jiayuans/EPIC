@@ -147,7 +147,7 @@ model {
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
                             "b0","b","a","ga","w.tau.inv","u","v","w",
                             "u.tau","w.tau","ll.a","ll.e","dev.a","dev.e","dic"), 
-                  data=data, n.chains=2, inits=c(inits1,inits2), thin=6, module='dic')
+                  data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
