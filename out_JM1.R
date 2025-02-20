@@ -70,12 +70,12 @@ ga1.mean[i] <-data_frames[[i]][19,5]
 ga2.mean[i] <-data_frames[[i]][20,5]
 ga3.mean[i] <-data_frames[[i]][21,5]
 w.tau.inv.mean[i] <-data_frames[[i]][22,5] 
-u.mean[i] <-mean(data_frames[[i]][23:422,5])
-u1.mean[i] <-mean(data_frames[[i]][423:822,5])
-u2.mean[i] <-mean(data_frames[[i]][823:1222,5])
-u3.mean[i] <-mean(data_frames[[i]][1223:1622,5])
-v.mean[i] <-mean(data_frames[[i]][1623:2022,5])
-w.mean[i] <-mean(data_frames[[i]][2023:2422,5])
+u.mean[i] <-mean(data_frames[[i]][23:522,5])
+u1.mean[i] <-mean(data_frames[[i]][523:1022,5])
+u2.mean[i] <-mean(data_frames[[i]][1023:1522,5])
+u3.mean[i] <-mean(data_frames[[i]][1523:2022,5])
+v.mean[i] <-mean(data_frames[[i]][2023:2522,5])
+w.mean[i] <-mean(data_frames[[i]][2523:3022,5])
 }
 
 Sim.results=cbind(B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,u.tau.inv.mean,
@@ -99,18 +99,18 @@ c3=rep(0.1,I)
 c4=rep(0.1,I)
 cp1=rep(6.9,I)
 cp2=rep(14.5,I)
-u.sigma2=rep(1,I)
-u1.sigma2=rep(1,I)
-u2.sigma2=rep(1,I)
-u3.sigma2=rep(1,I)
+u.sigma2=rep(1.96,I)
+u1.sigma2=rep(0.09,I)
+u2.sigma2=rep(0.01,I)
+u3.sigma2=rep(0.0016,I)
 alpha=rep(1.8,I)
 beta=rep(0.25,I)
-beta0=rep(-4.5,I)
-ga=rep(0.1,I)
-ga1=rep(0.15,I)
-ga2=rep(0.2,I)
-ga3=rep(0.2,I)
-w.sigma2=rep(1,I)
+beta0=rep(-4.3,I)
+ga=rep(0.11,I)
+ga1=rep(0.16,I)
+ga2=rep(8,I)
+ga3=rep(25,I)
+w.sigma2=rep(0.25,I)
 
 dat <- as.data.frame(cbind(Sim.results,B1,B2,B3,cp1,cp2,c0,c1,c2,c3,c4,u.sigma2,u1.sigma2,u2.sigma2,u3.sigma2,beta0,beta,alpha,ga,ga1,ga2,ga3,w.sigma2))
 bias <- c(sum(dat$B1.mean-dat$B1)/I,sum(dat$B2.mean-dat$B2)/I,sum(dat$B3.mean-dat$B3)/I,sum(dat$cp1.mean-dat$cp1)/I,sum(dat$cp2.mean-dat$cp2)/I,sum(dat$c0.mean-dat$c0)/I,
