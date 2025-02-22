@@ -23,10 +23,10 @@ k.pa<-(tt-t)*4
 kk=max(k.pa)
 
 ###set number of iterations#################################
-I=201
+I=251
 
 ###############set true values#########################################
-c0=-3.8 
+c0=-4 
 c1=0.17
 c2=-0.02 
 c3=0.1
@@ -103,7 +103,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,ga3,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,1.4) 
+  b_0i<-rnorm(N,0,1) 
   b_1i<-rnorm(N,0,0.3)
   b_2i<-rnorm(N,0,0.1)
   b_3i<-rnorm(N,0,0.04)
@@ -128,7 +128,7 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.25,beta0=-4.3,x=X1,ga=0.11,ga1=0.16,ga2=8,ga3=25,TTei=tt-0.25)
+  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.25,beta0=-4,x=X1,ga=0.1,ga1=0.15,ga2=5,ga3=13,TTei=tt-0.25)
   
   X_df <- as.data.frame(X)
   filename <- paste0("X_dataJM1.", r-2, ".csv")

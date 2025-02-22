@@ -122,11 +122,8 @@ model {
 	u.tau1 ~ dgamma(0.001,0.001)
 	u.tau2 ~ dgamma(0.001,0.001)
 	u.tau3 ~ dgamma(0.001,0.001)
-	cp1 ~ dnorm(cp1.mu,cp1.tau)	
-	cp2.temp ~ dunif(0,max)
-	cp2 <- cp1 + cp2.temp
-	cp1.mu ~ dnorm(0,0.001)
-	cp1.tau ~ dgamma(0.001,0.001)
+	cp1 ~ dunif(0,max)
+	cp2 ~ dunif(cp1,max)
 	B1 <-c[1]-c[2]-c[3]
   B2 <-c[1]+c[2]-c[3]
   B3 <-c[1]+c[2]+c[3]
@@ -150,19 +147,19 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-4, c=c(0.2,-0.02,0.1,0.1), u.tau=1, u.tau1=1, u.tau2=1, u.tau3=1, cp1=5, cp2.temp=10,
-                             b0=-4.3, b=0.25, a=1.8, w.tau=1, ga=0.1,ga1=0.16,ga2=8,ga3=25,
+  inits1 <- dump.format(list(c0=-4, c=c(0.2,-0.02,0.1,0.1), u.tau=1, u.tau1=1, u.tau2=1, u.tau3=1, cp1=5, cp2=15,
+                             b0=-4, b=0.25, a=1.8, w.tau=1, ga=0.1,ga1=0.15,ga2=5,ga3=13,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.01, c=c(0.2,-0.02,0.1,0.1)+0.01, u.tau=1, u.tau1=1, u.tau2=1, u.tau3=1, cp1=5.1, cp2.temp=10,
-                             b0=-4.31, b=0.26, a=1.81, w.tau=1, ga=0.1,ga1=0.16,ga2=8,ga3=25,
+  inits2 <- dump.format(list(c0=-4.01, c=c(0.2,-0.02,0.1,0.1)+0.01, u.tau=1, u.tau1=1, u.tau2=1, u.tau3=1, cp1=5.1, cp2=15.1,
+                             b0=-4.01, b=0.26, a=1.81, w.tau=1, ga=0.1,ga1=0.15,ga2=5,ga3=13,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=20000, sample=3000, 
+  res <- run.jags(model=modelrancp, burnin=20000, sample=8000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv","u.tau1.inv","u.tau2.inv","u.tau3.inv",
                             "b0","b","a","ga","ga1","ga2","ga3","w.tau.inv","u","u1","u2","u3","v","w",
-                            "u.tau","u.tau1","u.tau2","u.tau3","w.tau","cp1.mu","cp1.tau","cp2.temp","ll.a","ll.e","dev.a","dev.e","dic"), 
-                  data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
+                            "u.tau","u.tau1","u.tau2","u.tau3","w.tau","ll.a","ll.e","dev.a","dev.e","dic"), 
+                  data=data, n.chains=2, inits=c(inits1,inits2), thin=20, module='dic')
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
