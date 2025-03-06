@@ -1,6 +1,6 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
 setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP2")
-#setwd("C:/Users/jiayu/OneDrive/Desktop/Output_test")
+#setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP_JM2_Final")
 
 ###########################################################################
 # Read csv files
