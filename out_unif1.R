@@ -72,12 +72,12 @@ ga1.mean[i] <-data_frames[[i]][19,5]
 ga2.mean[i] <-data_frames[[i]][20,5]
 ga3.mean[i] <-data_frames[[i]][21,5]
 w.tau.inv.mean[i] <-data_frames[[i]][22,5] 
-u.mean[i] <-mean(data_frames[[i]][23:522,5])
-u1.mean[i] <-mean(data_frames[[i]][523:1022,5])
-u2.mean[i] <-mean(data_frames[[i]][1023:1522,5])
-u3.mean[i] <-mean(data_frames[[i]][1523:2022,5])
-v.mean[i] <-mean(data_frames[[i]][2023:2522,5])
-w.mean[i] <-mean(data_frames[[i]][2523:3022,5])
+u.mean[i] <-mean(data_frames[[i]][23:422,5])
+u1.mean[i] <-mean(data_frames[[i]][423:822,5])
+u2.mean[i] <-mean(data_frames[[i]][823:1222,5])
+u3.mean[i] <-mean(data_frames[[i]][1223:1622,5])
+v.mean[i] <-mean(data_frames[[i]][1623:2022,5])
+w.mean[i] <-mean(data_frames[[i]][2023:2422,5])
 }
 
 Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.mean,c3.mean,c4.mean,u.tau.inv.mean,

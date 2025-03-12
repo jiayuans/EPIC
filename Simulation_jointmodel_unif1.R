@@ -137,7 +137,7 @@ model {
 	ga ~ dnorm(0,0.0001)
 	ga1 ~ dnorm(0,0.0001)
 	ga2 ~ dnorm(0,0.0001)
-	ga3 ~ dnorm(0,0.0001)
+	ga3 ~ dnorm(37,0.01)
 	w.tau ~ dgamma(0.001,0.001)
 	w.tau.inv <- 1/w.tau  ## variance 
 }"
@@ -158,8 +158,8 @@ model {
   res <- run.jags(model=modelrancp, burnin=20000, sample=2000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv","u.tau1.inv","u.tau2.inv","u.tau3.inv",
                             "b0","b","a","ga","ga1","ga2","ga3","w.tau.inv","u","u1","u2","u3","v","w",
-                            "u.tau","u.tau1","u.tau2","u.tau3","w.tau","ll.a","ll.e","dev.a","dev.e","dic"), 
-                  data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
+                            "u.tau","u.tau1","u.tau2","u.tau3","w.tau","ll.a","ll.e","dev.a","dev.e"), 
+                  data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=20)
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
