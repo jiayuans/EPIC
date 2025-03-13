@@ -85,6 +85,14 @@ Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean
                b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,ga2.mean,ga3.mean,w.tau.inv.mean,u.mean,u1.mean,u2.mean,u3.mean,v.mean,w.mean)
 est<-round(colMeans(Sim.results),2)
 est
+#Flag         B1.mean         B2.mean         B3.mean        cp1.mean        cp2.mean         c0.mean         c1.mean 
+#0.07            0.06            0.02            0.31            6.06           15.33           -4.63            0.19 
+#c2.mean         c3.mean         c4.mean  u.tau.inv.mean u.tau1.inv.mean u.tau2.inv.mean u.tau3.inv.mean         b0.mean 
+#-0.02            0.15            0.04            0.36            0.08            0.01            0.01           -4.51 
+#b1.mean          a.mean         ga.mean        ga1.mean        ga2.mean        ga3.mean  w.tau.inv.mean          u.mean 
+#0.25            1.80           -0.13            0.05            7.42            6.53            0.29            0.00 
+#u1.mean         u2.mean         u3.mean          v.mean          w.mean 
+#0.00            0.00            0.00            2.91            0.00 
 
 table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
