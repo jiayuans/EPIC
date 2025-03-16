@@ -23,17 +23,26 @@ k.pa<-(tt-t)*4
 kk=max(k.pa)
 
 ###set number of iterations#################################
-I=201
+I=401
 
 ###############set true values#########################################
-c0=-4
+c0=-3.7
 c1=0.15
 c2=-0.01 
-c3=0.1
+c3=0.08
 c4=0.05
 Verror=1
 cp1.true=6.9
 cp2.true=14.5
+
+#c0=-4
+#c1=0.15
+#c2=-0.01
+#c3=0.1
+#c4=0.05
+#cp1.true=6.9
+#cp2.true=14.5
+
 
 #############################################################
 set.seed(123)
@@ -103,7 +112,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,ga3,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,1) 
+  b_0i<-rnorm(N,0,1.4) #1
   b_1i<-rnorm(N,0,0.3)
   b_2i<-rnorm(N,0,0.1)
   b_3i<-rnorm(N,0,0.03)
@@ -128,7 +137,8 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.25,beta0=-4.5,x=X1,ga=0.15,ga1=0.1,ga2=8,ga3=37,TTei=tt-0.25)
+  simdat.pe00 <- poisson.d(alpha=1.82,beta=0.25,beta0=-4.45,x=X1,ga=0.16,ga1=0.07,ga2=8.4,ga3=37.4,TTei=tt-0.25)
+  #  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.25,beta0=-4.5,x=X1,ga=0.15,ga1=0.1,ga2=8,ga3=37,TTei=tt-0.25)
   
   X_df <- as.data.frame(X)
   filename <- paste0("X_data1.", r-2, ".csv")

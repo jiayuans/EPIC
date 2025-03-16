@@ -134,9 +134,9 @@ model {
   a ~ dgamma(0.01,0.01)
   b0 ~ dnorm(0,0.0001)	
   b ~ dnorm(0,0.0001)		
-	ga ~ dnorm(0,0.0001)
-	ga1 ~ dnorm(0,0.0001)
-	ga2 ~ dnorm(0,0.0001)
+	ga ~ dnorm(0,0.01) # dnorm(0,0.0001)
+	ga1 ~ dnorm(0,0.01)
+	ga2 ~ dnorm(8,0.01)
 	ga3 ~ dnorm(37,0.01)
 	w.tau ~ dgamma(0.001,0.001)
 	w.tau.inv <- 1/w.tau  ## variance 
@@ -147,15 +147,22 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-4, c=c(0.15,-0.01,0.1,0.05), u.tau=1, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=6.9, cp2=14.5,
-                             b0=-4.5, b=0.25, a=1.8, w.tau=4, ga=0.15,ga1=0.1,ga2=8,ga3=37,
+  inits1 <- dump.format(list(c0=-3.7, c=c(0.15,-0.01,0.08,0.05), u.tau=0.5, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=6.9, cp2=14.5,
+                             b0=-4.4, b=0.25, a=1.81, w.tau=4, ga=0.15,ga1=0.07,ga2=8,ga3=37,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.1, c=c(0.15,-0.01,0.1,0.05)+0.01, u.tau=1, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=7, cp2=14.6,
-                             b0=-4.6, b=0.26, a=1.81, w.tau=4, ga=0.16,ga1=0.11,ga2=8.1,ga3=37.1,
+  inits2 <- dump.format(list(c0=-3.8, c=c(0.15,-0.01,0.08,0.05)+0.01, u.tau=0.5, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=7, cp2=14.6,
+                             b0=-4.5, b=0.26, a=1.82, w.tau=4, ga=0.16,ga1=0.08,ga2=8.1,ga3=37.1,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
+  #   inits1 <- dump.format(list(c0=-4, c=c(0.15,-0.01,0.1,0.05), u.tau=1, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=6.9, cp2=14.5,
+  #b0=-4.5, b=0.25, a=1.8, w.tau=4, ga=0.15,ga1=0.1,ga2=8,ga3=37,
+  #.RNG.name="base::Super-Duper", .RNG.seed=1))
+  #   inits2 <- dump.format(list(c0=-4.1, c=c(0.15,-0.01,0.1,0.05)+0.01, u.tau=1, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=7, cp2=14.6,
+  #                         b0=-4.6, b=0.26, a=1.81, w.tau=4, ga=0.16,ga1=0.11,ga2=8.1,ga3=37.1,
+  #                        .RNG.name="base::Super-Duper", .RNG.seed=2))
+
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=20000, sample=2000, 
+  res <- run.jags(model=modelrancp, burnin=20000, sample=4000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv","u.tau1.inv","u.tau2.inv","u.tau3.inv",
                             "b0","b","a","ga","ga1","ga2","ga3","w.tau.inv","u","u1","u2","u3","v","w",
                             "u.tau","u.tau1","u.tau2","u.tau3","w.tau","ll.a","ll.e","dev.a","dev.e"), 

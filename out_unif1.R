@@ -1,5 +1,5 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP_unif1")
+setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP_unif11")
 #setwd("C:/Users/jiayu/OneDrive/Desktop/Output_test")
 
 ###########################################################################
@@ -48,7 +48,7 @@ v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
 
 for(i in 1:I){ 
-Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.5,1,0)
+Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.2,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 B3.mean[i] <-data_frames[[i]][3,5] 
@@ -85,23 +85,27 @@ Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean
                b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,ga2.mean,ga3.mean,w.tau.inv.mean,u.mean,u1.mean,u2.mean,u3.mean,v.mean,w.mean)
 est<-round(colMeans(Sim.results),2)
 est
-#Flag         B1.mean         B2.mean         B3.mean        cp1.mean        cp2.mean         c0.mean         c1.mean 
-#0.07            0.06            0.02            0.31            6.06           15.33           -4.63            0.19 
+#           Flag         B1.mean         B2.mean         B3.mean        cp1.mean        cp2.mean         c0.mean         c1.mean 
+#0.15            0.06            0.01            0.30            6.65           14.74           -4.41            0.18 
 #c2.mean         c3.mean         c4.mean  u.tau.inv.mean u.tau1.inv.mean u.tau2.inv.mean u.tau3.inv.mean         b0.mean 
-#-0.02            0.15            0.04            0.36            0.08            0.01            0.01           -4.51 
+#-0.03            0.14            0.04            0.82            0.09            0.01            0.00           -4.52 
 #b1.mean          a.mean         ga.mean        ga1.mean        ga2.mean        ga3.mean  w.tau.inv.mean          u.mean 
-#0.25            1.80           -0.13            0.05            7.42            6.53            0.29            0.00 
+#0.26            1.80            0.04            0.39            5.78           27.29            0.21            0.00 
 #u1.mean         u2.mean         u3.mean          v.mean          w.mean 
-#0.00            0.00            0.00            2.91            0.00 
+#0.00            0.00            0.00            2.92            0.00 
 
 table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 
-#x10 <- round(colMeans(Sim.results.1),2)
-#x <- round(colMeans(Sim.results),2)
-#dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
-#write.csv(dat, "resultall.csv")
+#           Flag         B1.mean         B2.mean         B3.mean        cp1.mean        cp2.mean         c0.mean         c1.mean 
+#1.00            0.06            0.01            0.28            6.80           14.00           -4.19            0.17 
+#c2.mean         c3.mean         c4.mean  u.tau.inv.mean u.tau1.inv.mean u.tau2.inv.mean u.tau3.inv.mean         b0.mean 
+#-0.02            0.13            0.11            0.94            0.09            0.01            0.00           -4.59 
+#b1.mean          a.mean         ga.mean        ga1.mean        ga2.mean        ga3.mean  w.tau.inv.mean          u.mean 
+#0.29            1.82            0.14            0.38            5.10           31.33            0.20            0.00 
+#u1.mean         u2.mean         u3.mean          v.mean          w.mean 
+#0.00            0.00            0.00            2.91            0.00 
 
 B1=rep(0.09,I)
 B2=rep(0.05,I)
