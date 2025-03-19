@@ -1,5 +1,5 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP_unif11")
+setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP_unif11b")
 #setwd("C:/Users/jiayu/OneDrive/Desktop/Output_test")
 
 ###########################################################################
