@@ -79,7 +79,7 @@ NHPP<-function(a,b,T){
 # -------------- Building the simulated poisson data -----
 poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,ga3,TTei){
   le <- length(x)
-  c_0i <- rnorm(le,0,0.5) 
+  c_0i <- rnorm(le,0,1) #0.5
   vi <- exp(ga*b_0i+c_0i+ga1*b_1i+ga2*b_2i+ga3*b_3i)
   ##vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
   
@@ -112,10 +112,10 @@ poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,ga3,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,1.4) #1
-  b_1i<-rnorm(N,0,0.3)
-  b_2i<-rnorm(N,0,0.1)
-  b_3i<-rnorm(N,0,0.03)
+  b_0i<-rnorm(N,0,1) #1
+  b_1i<-rnorm(N,0,1) #0.3
+  b_2i<-rnorm(N,0,1) #0.1
+  b_3i<-rnorm(N,0,1) #0.03
   X1=c(rep(1,N/2),rep(0,N/2))
   ##X1=sample(c(1,0),N, replace = TRUE)
   
@@ -137,7 +137,7 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.82,beta=0.25,beta0=-4.45,x=X1,ga=0.1,ga1=0.4,ga2=7,ga3=30,TTei=tt-0.25)
+  simdat.pe00 <- poisson.d(alpha=1.82,beta=0.25,beta0=-4.45,x=X1,ga=0.1,ga1=0.1,ga2=0.1,ga3=0.1,TTei=tt-0.25)
   #  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.25,beta0=-4.5,x=X1,ga=0.15,ga1=0.1,ga2=8,ga3=37,TTei=tt-0.25)
   
   X_df <- as.data.frame(X)

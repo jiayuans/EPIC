@@ -136,8 +136,8 @@ model {
   b ~ dnorm(0,0.0001)		
 	ga ~ dnorm(0,0.01) # dnorm(0,0.0001)
 	ga1 ~ dnorm(0,0.01)
-	ga2 ~ dnorm(7,0.01)
-	ga3 ~ dnorm(30,0.01)
+	ga2 ~ dnorm(0,0.01)
+	ga3 ~ dnorm(0,0.01)
 	w.tau ~ dgamma(0.001,0.001)
 	w.tau.inv <- 1/w.tau  ## variance 
 }"
@@ -147,11 +147,11 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-4, c=c(0.15,-0.01,0.1,0.05), u.tau=0.5, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=6.9, cp2=14.5,
-                             b0=-4.4, b=0.25, a=1.81, w.tau=4, ga=0.1,ga1=0.4,ga2=7,ga3=30,
+  inits1 <- dump.format(list(c0=-4, c=c(0.15,-0.01,0.1,0.05), u.tau=1, u.tau1=1, u.tau2=1, u.tau3=1, cp1=6.9, cp2=14.5,
+                             b0=-4.4, b=0.25, a=1.81, w.tau=4, ga=0.1,ga1=0.1,ga2=0.1,ga3=0.1,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.1, c=c(0.15,-0.01,0.1,0.05)+0.01, u.tau=0.5, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=7, cp2=14.6,
-                             b0=-4.5, b=0.26, a=1.82, w.tau=4, ga=0.11,ga1=0.41,ga2=7.1,ga3=30.1,
+  inits2 <- dump.format(list(c0=-4.1, c=c(0.15,-0.01,0.1,0.05)+0.01, u.tau=1, u.tau1=1, u.tau2=1, u.tau3=1, cp1=7, cp2=14.6,
+                             b0=-4.5, b=0.26, a=1.82, w.tau=4, ga=0.11,ga1=0.11,ga2=0.11,ga3=0.11,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #   inits1 <- dump.format(list(c0=-4, c=c(0.15,-0.01,0.1,0.05), u.tau=1, u.tau1=11, u.tau2=100, u.tau3=1111, cp1=6.9, cp2=14.5,
