@@ -4,13 +4,13 @@ setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP2_JM4")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="result0.")
+text <- list.files(pattern="result0_jm4.")
 text1 <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[1]]))
-ind <- which(text1=="result0")
+ind <- which(text1=="result0_jm4")
 num <- as.numeric(unlist(lapply(strsplit(text[ind],'.',fixed=TRUE),function(x) x[[2]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("result0.", i, ".csv") 
+  file_name <- paste0("result0_jm4.", i, ".csv") 
   read.csv(file_name)
 })
 

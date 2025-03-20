@@ -1,16 +1,16 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP2_JM4")
+setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP2")
 #setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP_JM2_Final")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="result0.")
+text <- list.files(pattern="result2_jm4.")
 text1 <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[1]]))
-ind <- which(text1=="result0")
+ind <- which(text1=="result2_jm4")
 num <- as.numeric(unlist(lapply(strsplit(text[ind],'.',fixed=TRUE),function(x) x[[2]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("result0.", i, ".csv") 
+  file_name <- paste0("result2_jm4.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -70,9 +70,9 @@ est
 #dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
 #write.csv(dat, "resultall.csv")
 
-B1=rep(0.1,I)
-B2=rep(0.1,I)
-B3=rep(0.1,I)
+B1=rep(-0.2,I)
+B2=rep(0.2,I)
+B3=rep(0.4,I)
 c0=rep(-4.5,I)
 c1=rep(0.1,I)
 c2=rep(0.2,I) 
