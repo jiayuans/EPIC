@@ -76,7 +76,7 @@ tt<-tt-0.25
   
 
   ############Model in the JAGS format#####################
-  ############No CP#####################  
+  ############No CP (Simulate from JM4, Fit JM4)#####################  
   modelrancp <- "
 data { 
   for(i in 1:N){
@@ -131,10 +131,10 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, max=max(tt),
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-4.6, c=c(0.1,0.1), u.tau=1,
+  inits1 <- dump.format(list(c0=-4.6, c=c(0.2,0.1), u.tau=1,
                              b0=-4.5, b=0.25, a=1.8, w.tau=1, ga=0.25,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-4.61, c=c(0.1,0.1)+0.01, u.tau=1,
+  inits2 <- dump.format(list(c0=-4.61, c=c(0.2,0.1)+0.01, u.tau=1,
                              b0=-4.51, b=0.26, a=1.81, w.tau=1, ga=0.26,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
   

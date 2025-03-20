@@ -76,7 +76,7 @@ tt<-tt-0.25
   
 
   ############Model in the JAGS format#####################
-  ############No CP#####################  
+  ############No CP (Simulate from JM2, Fit JM4)#####################  
   modelrancp <- "
 data { 
   for(i in 1:N){

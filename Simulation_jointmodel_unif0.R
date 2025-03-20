@@ -76,7 +76,7 @@ tt<-tt-0.25
   
 
   ############Model in the JAGS format#####################
-  ############Two fixed CP#####################  
+  ############Two fixed CP (Simulate from JM4, Fit JM2)#####################  
   modelrancp <- "
 data { 
   for(i in 1:N){
