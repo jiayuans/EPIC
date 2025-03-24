@@ -1,5 +1,5 @@
 #setwd("C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/Result/Simulation_output")
-setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP2_JM4")
+setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP2_JM4a")
 #setwd("C:/Users/jiayu/OneDrive/Desktop/Fixed_CP_JM2_Final")
 
 ###########################################################################
@@ -62,11 +62,11 @@ est
 #dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
 #write.csv(dat, "resultall.csv")
 
-B1=rep(0.1,I)
-B2=rep(0.1,I)
-B3=rep(0.1,I)
+B1=rep(0.2,I)
+B2=rep(0.2,I)
+B3=rep(0.2,I)
 c0=rep(-4.5,I)
-c1=rep(0.1,I)
+c1=rep(0.2,I)
 c2=rep(0.1,I)
 u.sigma2=rep(1,I)
 alpha=rep(1.8,I)
