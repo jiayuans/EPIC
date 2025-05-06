@@ -65,6 +65,14 @@ Sim.results=cbind(B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c0.mean,c1.mean,c2.m
 est<-round(colMeans(Sim.results),2)
 est
 
+par(mfrow=c(2,2))
+hist(B1.mean)
+hist(cp1.mean)
+hist(cp2.mean)
+round(summary(B1.mean),2)
+round(summary(cp1.mean),1)
+round(summary(cp2.mean),1)
+
 #x10 <- round(colMeans(Sim.results.1),2)
 #x <- round(colMeans(Sim.results),2)
 #dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
