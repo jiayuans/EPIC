@@ -98,7 +98,7 @@ model {
                      sum(log(lambda2[i,1:k.pe[i]])) + v2[i]*exp(b20 + b[2]*X1[i]) * (time.t0[i]^a2 - time.tau[i]^a2),
                      v2[i]*exp(b20 + b[2]*X1[i]) * (time.t0[i]^a2 - time.tau[i]^a2))
         L.e2[i] <- exp(logL.e2[i])
-        L.e[i] <- pi.r[1] * L.e1[i] + pi.r[2] * L.e2[i]
+        L.e[i] <- max(pi.r[1] * L.e1[i] + pi.r[2] * L.e2[i], 1e-300)
         ll.e[i] <- log(L.e[i])
         phi[i] <- -log(L.e[i]) + 1000
         zeros[i] ~ dpois(phi[i])
@@ -114,8 +114,8 @@ model {
   for (p in 1:2){
 	     b[p] ~ dnorm(0,0.0001)		
   }
-  ph1~ dgamma(0.001,0.001)
-	ph2~ dgamma(0.001,0.001)
+  ph1~ dgamma(0.01,0.01)
+	ph2~ dgamma(0.01,0.01)
 }"
 
 
