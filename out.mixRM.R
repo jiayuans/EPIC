@@ -1,12 +1,12 @@
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixLM1")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixRM")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="mixLM.result1.")
+text <- list.files(pattern="mixRM.result.")
 num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("mixLM.result1.", i, ".csv") 
+  file_name <- paste0("mixRM.result.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -67,8 +67,3 @@ table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
-
-#            Flag         B11.mean         B12.mean         cp1.mean         c10.mean         c20.mean          c1.mean          c2.mean         pi1.mean         pi2.mean u10.tau.inv.mean         u10.mean 
-#0.00            -0.05             0.61             9.97            -4.04            -2.46             0.28             0.33             0.43             0.57             0.96             0.00 
-#u20.tau.inv.mean         u20.mean u11.tau.inv.mean         u11.mean u12.tau.inv.mean         u12.mean u21.tau.inv.mean         u21.mean      cp1.mu.mean     cp1.tau.mean 
-#0.93             0.00             1.02             0.00             1.13             0.00             1.04             0.00             9.97             1.09 
