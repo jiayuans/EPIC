@@ -100,7 +100,7 @@ model {
         L.e2[i] <- exp(logL.e2[i])
         L.e[i] <- max(pi.r[1] * L.e1[i] + pi.r[2] * L.e2[i], 1e-300)
         ll.e[i] <- log(L.e[i])
-        phi[i] <- -log(L.e[i]) + 1000
+        phi[i] <- max(-log(L.e[i]) + 1000, 0)
         zeros[i] ~ dpois(phi[i])
   }
   log_lik0.e <- sum(ll.e[]) 
@@ -114,8 +114,8 @@ model {
   for (p in 1:2){
 	     b[p] ~ dnorm(0,0.0001)		
   }
-  ph1~ dgamma(0.01,0.01)
-	ph2~ dgamma(0.01,0.01)
+  ph1~ dunif(0.01, 10)
+	ph2~ dunif(0.01, 10)
 }"
 
 
@@ -128,7 +128,7 @@ inits2 <- dump.format(list(b10=-2.6,b20=0.6,b=c(0.9,2.1), a1=1.1, a2=1.1, ph1=1.
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 #### Run the model and produce plots
 res <- run.jags(model=modelrancp, burnin=10000, sample=3000,  
-                monitor=c("b10","b20","b", "a1","a2","ph1","ph2","pi.r","v1","v2","ll.e","dev.e"), 
+                monitor=c("b10","b20","b", "a1","a2","ph1","ph2","pi.r","v1","v2"), 
                 data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=20)
 
 summary <- summary(res)
