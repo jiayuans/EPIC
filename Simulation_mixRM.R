@@ -132,6 +132,7 @@ res <- run.jags(model=modelrancp, burnin=10000, sample=3000,
                 data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=20)
 
 summary <- summary(res)
+summary
 result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixRM.rec_data.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[4]]))
