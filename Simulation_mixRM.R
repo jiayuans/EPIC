@@ -135,7 +135,7 @@ summary <- summary(res)
 summary
 result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixRM.rec_data.")
-num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[4]]))
+num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixRM.result.",num,".csv"))
 
 res_jm <- res$mcmc

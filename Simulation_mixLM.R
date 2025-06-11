@@ -84,11 +84,11 @@ modelrancp <- "model {
   result_df <- as.data.frame(summary)
   text <- list.files(pattern="mixLM.X_data.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
-  write.csv(result_df, paste0("mixLM.resulta.",num,".csv"))
+  write.csv(result_df, paste0("mixLM.result.",num,".csv"))
   
   res_jm <- res$mcmc
   vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-  pdf(file = paste0("mixLM.traceplota.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("mixLM.traceplot.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)

@@ -2,7 +2,7 @@
 executable        = Simulation_mixLM.R
 arguments = mixLM.X_data.$(Process).csv mixLM.Y_data.$(Process).csv long.data_new.csv
 transfer_input_files = mixLM.X_data.$(Process).csv, mixLM.Y_data.$(Process).csv, long.data_new.csv
-transfer_output_files = mixLM.resulta.$(Process).csv, mixLM.traceplota.$(Process).pdf
+transfer_output_files = mixLM.result.$(Process).csv, mixLM.traceplot.$(Process).pdf
 
 log    = R.log.$(Cluster).$(Process)
 error  = R.err.$(Cluster).$(Process)
