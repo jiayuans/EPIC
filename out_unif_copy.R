@@ -68,21 +68,21 @@ est
 #dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
 #write.csv(dat, "resultall.csv")
 
-B1=rep(-0.2,I)
-B2=rep(0.2,I)
-B3=rep(0.4,I)
-c0=rep(-4.5,I)
-c1=rep(0.1,I)
+B1=rep(0,I) #-0.2
+B2=rep(0.4,I) #0.2
+B3=rep(0.6,I) #0.4
+c0=rep(-4,I) #-4.5
+c1=rep(0.3,I) #0.1
 c2=rep(0.2,I) 
 c3=rep(0.1,I)
 c4=rep(0.1,I)
-cp1=rep(4.5,I)
-cp2=rep(14.5,I)
+cp1=rep(5,I) #4.5
+cp2=rep(15,I) #14.5
 u.sigma2=rep(1,I)
 alpha=rep(1.8,I)
-beta=rep(0.25,I)
-beta0=rep(-4.5,I)
-ga=rep(0.25,I)
+beta=rep(0.2,I) #0.25
+beta0=rep(-4,I) #-4.5
+ga=rep(0.3,I) #0.25
 w.sigma2=rep(1,I)
 
 dat <- as.data.frame(cbind(Sim.results,B1,B2,B3,cp1,cp2,c0,c1,c2,c3,c4,u.sigma2,beta0,beta,alpha,ga,w.sigma2))
