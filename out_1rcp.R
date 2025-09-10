@@ -1,6 +1,6 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_new")
-#setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_run2")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_new1")
+#setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new1")
 
 ###########################################################################
 # Read csv files
@@ -75,7 +75,7 @@ summary(cp2.mean)
 
 B1=rep(0,I)
 B2=rep(0.6,I)
-c0=rep(-3,I) #-3
+c0=rep(-4,I) #-3
 c1=rep(0.3,I)
 c2=rep(0.3,I) 
 c3=rep(-0.05,I) #-0.05

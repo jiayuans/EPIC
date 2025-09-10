@@ -1,4 +1,4 @@
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/2FCP_new")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/2FCP_new1")
 
 ###########################################################################
 # Read csv files
@@ -69,12 +69,12 @@ est
 #write.csv(dat, "resultall.csv")
 
 B1=rep(0,I) #-0.2
-B2=rep(0.4,I) #0.2
+B2=rep(0.3,I) #0.2
 B3=rep(0.6,I) #0.4
 c0=rep(-4,I) #-4.5
 c1=rep(0.3,I) #0.1
-c2=rep(0.2,I) 
-c3=rep(0.1,I)
+c2=rep(0.15,I) 
+c3=rep(0.15,I)
 c4=rep(0.1,I)
 cp1=rep(5,I) #4.5
 cp2=rep(15,I) #14.5
