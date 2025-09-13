@@ -1,6 +1,8 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_new1")
-#setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new1")
+setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new") ##### best estimates in folder 1RCP_new
+load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
+
 
 ###########################################################################
 # Read csv files
@@ -14,6 +16,7 @@ data_frames <- lapply(num, function(i) {
 
 I=length(data_frames)
 
+Flag<-rep(NA,I)
 B1.mean<-rep(NA,I)
 B2.mean<-rep(NA,I)
 cp1.mean<-rep(NA,I)
@@ -34,6 +37,7 @@ v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
 
 for(i in 1:I){ 
+Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.2,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 cp1.mean[i] <-mean(data_frames[[i]][3:402,5])
@@ -54,10 +58,14 @@ v.mean[i] <-mean(data_frames[[i]][816:1215,5])
 w.mean[i] <-mean(data_frames[[i]][1216:1615,5])
 }
 
-Sim.results=cbind(B1.mean,B2.mean,cp1.mean,c0.mean,c1.mean,c2.mean,c3.mean,u.tau.inv.mean,
+Sim.results=cbind(Flag,B1.mean,B2.mean,cp1.mean,c0.mean,c1.mean,c2.mean,c3.mean,u.tau.inv.mean,
                b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,w.tau.inv.mean,u.mean,w.mean)
 est<-round(colMeans(Sim.results),2)
 est
+
+table(Flag)
+Sim.results.1 <- subset(Sim.results,Flag==1)
+round(colMeans(Sim.results.1),2)
 
 par(mfrow=c(2,2))
 hist(B1.mean)
@@ -75,7 +83,7 @@ summary(cp2.mean)
 
 B1=rep(0,I)
 B2=rep(0.6,I)
-c0=rep(-4,I) #-3
+c0=rep(-3,I) #-3
 c1=rep(0.3,I)
 c2=rep(0.3,I) 
 c3=rep(-0.05,I) #-0.05
