@@ -26,9 +26,9 @@ X1c=X1-mean(X1) ## center
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data__1rcpc.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data__1rcpc.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data__1rcpc.")))
+X <- as.matrix(read.csv(list.files(pattern="X_data_1rcpc.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_data_1rcpc.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data_1rcpc.")))
 #############################################################
 
 tt<-tt-0.25
@@ -160,14 +160,14 @@ model {
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data__1rcpc.")
+  text <- list.files(pattern="X_data_1rcpc.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result__1rcpc.",num,".csv"))
-  save(res, file=paste0("res__1rcpc.",num,".RData"))
+  write.csv(result_df, paste0("result_1rcpc.",num,".csv"))
+  save(res, file=paste0("res_1rcpc.",num,".RData"))
   
   res_jm <- res$mcmc
   vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-  pdf(file = paste0("traceplot__1rcpc.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("traceplot_1rcpc.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)
