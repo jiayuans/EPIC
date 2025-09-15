@@ -1,16 +1,16 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0913")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPC_0914")
 setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new") ##### best estimates in folder 1RCP_new
 load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
 
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="result_1rcp.")
+text <- list.files(pattern="result_1rcpc.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("result_1rcp.", i, ".csv") 
+  file_name <- paste0("result_1rcpc.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -37,7 +37,7 @@ v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
 
 for(i in 1:I){ 
-Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.2,1,0)
+Flag[i] <- ifelse(data_frames[[i]][408,12]<1.2,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 cp1.mean[i] <-mean(data_frames[[i]][3:402,5])
@@ -67,14 +67,6 @@ table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 
-par(mfrow=c(2,2))
-hist(B1.mean)
-hist(cp1.mean)
-hist(cp2.mean)
-summary(B1.mean)
-summary(cp1.mean)
-summary(cp2.mean)
-
 
 #x10 <- round(colMeans(Sim.results.1),2)
 #x <- round(colMeans(Sim.results),2)
@@ -87,7 +79,7 @@ c0=rep(-3,I) #-3
 c1=rep(0.3,I)
 c2=rep(0.3,I) 
 c3=rep(-0.05,I) #-0.05
-cp1=rep(15)
+cp1=rep(15,I)
 u.sigma2=rep(1,I)
 alpha=rep(1.8,I)
 beta=rep(0.2,I)
@@ -142,14 +134,11 @@ for(i in 1:I){
 
 B1.high<-rep(NA,I)
 B2.high<-rep(NA,I)
-B3.high<-rep(NA,I)
 cp1.high<-rep(NA,I)
-cp2.high<-rep(NA,I)
 c0.high<-rep(NA,I)
 c1.high<-rep(NA,I)
 c2.high<-rep(NA,I)
 c3.high<-rep(NA,I)
-c4.high<-rep(NA,I)
 
 u.tau.inv.high<-rep(NA,I)
 b0.high<-rep(NA,I)
@@ -180,20 +169,20 @@ for(i in 1:I){
 dat1 <- as.data.frame( cbind(dat,B1.low,B2.low,cp1.low,c0.low,c1.low,c2.low,c3.low,u.tau.inv.low,
                                  b0.low,b1.low,a.low,ga.low,ga1.low,w.tau.inv.low,B1.high,B2.high,cp1.high,c0.high,
                                  c1.high,c2.high,c3.high,u.tau.inv.high,b0.high,b1.high,a.high,ga.high,ga1.high,w.tau.inv.high))
-dat1$B1.cp <- ifelse(dat1$B1>dat1$B1.low & dat1$B1<dat1$B1.high,1,0)
-dat1$B2.cp <- ifelse(dat1$B2>dat1$B2.low & dat1$B2<dat1$B2.high,1,0)
-dat1$cp1.cp <- ifelse(dat1$cp1>dat1$cp1.low & dat1$cp1<dat1$cp1.high,1,0)
-dat1$c0.cp <- ifelse(dat1$c0>dat1$c0.low & dat1$c0<dat1$c0.high,1,0)
-dat1$c1.cp <- ifelse(dat1$c1>dat1$c1.low & dat1$c1<dat1$c1.high,1,0)
-dat1$c2.cp <- ifelse(dat1$c2>dat1$c2.low & dat1$c2<dat1$c2.high,1,0)
-dat1$c3.cp <- ifelse(dat1$c3>dat1$c3.low & dat1$c3<dat1$c3.high,1,0)
-dat1$u.tau.inv.cp <- ifelse(dat1$u.sigma2>dat1$u.tau.inv.low & dat1$u.sigma2<dat1$u.tau.inv.high,1,0)
-dat1$b0.cp <- ifelse(dat1$beta0>dat1$b0.low & dat1$beta0<dat1$b0.high,1,0)
-dat1$b1.cp <- ifelse(dat1$beta>dat1$b1.low & dat1$beta<dat1$b1.high,1,0)
-dat1$a.cp <- ifelse(dat1$alpha>dat1$a.low & dat1$alpha<dat1$a.high,1,0)
-dat1$ga.cp <- ifelse(dat1$ga>dat1$ga.low & dat1$ga<dat1$ga.high,1,0)
-dat1$ga1.cp <- ifelse(dat1$ga1>dat1$ga1.low & dat1$ga1<dat1$ga1.high,1,0)
-dat1$w.tau.inv.cp <- ifelse(dat1$w.sigma2>dat1$w.tau.inv.low & dat1$w.sigma2<dat1$w.tau.inv.high,1,0)
+dat1$B1.cp <- ifelse(dat1$B1>=dat1$B1.low & dat1$B1<=dat1$B1.high,1,0)
+dat1$B2.cp <- ifelse(dat1$B2>=dat1$B2.low & dat1$B2<=dat1$B2.high,1,0)
+dat1$cp1.cp <- ifelse(dat1$cp1>=dat1$cp1.low & dat1$cp1<=dat1$cp1.high,1,0)
+dat1$c0.cp <- ifelse(dat1$c0>=dat1$c0.low & dat1$c0<=dat1$c0.high,1,0)
+dat1$c1.cp <- ifelse(dat1$c1>=dat1$c1.low & dat1$c1<=dat1$c1.high,1,0)
+dat1$c2.cp <- ifelse(dat1$c2>=dat1$c2.low & dat1$c2<=dat1$c2.high,1,0)
+dat1$c3.cp <- ifelse(dat1$c3>=dat1$c3.low & dat1$c3<=dat1$c3.high,1,0)
+dat1$u.tau.inv.cp <- ifelse(dat1$u.sigma2>=dat1$u.tau.inv.low & dat1$u.sigma2<=dat1$u.tau.inv.high,1,0)
+dat1$b0.cp <- ifelse(dat1$beta0>=dat1$b0.low & dat1$beta0<=dat1$b0.high,1,0)
+dat1$b1.cp <- ifelse(dat1$beta>=dat1$b1.low & dat1$beta<=dat1$b1.high,1,0)
+dat1$a.cp <- ifelse(dat1$alpha>=dat1$a.low & dat1$alpha<=dat1$a.high,1,0)
+dat1$ga.cp <- ifelse(dat1$ga>=dat1$ga.low & dat1$ga<=dat1$ga.high,1,0)
+dat1$ga1.cp <- ifelse(dat1$ga1>=dat1$ga1.low & dat1$ga1<=dat1$ga1.high,1,0)
+dat1$w.tau.inv.cp <- ifelse(dat1$w.sigma2>=dat1$w.tau.inv.low & dat1$w.sigma2<=dat1$w.tau.inv.high,1,0)
 
 
 cp <- c(sum(dat1$B1.cp)/I,sum(dat1$B2.cp)/I,sum(dat1$cp1.cp)/I,sum(dat1$c0.cp)/I,

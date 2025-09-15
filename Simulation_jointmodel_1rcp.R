@@ -124,7 +124,7 @@ model {
   B2 <-c[1]+c[2]
   u.tau.inv <- 1/u.tau  ## variance 
   a ~ dgamma(0.01,0.01)
-  b0 ~ dnorm(0,0.0001)	
+  b0 ~ dnorm(-4, 1/0.5^2)  #b0 ~ dnorm(0,0.0001)	
   b ~ dnorm(0,0.0001)
 	ga ~ dnorm(0,0.01)
 	ga1 ~ dnorm(0,0.01)
@@ -165,7 +165,7 @@ model {
   save(res, file=paste0("res_1rcp.",num,".RData"))
   
   res_jm <- res$mcmc
-  vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
+  vars<-mcmc.list(res_jm[[1]][,c(1:2,403:413)],res_jm[[2]][,c(1:2,403:413)])
   pdf(file = paste0("traceplot_1rcp.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
