@@ -32,6 +32,8 @@ a.mean<-rep(NA,I)
 ga.mean<-rep(NA,I)
 ga1.mean<-rep(NA,I)
 w.tau.inv.mean<-rep(NA,I)
+cp1var.mean<-rep(NA,I)
+cp1mu.mean<-rep(NA,I)
 u.mean<-rep(NA,I)
 v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
@@ -53,13 +55,15 @@ a.mean[i] <-data_frames[[i]][410,5]
 ga.mean[i] <-data_frames[[i]][411,5] 
 ga1.mean[i] <-data_frames[[i]][412,5] 
 w.tau.inv.mean[i] <-data_frames[[i]][413,5] 
+cp1mu.mean[i] <-data_frames[[i]][414,5] 
+cp1var.mean[i] <-data_frames[[i]][415,5] 
 u.mean[i] <-mean(data_frames[[i]][416:815,5])
 v.mean[i] <-mean(data_frames[[i]][816:1215,5])
 w.mean[i] <-mean(data_frames[[i]][1216:1615,5])
 }
 
 Sim.results=cbind(Flag,B1.mean,B2.mean,cp1.mean,c0.mean,c1.mean,c2.mean,c3.mean,u.tau.inv.mean,
-               b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,w.tau.inv.mean,u.mean,w.mean)
+               b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,w.tau.inv.mean,cp1mu.mean,cp1var.mean,u.mean,w.mean)
 est<-round(colMeans(Sim.results),2)
 est
 

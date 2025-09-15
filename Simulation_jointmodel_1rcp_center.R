@@ -99,10 +99,11 @@ model {
        }
         u[i] ~ dnorm(0,u.tau)
         cp1[i] ~ dnorm(cp1.mu,cp1.tau)	
+        cp1.c[i] <- cp1[i] - cp1.mu          # centered random CP
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
-        v[i] <- exp(ga*u[i]+w[i]+ga1*cp1[i])
+        v[i] <- exp(ga*u[i]+w[i]+ga1*cp1.c[i])
         L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1c[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1c[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
         phi[i] <- -log(L.e[i]) + 1000
@@ -149,7 +150,7 @@ model {
   res <- run.jags(model=modelrancp, burnin=10000, sample=5000, 
                   monitor=c("B1","B2","cp1","c0","c","u.tau.inv",
                             "b0","b","a","ga","ga1","w.tau.inv", "cp1.mu","cp1.tau.inv","u","v","w",
-                            "u.tau","w.tau","ll.a","ll.e","dev.a","dev.e"), 
+                            "u.tau","w.tau","ll.a","ll.e","dev.a","dev.e","cp1.c"), 
                   data=data, n.chains=2, method = "parallel",inits=c(inits1,inits2), thin=10)
   
   #res <- run.jags(model=modelrancp, burnin=20000, sample=4000/10000/5000, 

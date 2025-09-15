@@ -69,7 +69,7 @@ NHPP<-function(a,b,T){
 poisson.d <- function(alpha,beta,beta0,x,ga0,ga,TTei){
   le <- length(x)
   c_0i <- rnorm(le,0,1) 
-  vi <- exp(ga0*b_0i+c_0i+ga*cp_i)
+  vi <- exp(ga0*b_0i+c_0i+ga*cp_c)
 
   times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
   start <-  times[,1]
@@ -105,6 +105,7 @@ for (r in 2:I){
   X1c=X1-mean(X1) ## center
   ##X1=sample(c(1,0),N, replace = TRUE)
   cp_i<-rnorm(N,cp.true,1) 
+  cp_c <- cp_i - mean(cp_i) 
   
   I<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
   p2<-matrix(NA, nrow=N, ncol=kk, byrow=TRUE)
