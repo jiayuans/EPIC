@@ -167,7 +167,7 @@ model {
   save(res, file=paste0("res_1rcpc.",num,".RData"))
   
   res_jm <- res$mcmc
-  vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
+  vars<-mcmc.list(res_jm[[1]][,c(1:2,403:413)],res_jm[[2]][,c(1:2,403:413)])
   pdf(file = paste0("traceplot_1rcpc.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
