@@ -124,7 +124,7 @@ model {
   B2 <-c[1]+c[2]
   u.tau.inv <- 1/u.tau  ## variance 
   a ~ dgamma(0.01,0.01)
-  b0 ~ dnorm(-4, 1/0.5^2)  #b0 ~ dnorm(0,0.0001)	
+  b0 ~ dnorm(-4, 0.01)  #b0 ~ dnorm(0,0.0001) not working, but dnorm(-4, 1/0.5^2) this works 	
   b ~ dnorm(0,0.0001)
 	ga ~ dnorm(0,0.01)
 	ga1 ~ dnorm(0,0.01)

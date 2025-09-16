@@ -20,7 +20,6 @@ tt<-round(last.tt)
 k.pa<-(tt-t)*4
 
 X1=c(rep(1,N/2),rep(0,N/2))
-X1c=X1-mean(X1) ## center
 ##X1=sample(c(1,0),N, replace = TRUE)
 
 set.seed(123)
@@ -95,7 +94,7 @@ model {
   ### PE model
        ## Weibull baseline
         lambda0[i,j] <- a*(Ti[i,j])^(a-1)
-        lambda[i,j] <- lambda0[i,j]*v[i]*exp(b0+b*X1c[i])
+        lambda[i,j] <- lambda0[i,j]*v[i]*exp(b0+b*X1[i])
        }
         u[i] ~ dnorm(0,u.tau)
         cp1[i] ~ dnorm(cp1.mu,cp1.tau)	
@@ -103,8 +102,9 @@ model {
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
-        v[i] <- exp(ga*u[i]+w[i]+ga1*cp1.c[i])
-        L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1c[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1c[i])*(time.t0[i]^a-time.tau[i]^a)))
+        logv.offset <- -0.5 * ( pow(ga,2)*u.tau.inv + w.tau.inv + pow(ga1,2)*cp1.tau.inv )
+        v[i] <- exp(ga*u[i]+w[i]+ga1*cp1.c[i] + logv.offset)
+        L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
         phi[i] <- -log(L.e[i]) + 1000
         zeros[i] ~ dpois(phi[i])
@@ -137,7 +137,7 @@ model {
   
   ####Observed DATA
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa,
-                           X1=X1, X1c=X1c, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
+                           X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
   inits1 <- dump.format(list(c0=-3, c=c(0.3,0.3,-0.05), u.tau=1, cp1.mu=15, cp1.tau=1, 
                              b0=-4, b=0.2, a=1.8, w.tau=1, ga=0.3, ga1=-0.05,
