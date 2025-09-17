@@ -1,5 +1,5 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPC_0915")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPC_0916")
 setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new") ##### best estimates in folder 1RCP_new
 load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
 
@@ -73,13 +73,14 @@ round(colMeans(Sim.results.1),2)
 #dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
 #write.csv(dat, "resultall.csv")
 
+
 B1=rep(0,I)
 B2=rep(0.6,I)
 c0=rep(-3,I) #-3
 c1=rep(0.3,I)
 c2=rep(0.3,I) 
 c3=rep(-0.05,I) #-0.05
-cp1=rep(15,I)
+cp1=rep(15)
 u.sigma2=rep(1,I)
 alpha=rep(1.8,I)
 beta=rep(0.2,I)
@@ -167,8 +168,8 @@ for(i in 1:I){
 }
 
 dat1 <- as.data.frame( cbind(dat,B1.low,B2.low,cp1.low,c0.low,c1.low,c2.low,c3.low,u.tau.inv.low,
-                                 b0.low,b1.low,a.low,ga.low,ga1.low,w.tau.inv.low,B1.high,B2.high,cp1.high,c0.high,
-                                 c1.high,c2.high,c3.high,u.tau.inv.high,b0.high,b1.high,a.high,ga.high,ga1.high,w.tau.inv.high))
+                             b0.low,b1.low,a.low,ga.low,ga1.low,w.tau.inv.low,B1.high,B2.high,cp1.high,c0.high,
+                             c1.high,c2.high,c3.high,u.tau.inv.high,b0.high,b1.high,a.high,ga.high,ga1.high,w.tau.inv.high))
 dat1$B1.cp <- ifelse(dat1$B1>=dat1$B1.low & dat1$B1<=dat1$B1.high,1,0)
 dat1$B2.cp <- ifelse(dat1$B2>=dat1$B2.low & dat1$B2<=dat1$B2.high,1,0)
 dat1$cp1.cp <- ifelse(dat1$cp1>=dat1$cp1.low & dat1$cp1<=dat1$cp1.high,1,0)
