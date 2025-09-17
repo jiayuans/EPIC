@@ -102,7 +102,6 @@ model {
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
-        logv.offset <- -0.5 * ( pow(ga,2)*u.tau.inv + w.tau.inv + pow(ga1,2)*cp1.tau.inv )
         v[i] <- exp(ga*u[i]+w[i]+ga1*cp1.c[i] + logv.offset)
         L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
@@ -132,6 +131,7 @@ model {
 	ga1 ~ dnorm(0,0.01)
 	w.tau ~ dgamma(0.01,0.01)
 	w.tau.inv <- 1/w.tau  ## variance 
+	logv.offset <- -0.5 * ( pow(ga,2)*u.tau.inv + w.tau.inv + pow(ga1,2)*cp1.tau.inv )
 }"
 
   
