@@ -103,9 +103,14 @@ model {
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
         v[i] <- exp(ga*u[i]+w[i]+ga1*cp1.c[i] + logv.offset)
-        L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
-        ll.e[i] <- log(L.e[i])
-        phi[i] <- -log(L.e[i]) + 1000
+        #L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
+        #ll.e[i] <- log(L.e[i])
+        #phi[i] <- -log(L.e[i]) + 1000
+       
+        H[i] <- v[i] * exp(b0 + b*X1[i]) * ( pow(time.tau[i], a) - pow(time.t0[i], a) )
+        ll_e_events[i] <- ifelse(Ti[i,1] != 0, sum(log(lambda[i,1:k.pe[i]])), 0)
+        ll.e[i] <- ll_e_events[i] - H[i]
+        phi[i]   <- -ll.e[i] + 1000
         zeros[i] ~ dpois(phi[i])
   }
   log_lik0.a <- sum(ll.a[]) 

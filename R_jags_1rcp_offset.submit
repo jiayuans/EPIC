@@ -1,0 +1,17 @@
++SingularityImage = "osdf:///ospool/ap40/data/jiayuan.shi/libr.sif"
+executable        = Simulation_jointmodel_1rcp_center.R
+arguments = X_data_1rcpo.$(Process).csv Y_data_1rcpo.$(Process).csv sim.pe_data_1rcpo.$(Process).csv long.data_new.csv
+transfer_input_files = X_data_1rcpo.$(Process).csv, Y_data_1rcpo.$(Process).csv, sim.pe_data_1rcpo.$(Process).csv, long.data_new.csv
+transfer_output_files = result_1rcpo.$(Process).csv, res_1rcpo.$(Process).RData, traceplot_1rcpo.$(Process).pdf
+
+log    = R.log.$(Cluster).$(Process)
+error  = R.err.$(Cluster).$(Process)
+output = R.out.$(Cluster).$(Process)
+
++JobDurationCategory = "Long"
+
+request_cpus   = 4
+request_memory = 12GB
+request_disk   = 12GB
+
+queue 200
