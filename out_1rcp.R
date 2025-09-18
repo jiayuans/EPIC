@@ -1,6 +1,6 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0916")
-setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new") ##### best estimates in folder 1RCP_new
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0917")
+setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0915") ##### best estimates in folder 1RCP_new
 load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
 
 
@@ -15,6 +15,7 @@ data_frames <- lapply(num, function(i) {
 })
 
 I=length(data_frames)
+I
 
 Flag<-rep(NA,I)
 B1.mean<-rep(NA,I)
@@ -39,7 +40,7 @@ v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
 
 for(i in 1:I){ 
-Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.2,1,0)
+Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.3,1,0)
 B1.mean[i] <- data_frames[[i]][1,5] 
 B2.mean[i] <- data_frames[[i]][2,5] 
 cp1.mean[i] <-mean(data_frames[[i]][3:402,5])
