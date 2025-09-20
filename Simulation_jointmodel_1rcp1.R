@@ -102,9 +102,14 @@ model {
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
         v[i] <- exp(ga*u[i]+w[i]+ga1*cp1[i])
-        L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
-        ll.e[i] <- log(L.e[i])
-        phi[i] <- -log(L.e[i]) + 1000
+        #L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
+        #ll.e[i] <- log(L.e[i])
+        #phi[i] <- -log(L.e[i]) + 1000
+        
+        H[i] <- v[i] * exp(b0 + b*X1[i]) * ( pow(time.tau[i], a) - pow(time.t0[i], a) )
+        ll_e_events[i] <- ifelse(Ti[i,1] != 0, sum(log(lambda[i,1:k.pe[i]])), 0)
+        ll.e[i] <- ll_e_events[i] - H[i]
+        phi[i]   <- -ll.e[i] + 1000
         zeros[i] ~ dpois(phi[i])
   }
   log_lik0.a <- sum(ll.a[]) 
@@ -161,12 +166,12 @@ model {
   result_df <- as.data.frame(summary)
   text <- list.files(pattern="X_data_1rcp.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result_1rcp.",num,".csv"))
-  save(res, file=paste0("res_1rcp.",num,".RData"))
+  write.csv(result_df, paste0("result_1rcp1.",num,".csv"))
+  save(res, file=paste0("res_1rcp1.",num,".RData"))
   
   res_jm <- res$mcmc
   vars<-mcmc.list(res_jm[[1]][,c(1:2,403:413)],res_jm[[2]][,c(1:2,403:413)])
-  pdf(file = paste0("traceplot_1rcp.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("traceplot_1rcp1.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)
