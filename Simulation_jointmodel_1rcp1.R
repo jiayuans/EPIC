@@ -102,14 +102,9 @@ model {
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
         v[i] <- exp(ga*u[i]+w[i]+ga1*cp1[i])
-        #L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
-        #ll.e[i] <- log(L.e[i])
-        #phi[i] <- -log(L.e[i]) + 1000
-        
-        H[i] <- v[i] * exp(b0 + b*X1[i]) * ( pow(time.tau[i], a) - pow(time.t0[i], a) )
-        ll_e_events[i] <- ifelse(Ti[i,1] != 0, sum(log(lambda[i,1:k.pe[i]])), 0)
-        ll.e[i] <- ll_e_events[i] - H[i]
-        phi[i]   <- -ll.e[i] + 1000
+        L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
+        ll.e[i] <- log(L.e[i])
+        phi[i] <- -ll.e[i] + 1000
         zeros[i] ~ dpois(phi[i])
   }
   log_lik0.a <- sum(ll.a[]) 
@@ -129,7 +124,7 @@ model {
   B2 <-c[1]+c[2]
   u.tau.inv <- 1/u.tau  ## variance 
   a ~ dgamma(0.01,0.01)
-  b0 ~ dnorm(-2, 0.1)  #b0 ~ dnorm(0,0.0001), dnorm(-4,0.01) not working, but dnorm(-4, 1/0.5^2) this works 	
+  b0 ~ dnorm(-2, 0.05)  # b0 ~ dnorm(-2, 0.1) 
   b ~ dnorm(0,0.0001)
 	ga ~ dnorm(0,0.01)
 	ga1 ~ dnorm(0,0.01)
@@ -150,11 +145,11 @@ model {
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=10000, sample=5000, 
+  res <- run.jags(model=modelrancp, burnin=1000, sample=3000, 
                   monitor=c("B1","B2","cp1","c0","c","u.tau.inv",
                             "b0","b","a","ga","ga1","w.tau.inv", "cp1.mu","cp1.tau.inv","u","v","w",
                             "u.tau","w.tau","ll.a","ll.e","dev.a","dev.e"), 
-                  data=data, n.chains=2, method = "parallel",inits=c(inits1,inits2), thin=10)
+                  data=data, n.chains=2, method = "parallel",inits=c(inits1,inits2), thin=4)
   
   #res <- run.jags(model=modelrancp, burnin=20000, sample=4000/10000/5000, 
   #               monitor=c("B1","B2","cp1","c0","c","u.tau.inv",

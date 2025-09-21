@@ -1,16 +1,17 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0918")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0920")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP1_0920")
 setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0915") ##### best estimates in folder 1RCP_new
 load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
 
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="result_1rcp.")
+text <- list.files(pattern="result_1rcp1.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("result_1rcp.", i, ".csv") 
+  file_name <- paste0("result_1rcp1.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -72,14 +73,6 @@ table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 
-par(mfrow=c(2,2))
-hist(B1.mean)
-hist(cp1.mean)
-hist(cp2.mean)
-summary(B1.mean)
-summary(cp1.mean)
-summary(cp2.mean)
-
 
 #x10 <- round(colMeans(Sim.results.1),2)
 #x <- round(colMeans(Sim.results),2)
@@ -96,7 +89,7 @@ cp1=rep(15)
 u.sigma2=rep(1,I)
 alpha=rep(1.8,I)
 beta=rep(0.2,I)
-beta0=rep(-4,I)
+beta0=rep(-2,I)
 ga=rep(0.3,I)
 ga1=rep(-0.05,I) #-0.05
 w.sigma2=rep(1,I)
