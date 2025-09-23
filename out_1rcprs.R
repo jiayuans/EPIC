@@ -1,6 +1,6 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0920")
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP1_0920")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPRS_0920")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP1RS_0920")
 setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0915") ##### best estimates in folder 1RCP_new
 load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
 
