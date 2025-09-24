@@ -145,7 +145,7 @@ model {
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=1000, sample=5000, 
+  res <- run.jags(model=modelrancp, burnin=1000, sample=2000, 
                   monitor=c("B1","B2","cp1","c0","c","u.tau.inv",
                             "b0","b","a","ga","ga1","w.tau.inv", "cp1.mu","cp1.tau.inv","u","v","w",
                             "u.tau","w.tau","ll.a","ll.e","dev.a","dev.e"), 
