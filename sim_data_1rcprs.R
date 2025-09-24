@@ -27,11 +27,11 @@ I=201
 
 ###############set true values#########################################
 c0=-3
-c1=0.3
-c2=0.3
+c1=0.09
+c2=0.01
 c3=-0.05
 Verror=1
-cp.true=15
+cp.true=8
 
 #############################################################
 set.seed(123)
@@ -100,9 +100,9 @@ poisson.d <- function(alpha,beta,beta0,x,ga0,ga1,ga2,ga,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,1) #1.6
-  b_1i<-rnorm(N,0,0.08)
-  b_2i<-rnorm(N,0,0.03)
+  b_0i<-rnorm(N,0,0.5) 
+  b_1i<-rnorm(N,0,0.3)
+  b_2i<-rnorm(N,0,0.2)
   X1=c(rep(1,N/2),rep(0,N/2))
   ##X1=sample(c(1,0),N, replace = TRUE)
   cp_i<-rnorm(N,cp.true,1) 
@@ -123,7 +123,7 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.3,ga1=-0.6,ga2=6,ga=-0.05,TTei=tt-0.25)
+  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.1,ga1=-0.5,ga2=2,ga=-0.05,TTei=tt-0.25)
   
   X_df <- as.data.frame(X)
   filename <- paste0("X_data_1rcprs.", r-2, ".csv")
