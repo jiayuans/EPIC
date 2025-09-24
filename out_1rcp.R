@@ -7,11 +7,11 @@ load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/re
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="result_1rcp1.")
+text <- list.files(pattern="result_1rcp.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("result_1rcp1.", i, ".csv") 
+  file_name <- paste0("result_1rcp.", i, ".csv") 
   read.csv(file_name)
 })
 

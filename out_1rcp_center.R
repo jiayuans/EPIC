@@ -1,7 +1,7 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPC_0917")
-setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCPC_0915") ##### best estimates in folder 1RCP_new
-load("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPC_0917/res_1rcpc.125.RData")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPC_0924")
+setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0915") ##### best estimates in folder 1RCP_new
+load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
 
 
 ###########################################################################
@@ -33,34 +33,38 @@ a.mean<-rep(NA,I)
 ga.mean<-rep(NA,I)
 ga1.mean<-rep(NA,I)
 w.tau.inv.mean<-rep(NA,I)
+cp1var.mean<-rep(NA,I)
+cp1mu.mean<-rep(NA,I)
 u.mean<-rep(NA,I)
 v.mean<-rep(NA,I)
 w.mean<-rep(NA,I)
 
 for(i in 1:I){ 
-Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.3,1,0)
-B1.mean[i] <- data_frames[[i]][1,5] 
-B2.mean[i] <- data_frames[[i]][2,5] 
-cp1.mean[i] <-mean(data_frames[[i]][3:402,5])
-c0.mean[i] <-data_frames[[i]][403,5] 
-c1.mean[i] <-data_frames[[i]][404,5] 
-c2.mean[i] <-data_frames[[i]][405,5] 
-c3.mean[i] <-data_frames[[i]][406,5]
-
-u.tau.inv.mean[i] <-data_frames[[i]][407,5] 
-b0.mean[i] <-data_frames[[i]][408,5] 
-b1.mean[i] <-data_frames[[i]][409,5] 
-a.mean[i] <-data_frames[[i]][410,5] 
-ga.mean[i] <-data_frames[[i]][411,5] 
-ga1.mean[i] <-data_frames[[i]][412,5] 
-w.tau.inv.mean[i] <-data_frames[[i]][413,5] 
-u.mean[i] <-mean(data_frames[[i]][416:815,5])
-v.mean[i] <-mean(data_frames[[i]][816:1215,5])
-w.mean[i] <-mean(data_frames[[i]][1216:1615,5])
+  Flag[i] <- ifelse(max(data_frames[[i]][,12])<1.3,1,0)
+  B1.mean[i] <- data_frames[[i]][1,5] 
+  B2.mean[i] <- data_frames[[i]][2,5] 
+  cp1.mean[i] <-mean(data_frames[[i]][3:402,5])
+  c0.mean[i] <-data_frames[[i]][403,5] 
+  c1.mean[i] <-data_frames[[i]][404,5] 
+  c2.mean[i] <-data_frames[[i]][405,5] 
+  c3.mean[i] <-data_frames[[i]][406,5]
+  
+  u.tau.inv.mean[i] <-data_frames[[i]][407,5] 
+  b0.mean[i] <-data_frames[[i]][408,5] 
+  b1.mean[i] <-data_frames[[i]][409,5] 
+  a.mean[i] <-data_frames[[i]][410,5] 
+  ga.mean[i] <-data_frames[[i]][411,5] 
+  ga1.mean[i] <-data_frames[[i]][412,5] 
+  w.tau.inv.mean[i] <-data_frames[[i]][413,5] 
+  cp1mu.mean[i] <-data_frames[[i]][414,5] 
+  cp1var.mean[i] <-data_frames[[i]][415,5] 
+  u.mean[i] <-mean(data_frames[[i]][416:815,5])
+  v.mean[i] <-mean(data_frames[[i]][816:1215,5])
+  w.mean[i] <-mean(data_frames[[i]][1216:1615,5])
 }
 
 Sim.results=cbind(Flag,B1.mean,B2.mean,cp1.mean,c0.mean,c1.mean,c2.mean,c3.mean,u.tau.inv.mean,
-               b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,w.tau.inv.mean,u.mean,w.mean)
+                  b0.mean,b1.mean,a.mean,ga.mean,ga1.mean,w.tau.inv.mean,cp1mu.mean,cp1var.mean,u.mean,w.mean)
 est<-round(colMeans(Sim.results),2)
 est
 
@@ -74,7 +78,6 @@ round(colMeans(Sim.results.1),2)
 #dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
 #write.csv(dat, "resultall.csv")
 
-
 B1=rep(0,I)
 B2=rep(0.6,I)
 c0=rep(-3,I) #-3
@@ -85,7 +88,7 @@ cp1=rep(15)
 u.sigma2=rep(1,I)
 alpha=rep(1.8,I)
 beta=rep(0.2,I)
-beta0=rep(-4,I)
+beta0=rep(-2,I)
 ga=rep(0.3,I)
 ga1=rep(-0.05,I) #-0.05
 w.sigma2=rep(1,I)
