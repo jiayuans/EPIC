@@ -132,6 +132,7 @@ model {
   a ~ dgamma(0.01,0.01)
   b0 ~ dnorm(-2, 0.02)  
   b ~ dnorm(0,0.0001)
+	ga0 ~ dnorm(0,0.01)
 	ga ~ dnorm(0,0.01)
 	ga1 ~ dnorm(0,0.01)
 	ga2 ~ dnorm(0,0.01)
