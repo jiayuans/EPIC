@@ -1,5 +1,5 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPRS_0923pm")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPRS_0924")
 setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0915") ##### best estimates in folder 1RCP_new
 load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
 
@@ -90,23 +90,23 @@ round(colMeans(Sim.results.1),2)
 #dat <- cbind(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x)
 #write.csv(dat, "resultall.csv")
 
-B1=rep(0,I)
-B2=rep(0.6,I)
+B1=rep(0.08,I)
+B2=rep(0.1,I)
 c0=rep(-3,I) #-3
-c1=rep(0.3,I)
-c2=rep(0.3,I) 
+c1=rep(0.09,I)
+c2=rep(0.01,I) 
 c3=rep(-0.05,I) #-0.05
-cp1=rep(15)
-u.sigma2=rep(1,I)
-u1.sigma2=rep(0.0064,I)
-u2.sigma2=rep(0.0009,I)
+cp1=rep(8,I)
+u.sigma2=rep(0.25,I)
+u1.sigma2=rep(0.09,I)
+u2.sigma2=rep(0.04,I)
 alpha=rep(1.8,I)
 beta=rep(0.2,I)
 beta0=rep(-2,I)
-ga0=rep(0.3,I)
+ga0=rep(0.1,I)
 ga=rep(-0.05,I)
-ga1=rep(-0.6,I) 
-ga2=rep(6,I) 
+ga1=rep(-0.5,I) 
+ga2=rep(2,I) 
 w.sigma2=rep(1,I)
 
 dat <- as.data.frame(cbind(Sim.results,B1,B2,cp1,c0,c1,c2,c3,u.sigma2,u1.sigma2,u2.sigma2,beta0,beta,alpha,ga0,ga,ga1,ga2,w.sigma2))
