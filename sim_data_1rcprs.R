@@ -123,7 +123,7 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.1,ga1=-0.5,ga2=2,ga=-0.05,TTei=tt-0.25)
+  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.1,ga1=-0.6,ga2=3,ga=-0.05,TTei=tt-0.25)
   
   X_df <- as.data.frame(X)
   filename <- paste0("X_data_1rcprs.", r-2, ".csv")
