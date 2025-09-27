@@ -68,7 +68,7 @@ NHPP<-function(a,b,T){
 # -------------- Building the simulated poisson data -----
 poisson.d <- function(alpha,beta,beta0,x,ga0,ga1,ga2,ga,TTei){
   le <- length(x)
-  c_0i <- rnorm(le,0,0.02) 
+  c_0i <- rnorm(le,0,0.2) 
   vi <- exp(ga0*b_0i+c_0i+ga*cp_i+ga1*b_1i+ga2*b_2i)
 
   times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
@@ -121,7 +121,7 @@ for (r in 2:I){
       p2[i,j]=exp(c0+(c1+b_1i[i])*(X[i,j]-cp_i[i])+(c2+b_2i[i])*(X[i,j]-cp_i[i])*I[i,j]+c3*X1[i]+b_0i[i])/(1+exp(c0+(c1+b_1i[i])*(X[i,j]-cp_i[i])+(c2+b_2i[i])*(X[i,j]-cp_i[i])*I[i,j]+c3*X1[i]+b_0i[i]))
       Y[i,j]=rbinom(Verror, 1, p2[i,j])
     }
-  }
+  } 
   
   simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.1,ga1=-0.1,ga2=1,ga=-0.05,TTei=tt-0.25)
   

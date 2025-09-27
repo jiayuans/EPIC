@@ -134,8 +134,8 @@ model {
   b ~ dnorm(0,0.0001)
 	ga0 ~ dnorm(0.1,0.03)
 	ga ~ dnorm(0,0.01)
-	ga1 ~ dnorm(-0.6,0.03)
-	ga2 ~ dnorm(3,0.03)
+	ga1 ~ dnorm(-0.1,0.03)
+	ga2 ~ dnorm(1,0.03)
 	w.tau ~ dgamma(0.01,0.01)
 	w.tau.inv <- 1/w.tau  ## variance 
 }"
@@ -145,11 +145,11 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa,
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-3, c=c(0.09,0.01,-0.05), u.tau=0.25, u.tau1=0.09, u.tau2=0.04, cp1.mu=8, cp1.tau=1, 
-                             b0=-2, b=0.2, a=1.8, w.tau=1, ga0=0.1, ga=-0.05, ga1=-0.6, ga2=3,
+  inits1 <- dump.format(list(c0=-3, c=c(0.09,0.01,-0.05), u.tau=0.04, u.tau1=0.04, u.tau2=0.04, cp1.mu=8, cp1.tau=1, 
+                             b0=-2, b=0.2, a=1.8, w.tau=0.04, ga0=0.1, ga=-0.05, ga1=-0.1, ga2=1,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-3.1, c=c(0.09,0.01,-0.05)+0.01, u.tau=0.25, u.tau1=0.09, u.tau2=0.04, cp1.mu=8.1, cp1.tau=1, 
-                             b0=-2.1, b=0.21, a=1.8, w.tau=1, ga0=0.11, ga=-0.04,ga1=-0.59, ga2=3.1,
+  inits2 <- dump.format(list(c0=-3.1, c=c(0.09,0.01,-0.05)+0.01, u.tau=0.04, u.tau1=0.04, u.tau2=0.04, cp1.mu=8.1, cp1.tau=1, 
+                             b0=-2.1, b=0.21, a=1.8, w.tau=0.04, ga0=0.11, ga=-0.04,ga1=-0.09, ga2=1.1,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
