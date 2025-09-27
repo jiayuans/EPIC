@@ -153,11 +153,11 @@ model {
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=3000, sample=5000, 
+  res <- run.jags(model=modelrancp, burnin=5000, sample=5000, 
                   monitor=c("B1","B2","cp1","c0","c","u.tau.inv","u.tau1.inv","u.tau2.inv",
                             "b0","b","a","ga0","ga","ga1","ga2","w.tau.inv", "cp1.mu","cp1.tau.inv","u","u1","u2","v","w",
                             "u.tau","u.tau1","u.tau2","w.tau","ll.a","ll.e","dev.a","dev.e"), 
-                  data=data, n.chains=2, method = "parallel",inits=c(inits1,inits2), thin=10)
+                  data=data, n.chains=2, method = "parallel",inits=c(inits1,inits2), thin=12)
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)

@@ -1,5 +1,5 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPRS_0925")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPRS_0926")
 setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0915") ##### best estimates in folder 1RCP_new
 load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
 
@@ -105,8 +105,8 @@ beta=rep(0.2,I)
 beta0=rep(-2,I)
 ga0=rep(0.1,I)
 ga=rep(-0.05,I)
-ga1=rep(-0.5,I) 
-ga2=rep(2,I) 
+ga1=rep(-0.6,I) 
+ga2=rep(3,I) 
 w.sigma2=rep(1,I)
 
 dat <- as.data.frame(cbind(Sim.results,B1,B2,cp1,c0,c1,c2,c3,u.sigma2,u1.sigma2,u2.sigma2,beta0,beta,alpha,ga0,ga,ga1,ga2,w.sigma2))
