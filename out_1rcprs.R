@@ -97,17 +97,18 @@ c1=rep(0.09,I)
 c2=rep(0.01,I) 
 c3=rep(-0.05,I) #-0.05
 cp1=rep(8,I)
-u.sigma2=rep(0.25,I)
-u1.sigma2=rep(0.09,I)
+u.sigma2=rep(0.04,I)
+u1.sigma2=rep(0.04,I)
 u2.sigma2=rep(0.04,I)
 alpha=rep(1.8,I)
 beta=rep(0.2,I)
 beta0=rep(-2,I)
 ga0=rep(0.1,I)
 ga=rep(-0.05,I)
-ga1=rep(-0.6,I) 
-ga2=rep(3,I) 
-w.sigma2=rep(1,I)
+ga1=rep(-0.1,I) 
+ga2=rep(1,I) 
+w.sigma2=rep(0.04,I)
+
 
 dat <- as.data.frame(cbind(Sim.results,B1,B2,cp1,c0,c1,c2,c3,u.sigma2,u1.sigma2,u2.sigma2,beta0,beta,alpha,ga0,ga,ga1,ga2,w.sigma2))
 bias <- c(sum(dat$B1.mean-dat$B1)/I,sum(dat$B2.mean-dat$B2)/I,sum(dat$cp1.mean-dat$cp1)/I,sum(dat$c0.mean-dat$c0)/I,
