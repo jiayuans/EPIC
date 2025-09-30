@@ -1,7 +1,7 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPRS_0928")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPRS_0929")
 setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0915") ##### best estimates in folder 1RCP_new
-load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
+load("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCPRS_0928/res_1rcprs.1.RData")
 
 
 ###########################################################################
@@ -97,7 +97,7 @@ c1=rep(0.09,I)
 c2=rep(0.01,I) 
 c3=rep(-0.05,I) #-0.05
 cp1=rep(8,I)
-u.sigma2=rep(0.25,I)
+u.sigma2=rep(0.16,I)
 u1.sigma2=rep(0.04,I)
 u2.sigma2=rep(0.04,I)
 alpha=rep(1.8,I)
