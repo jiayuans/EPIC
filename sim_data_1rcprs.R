@@ -100,7 +100,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga0,ga1,ga2,ga,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,0.5) 
+  b_0i<-rnorm(N,0,0.4) 
   b_1i<-rnorm(N,0,0.2)
   b_2i<-rnorm(N,0,0.2)
   X1=c(rep(1,N/2),rep(0,N/2))
