@@ -137,19 +137,19 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa,
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-3, c=c(0.3,0.3,-0.05), u.tau=1, cp1.mu=15, cp1.tau=1, 
-                             b0=-2, b=0.2, a=1.8, w.tau=1, ga=0.3, ga1=-0.05,
+  inits1 <- dump.format(list(c0=-3, c=c(0.3,0.3,-0.05), u.tau=0.25, cp1.mu=15, cp1.tau=1, 
+                             b0=-2, b=0.2, a=1.8, w.tau=0.04, ga=0.3, ga1=-0.05,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-3.1, c=c(0.3,0.3,-0.05)+0.01, u.tau=1, cp1.mu=15.1, cp1.tau=1, 
-                             b0=-2.1, b=0.21, a=1.8, w.tau=1, ga=0.31, ga1=-0.04,
+  inits2 <- dump.format(list(c0=-3.1, c=c(0.3,0.3,-0.05)+0.01, u.tau=0.25, cp1.mu=15.1, cp1.tau=1, 
+                             b0=-2.1, b=0.21, a=1.8, w.tau=0.04, ga=0.31, ga1=-0.04,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=1000, sample=3000, 
+  res <- run.jags(model=modelrancp, burnin=10000, sample=5000, 
                   monitor=c("B1","B2","cp1","c0","c","u.tau.inv",
                             "b0","b","a","ga","ga1","w.tau.inv", "cp1.mu","cp1.tau.inv","u","v","w",
                             "u.tau","w.tau","ll.a","ll.e","dev.a","dev.e"), 
-                  data=data, n.chains=2, method = "parallel",inits=c(inits1,inits2), thin=4)
+                  data=data, n.chains=2, method = "parallel",inits=c(inits1,inits2), thin=14)
   
   #res <- run.jags(model=modelrancp, burnin=20000, sample=4000/10000/5000, 
   #               monitor=c("B1","B2","cp1","c0","c","u.tau.inv",
