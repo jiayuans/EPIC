@@ -31,7 +31,7 @@ c1=0.3
 c2=0.3
 c3=-0.05
 Verror=1
-cp.true=15
+cp.true=17
 
 #############################################################
 set.seed(123)
@@ -68,7 +68,7 @@ NHPP<-function(a,b,T){
 # -------------- Building the simulated poisson data -----
 poisson.d <- function(alpha,beta,beta0,x,ga0,ga,TTei){
   le <- length(x)
-  c_0i <- rnorm(le,0,0.2) 
+  c_0i <- rnorm(le,0,1) 
   vi <- exp(ga0*b_0i+c_0i+ga*cp_i)
 
   times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
@@ -100,7 +100,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga0,ga,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,0.5) #1.6
+  b_0i<-rnorm(N,0,1) #1.6
   X1=c(rep(1,N/2),rep(0,N/2))
   ##X1=sample(c(1,0),N, replace = TRUE)
   cp_i<-rnorm(N,cp.true,1) 

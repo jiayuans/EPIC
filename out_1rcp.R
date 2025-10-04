@@ -2,7 +2,7 @@
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0925")
 #setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP1_0923")
 #setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0920") ##### best estimates in folder 1RCP_new
-load("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_new/res_1rcp.1.RData")
+load("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0925/res_1rcp.1.RData")
 
 
 ###########################################################################
@@ -93,6 +93,10 @@ beta0=rep(-2,I)
 ga=rep(0.3,I)
 ga1=rep(-0.05,I) #-0.05
 w.sigma2=rep(1,I)
+true <- c(B1[1],B2[1],cp1[1],c0[1],c1[1],c2[1],c3[1],
+          u.sigma2[1],
+          beta0[1],beta[1],alpha[1],
+          ga0[1],ga[1],w.sigma2[1])
 
 dat <- as.data.frame(cbind(Sim.results,B1,B2,cp1,c0,c1,c2,c3,u.sigma2,beta0,beta,alpha,ga,ga1,w.sigma2))
 bias <- c(sum(dat$B1.mean-dat$B1)/I,sum(dat$B2.mean-dat$B2)/I,sum(dat$cp1.mean-dat$cp1)/I,sum(dat$c0.mean-dat$c0)/I,
@@ -195,4 +199,6 @@ cp <- c(sum(dat1$B1.cp)/I,sum(dat1$B2.cp)/I,sum(dat1$cp1.cp)/I,sum(dat1$c0.cp)/I
         sum(dat1$c1.cp)/I,sum(dat1$c2.cp)/I,sum(dat1$c3.cp)/I,sum(dat1$u.tau.inv.cp)/I,
         sum(dat1$b0.cp)/I,sum(dat1$b1.cp)/I,sum(dat1$a.cp)/I,sum(dat1$ga.cp)/I,sum(dat1$ga1.cp)/I,sum(dat1$w.tau.inv.cp)/I)
 
-cbind(round(bias,3),round(mse,3),round(cp,2))
+
+cbind(true, as.numeric(c(est[2:15])), round(bias,3),round(mse,3),round(cp,2))
+
