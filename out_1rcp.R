@@ -86,7 +86,7 @@ c0=rep(-3,I) #-3
 c1=rep(0.3,I)
 c2=rep(0.3,I) 
 c3=rep(-0.05,I) #-0.05
-cp1=rep(15)
+cp1=rep(15,I)
 u.sigma2=rep(1,I)
 alpha=rep(1.8,I)
 beta=rep(0.2,I)
@@ -201,5 +201,5 @@ cp <- c(sum(dat1$B1.cp)/I,sum(dat1$B2.cp)/I,sum(dat1$cp1.cp)/I,sum(dat1$c0.cp)/I
         sum(dat1$b0.cp)/I,sum(dat1$b1.cp)/I,sum(dat1$a.cp)/I,sum(dat1$ga.cp)/I,sum(dat1$ga1.cp)/I,sum(dat1$w.tau.inv.cp)/I)
 
 
-cbind(true, as.numeric(c(est[2:15])), round(bias,3),round(mse,3),round(cp,2))
+cbind(true, as.numeric(c(est[2:15])), round(bias,3),round(mse,4),round(cp,2))
 
