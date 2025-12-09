@@ -76,7 +76,6 @@ for (i in 1:N){
 alpha.r = c(1,1)
 
 ############Model in the JAGS format#####################
-############Two fixed CP#####################  
 modelrancp <- "
 data { 
   for(i in 1:N){
@@ -100,7 +99,6 @@ model {
         lambda2[i,j] <- lambda0[i,j]*v2[i]*exp(b20+b[2]*X1[i])
        }
         z[i]~dcat(pi[1:2])
-        z.r[i]~dcat(pi.r[1:2])
         u1[i] ~ dnorm(0,u.tau1)
         u2[i] ~ dnorm(0,u.tau2)
         cp1[i] ~ dnorm(cp1.mu,cp1.tau)
@@ -113,19 +111,26 @@ model {
         #L.e1[i] <- ifelse(Ti[i,1]!=0, prod(lambda1[i,1:k.pe[i]]) * exp(v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         #L.e2[i] <- ifelse(Ti[i,1]!=0, prod(lambda2[i,1:k.pe[i]]) * exp(v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         
-        logL.e1[i] <- ifelse(Ti[i,1]!=0, 
+        logL1[i] <- ifelse(Ti[i,1]!=0, 
                      sum(log(lambda1[i,1:k.pe[i]])) + v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a), 
                      v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a))
-        logL.e2[i] <- ifelse(Ti[i,1]!=0, 
+        logL2[i] <- ifelse(Ti[i,1]!=0, 
                      sum(log(lambda2[i,1:k.pe[i]])) + v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a), 
                      v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a))
-        L.e1[i] <- exp(logL.e1[i])
-        L.e2[i] <- exp(logL.e2[i])
         
-        L.e[i] <- pi.r[1] * L.e1[i] + pi.r[2] * L.e2[i] 
-        ll.e[i] <- log(L.e[i])
-        phi[i] <- -log(L.e[i]) + 1000
+        maxlogL[i] <- max(logL1[i], logL2[i])
+        
+        ll.e[i] <- maxlogL[i] + log(
+          pi.r[1] * exp(logL1[i] - maxlogL[i]) +
+          pi.r[2] * exp(logL2[i] - maxlogL[i])
+        )
+        
+        phi[i] <- -ll.e[i] + 1000
         zeros[i] ~ dpois(phi[i])
+        
+        prob_class[i,1] <- pi.r[1] * exp(logL1[i] - ll.e[i])
+        prob_class[i,2] <- pi.r[2] * exp(logL2[i] - ll.e[i])
+        z.r[i] ~ dcat(prob_class[i,1:2])
   }
   log_lik0.a <- sum(ll.a[]) 
   log_lik0.e <- sum(ll.e[]) 
@@ -166,20 +171,21 @@ model {
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti,alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.04),  pi=c(0.55,0.45),pi.r=c(0.8,0.2), u.tau1=1,u.tau2=1, cp1.mu=13, cp1.tau=1,
-                           b10=-3.7, b20=-3.5,  b=c(0.4,0.1), a=1.8, w.tau1=1, w.tau2=1, 
+inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.9,0.1), u.tau1=0.64,u.tau2=1, cp1.mu=14, cp1.tau=1,
+                           b10=-4, b20=-3, b=c(0.2,0.3), a=1.8, w.tau1=0.04, w.tau2=0.04, 
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(00.3,0.3,-0.04)+0.01, pi=c(0.56,0.44),pi.r=c(0.79,0.21), u.tau1=1,u.tau2=1, cp1.mu=13.1, cp1.tau=1,
-                           b10=-3.6, b20=-3.4, b=c(0.4,0.1)+0.1, a=1.8, w.tau1=1, w.tau2=1, 
+inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(00.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.89,0.11), u.tau1=0.65,u.tau2=1, cp1.mu=14.1, cp1.tau=1,
+                           b10=-3.9, b20=-2.9, b=c(0.2,0.3)+0.1, a=1.8, w.tau1=0.04, w.tau2=0.04, 
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
-res <- run.jags(model=modelrancp, burnin=10000, sample=3000,  
+res <- run.jags(model=modelrancp, burnin=10000, sample=5000,  
                 monitor=c("B1","B2","c10", "c20","c", "cp1",
                           "pi","pi.r","z","z.r","u1","u2", "u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
                           "cp1.mu","cp1.tau.inv","cp1.tau",
-                          "b10","b20","b", "a","v1","v2","ga10","ga20","ga11","w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2"), 
-                data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=20)
+                          "b10","b20","b", "a","v1","v2","ga10","ga20","ga11","w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2",
+                          "prob_class","ll.a","ll.e","dev.a","dev.e"), 
+                data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=15)
 
 summary <- summary(res)
 summary
@@ -187,6 +193,7 @@ result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixJM.X_data.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.result.",num,".csv"))
+save(res, file=paste0("mixJM.res",num,".RData"))
 
 res_jm <- res$mcmc
 vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])

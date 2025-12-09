@@ -1,7 +1,6 @@
 library(tidyverse)
 
-dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Simulation/"
-#dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC/"
+dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim/"
 setwd(dirg)
 ##################################################################
 ##    Functions to Read data
@@ -31,9 +30,9 @@ c10=-3.3
 c20=-2.6
 c1=0.3
 c2=0.3
-c3=-0.04
+c3=-0.05
 Verror=1
-cp.true=13
+cp.true=14
 pi <- c(0.55, 0.45)
 
 #############################################################
@@ -71,7 +70,7 @@ NHPP<-function(a,b,T){
 # -------------- Building the simulated poisson data -----
 poisson1.d <- function(alpha,beta,beta0,x,ga0,ga,TTei){
   le <- length(x)
-  c_0i <- rnorm(le,0,1) 
+  c_0i <- rnorm(le,0,0.2) 
   vi <- exp(ga0*b_10i+c_0i+ga*cp_i)
   
   times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
@@ -102,7 +101,7 @@ poisson1.d <- function(alpha,beta,beta0,x,ga0,ga,TTei){
 
 poisson2.d <- function(alpha,beta,beta0,x,ga0,TTei){
   le <- length(x)
-  c_0i <- rnorm(le,0,1) 
+  c_0i <- rnorm(le,0,0.2) 
   vi <- exp(ga0*b_20i+c_0i)
   
   times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
@@ -131,13 +130,12 @@ poisson2.d <- function(alpha,beta,beta0,x,ga0,TTei){
   return(data.frame(id,xi,Tei,n.rec,start,stop,status))
 }
 
-p1r <- 0.8  # for example
+p1r <- 0.9  # for example
 
 #######################################################;
 for (r in 2:I){
   X1=c(rep(1,N/2),rep(0,N/2))
-  
-  b_10i<-rnorm(N,0,1) 
+  b_10i<-rnorm(N,0,0.8) 
   b_20i<-rnorm(N,0,1)
   cp_i<-rnorm(N,cp.true,1) 
   z <- sample(1:2, size = N, prob = pi, replace = TRUE)
@@ -157,13 +155,13 @@ for (r in 2:I){
       I[i,j]<-ifelse(X[i,j] < cp_i[i],-1,1)
       p1[i,j]=exp(c10+c1*(X[i,j]-cp_i[i])+c2*(X[i,j]-cp_i[i])*I[i,j]+c3*X1[i]+b_10i[i])/(1+exp(c10+c1*(X[i,j]-cp_i[i])+c2*(X[i,j]-cp_i[i])*I[i,j]+c3*X1[i]+b_10i[i]))
       p2[i,j]=exp(c20+(c1-c2)*X[i,j]+c3*X1[i]+b_20i[i])/(1+exp(c20+(c1-c2)*X[i,j]+c3*X1[i]+b_20i[i]))
-      p[i,j] <- if (z[i] == 1) p1[i,j] else  p2[i,j]
+      p[i,j] <- if (z[i] == 1) p1[i,j] else p2[i,j]
       Y[i,j]=rbinom(Verror, 1, p[i,j])
     }
   }
   
-  simdat.pe1 <- poisson1.d(alpha=1.8,beta=0.4,beta0=-3.7,x=X1,ga0=1.4,ga=-0.1,TTei=tt-0.25)
-  simdat.pe2 <- poisson2.d(alpha=1.8,beta=0.1,beta0=-3.5,x=X1,ga0=0.25,TTei=tt-0.25)  
+  simdat.pe1 <- poisson1.d(alpha=1.8,beta=0.2,beta0=-4,x=X1,ga0=1.2,ga=-0.06,TTei=tt-0.25)
+  simdat.pe2 <- poisson2.d(alpha=1.8,beta=0.3,beta0=-3,x=X1,ga0=-0.2,TTei=tt-0.25)  
   
   model_source <- rbinom(N, 1, p1r)  # 1 = from pe1, 0 = from pe2
   subject_ids_pe1 <- unique(simdat.pe1$id)
