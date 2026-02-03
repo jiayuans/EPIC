@@ -183,7 +183,7 @@ res <- run.jags(model=modelrancp, burnin=10000, sample=5000,
                 monitor=c("B1","B2","c10", "c20","c", "cp1",
                           "pi","pi.r","z","z.r","u1","u2", "u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
                           "cp1.mu","cp1.tau.inv","cp1.tau",
-                          "b10","b20","b", "a","v1","v2","ga10","ga20","ga11","w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2",
+                          "b10","b20","b", "a","ga10","ga20","ga11","w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2",
                           "prob_class","ll.a","ll.e","dev.a","dev.e"), 
                 data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=15)
 
