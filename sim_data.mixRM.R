@@ -1,7 +1,6 @@
 library(tidyverse)
 
-dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Simulation/"
-#dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC/"
+dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim/"
 setwd(dirg)
 ##################################################################
 ##    Functions to Read data

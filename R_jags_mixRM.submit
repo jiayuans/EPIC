@@ -1,5 +1,5 @@
 +SingularityImage = "osdf:///ospool/ap40/data/jiayuan.shi/libr.sif"
-executable        = Simulation_mixRM.R
+executable        = Simulation_mixRM2.R
 arguments = mixRM.rec_data.$(Process).csv long.data_new.csv
 transfer_input_files = mixRM.rec_data.$(Process).csv, long.data_new.csv
 transfer_output_files = mixRM.result.$(Process).csv, mixRM.traceplot.$(Process).pdf

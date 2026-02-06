@@ -71,7 +71,7 @@ NHPP<-function(a,b,T){
 poisson1.d <- function(alpha,beta,beta0,x,ga0,ga,TTei){
   le <- length(x)
   c_0i <- rnorm(le,0,0.2) 
-  vi <- exp(ga0*b_10i+c_0i+ga*cp_i)
+  vi <- exp(ga0*b_10i+9+ga*cp_i)
   
   times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
   start <-  times[,1]
