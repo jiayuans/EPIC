@@ -146,6 +146,7 @@ result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixRM.rec_data.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixRM.result.",num,".csv"))
+save(res, file=paste0("mixRM.res.",num,".RData"))
 
 res_jm <- res$mcmc
 vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])

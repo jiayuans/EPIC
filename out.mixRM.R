@@ -1,4 +1,5 @@
 setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/mixRM")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixRM_020725")
 
 ###########################################################################
 # Read csv files
@@ -26,6 +27,7 @@ pi2.mean<-rep(NA,I)
 ga10.mean<-rep(NA,I)
 ga20.mean<-rep(NA,I)
 ga11.mean<-rep(NA,I)
+z.mean<-rep(NA,I)
 v1.mean<-rep(NA,I)
 v2.mean<-rep(NA,I)
 
@@ -41,11 +43,12 @@ for(i in 1:I){
   ph2.mean[i] <-data_frames[[i]][8,5] 
   pi1.mean[i] <-data_frames[[i]][9,5] 
   pi2.mean[i] <-data_frames[[i]][10,5] 
-  v1.mean[i] <-mean(data_frames[[i]][11:410,5])
-  v2.mean[i] <-mean(data_frames[[i]][411:810,5])
+  z.mean[i] <-mean(data_frames[[i]][11:410,5])
+  v1.mean[i] <-mean(data_frames[[i]][411:810,5])
+  v2.mean[i] <-mean(data_frames[[i]][811:1210,5])
 }
 
-Sim.results=cbind(Flag,b10.mean,b20.mean,b1.mean,b2.mean,a1.mean,a2.mean,pi1.mean,pi2.mean,ph1.mean,ph2.mean,v1.mean,v2.mean)
+Sim.results=cbind(Flag,b10.mean,b20.mean,b1.mean,b2.mean,a1.mean,a2.mean,pi1.mean,pi2.mean,ph1.mean,ph2.mean,z.mean,v1.mean,v2.mean)
 table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
