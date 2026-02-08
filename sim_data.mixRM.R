@@ -24,7 +24,7 @@ tt<-round(last.tt)
 I=201
 
 #############################################################
-set.seed(123)
+set.seed(66)
 
 #########################################################################
 # Function that generates observations from a NHPP- returns event times
