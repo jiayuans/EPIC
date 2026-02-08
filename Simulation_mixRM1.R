@@ -105,7 +105,7 @@ model {
           pi.r[2] * exp(logL2[i] - maxlogL[i])
         )
         
-        phi[i] <- -ll.e[i] + 1000
+        phi[i] <-  max(-ll.e[i] + 1000, 0)
         zeros[i] ~ dpois(phi[i])
         
         prob_class[i,1] <- pi.r[1] * exp(logL1[i] - ll.e[i])
