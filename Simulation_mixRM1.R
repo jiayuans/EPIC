@@ -20,7 +20,7 @@ tt<-round(last.tt)
 
 X1=c(rep(1,N/2),rep(0,N/2))
 
-set.seed(123)
+set.seed(66)
 
 #############################################################
 simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="mixRM.rec_data.")))
