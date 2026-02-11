@@ -125,7 +125,7 @@ model {
           pi.r[2] * exp(logL2[i] - maxlogL[i])
         )
         
-        phi[i] <- -ll.e[i] + 1000
+        phi[i] <- max(-ll.e[i] + 1000, 0)
         zeros[i] ~ dpois(phi[i])
         
         prob_class[i,1] <- pi.r[1] * exp(logL1[i] - ll.e[i])
@@ -192,12 +192,12 @@ summary
 result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixJM.X_data.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
-write.csv(result_df, paste0("mixJM.result.",num,".csv"))
-save(res, file=paste0("mixJM.res.",num,".RData"))
+write.csv(result_df, paste0("mixJM.result1.",num,".csv"))
+save(res, file=paste0("mixJM.res1.",num,".RData"))
 
 res_jm <- res$mcmc
 vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-pdf(file = paste0("mixJM.traceplot.",num,".pdf"),   # The directory you want to save the file in
+pdf(file = paste0("mixJM.traceplot1.",num,".pdf"),   # The directory you want to save the file in
     width = 4, # The width of the plot in inches
     height = 4) # The height of the plot in inches
 traplot(vars)
