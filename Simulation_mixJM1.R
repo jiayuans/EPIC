@@ -171,10 +171,10 @@ model {
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti,alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.9,0.1), u.tau1=0.64,u.tau2=1, cp1.mu=14, cp1.tau=1,
+inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.5,0.5), u.tau1=0.64,u.tau2=1, cp1.mu=14, cp1.tau=1,
                            b10=-4, b20=-3, b=c(0.2,0.3), a=1.8, w.tau1=0.04, w.tau2=0.04, 
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(00.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.89,0.11), u.tau1=0.65,u.tau2=1, cp1.mu=14.1, cp1.tau=1,
+inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(00.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.51,0.49), u.tau1=0.65,u.tau2=1, cp1.mu=14.1, cp1.tau=1,
                            b10=-3.9, b20=-2.9, b=c(0.2,0.3)+0.1, a=1.8, w.tau1=0.04, w.tau2=0.04, 
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 

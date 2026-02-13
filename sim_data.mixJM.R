@@ -130,7 +130,7 @@ poisson2.d <- function(alpha,beta,beta0,x,ga0,TTei){
   return(data.frame(id,xi,Tei,n.rec,start,stop,status))
 }
 
-p1r <- 0.7  # for example
+p1r <- 0.5  # for example
 
 #######################################################;
 for (r in 2:I){
