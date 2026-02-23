@@ -130,13 +130,13 @@ poisson2.d <- function(alpha,beta,beta0,x,ga0,TTei){
   return(data.frame(id,xi,Tei,n.rec,start,stop,status))
 }
 
-p1r <- 0.5  # for example
+p1r <- 0.9  # for example
 
 #######################################################;
 for (r in 2:I){
   X1=c(rep(1,N/2),rep(0,N/2))
-  b_10i<-rnorm(N,0,0.8) 
-  b_20i<-rnorm(N,0,1)
+  b_10i<-rnorm(N,0,0.5) 
+  b_20i<-rnorm(N,0,0.5)
   cp_i<-rnorm(N,cp.true,1) 
   z <- sample(1:2, size = N, prob = pi, replace = TRUE)
   
