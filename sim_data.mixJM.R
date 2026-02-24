@@ -23,7 +23,7 @@ k.pa<-(tt-t)*4
 kk=max(k.pa)
 
 ###set number of iterations#################################
-I=201
+Int=201
 
 ###############set true values#########################################
 c10=-3.3
@@ -31,7 +31,6 @@ c20=-2.6
 c1=0.3
 c2=0.3
 c3=-0.05
-Verror=1
 cp.true=14
 pi <- c(0.55, 0.45)
 
@@ -133,7 +132,7 @@ poisson2.d <- function(alpha,beta,beta0,x,ga0,TTei){
 p1r <- 0.9  # for example
 
 #######################################################;
-for (r in 2:I){
+for (r in 2:Int){
   X1=c(rep(1,N/2),rep(0,N/2))
   b_10i<-rnorm(N,0,0.5) 
   b_20i<-rnorm(N,0,0.5)
@@ -156,7 +155,7 @@ for (r in 2:I){
       p1[i,j]=exp(c10+c1*(X[i,j]-cp_i[i])+c2*(X[i,j]-cp_i[i])*I[i,j]+c3*X1[i]+b_10i[i])/(1+exp(c10+c1*(X[i,j]-cp_i[i])+c2*(X[i,j]-cp_i[i])*I[i,j]+c3*X1[i]+b_10i[i]))
       p2[i,j]=exp(c20+(c1-c2)*X[i,j]+c3*X1[i]+b_20i[i])/(1+exp(c20+(c1-c2)*X[i,j]+c3*X1[i]+b_20i[i]))
       p[i,j] <- if (z[i] == 1) p1[i,j] else p2[i,j]
-      Y[i,j]=rbinom(Verror, 1, p[i,j])
+      Y[i,j]=rbinom(1, 1, p[i,j])
     }
   }
   

@@ -30,7 +30,6 @@ X <- as.matrix(read.csv(list.files(pattern="mixJM.X_data.")))
 Y <- as.matrix(read.csv(list.files(pattern="mixJM.Y_data.")))
 simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="mixJM.rec_data.")))
 #############################################################
-simdat.pe00 <- simdat.pe00 %>% arrange(id, stop)
 
 tt<-tt-0.25
 timeS <- as.data.frame(cbind(id,t)) ## left truncation time
@@ -38,42 +37,43 @@ timeE <- as.data.frame(cbind(id,tt))
 
 simdat.pe0 <- merge(simdat.pe00, timeS,all=TRUE)
 simdat.pe <- subset(simdat.pe0, stop >= t)
+simdat.pe <- simdat.pe %>% arrange(id, stop)
 
-time <- subset(simdat.pe,status==1)
-time1 <- time[,c("id","stop")]  
-simdat.pe1 <- merge(timeS,timeE,all=TRUE)
-simdat.pe2 <- merge(simdat.pe1,time1,all=TRUE)
-simdat.pe2$stop[which(is.na(simdat.pe2$stop))] <- 0
+N <- length(unique(simdat.pe$id))
 
-#length(which(simdat.pe2$stop== 0))
+# Event times only (status==1)
+ev_list <- vector("list", N)
 
-count <- simdat.pe2 %>% count(id)
-max.count <- max(count$n) 
+for (i in 1:N) {
+  ev_list[[i]] <- simdat.pe$stop[
+    simdat.pe$id == i & simdat.pe$status == 1
+  ]
+}
 
-##########################Assigning unique number to each subject##########################
-simdat.pe3 <- simdat.pe2 %>% group_by(id) %>% mutate(time = c(1:length(id)))
-Yd.temp <- data.frame(id = rep(unique(simdat.pe00$id),each=max.count), time = 1:max.count) 
-Y.epic <- merge(simdat.pe3,Yd.temp,by=c('id','time'),all.y=TRUE)
+k.pe <- lengths(ev_list)
+max.count <- max(k.pe)
 
-#################Readingin data for time matrix#############################
-Ti <- matrix(Y.epic$stop, N, max.count, byrow=TRUE)
+Ti <- t(vapply(ev_list, function(v) {
+  if (length(v) == 0) {
+    rep(NA_real_, max.count)
+  } else {
+    c(v, rep(NA_real_, max.count - length(v)))
+  }
+}, numeric(max.count)))
 
+E <- matrix(0L, nrow=N, ncol=max.count)
+
+for (i in 1:N) {
+  if (k.pe[i] > 0)
+    E[i, 1:k.pe[i]] <- 1L
+}
+
+Ti2 <- Ti
+Ti2[is.na(Ti2)] <- 1
 #################Readingin data for X, t0, tau vectors#############################
 time.t0 <- t
 time.tau <- tt
 
-#################input variables for simulation#####################
-#### checking for how many individuals we have NAs in the middle of followup
-sum.na <- rep(NA,N)
-k.pe=rep(NA,N)
-
-ids <- unique(Y.epic$id) ## 103104 103125 103129 103145 103147
-for (i in 1:N){
-  na.indices <- which(is.na(Y.epic$t[Y.epic$id==ids[i]]))
-  if (length(na.indices)==0){
-    k.pe[i] <- max.count} else{
-      k.pe[i] <- min(na.indices)-1}
-}
 alpha.r = c(1,1)
 
 ############Model in the JAGS format#####################
@@ -92,12 +92,14 @@ model {
         logit(p[i,j,1]) <- c10 + c[1] * (X[i,j]-cp1[i]) + c[2] * (X[i,j]-cp1[i]) * (2*step(X[i,j]-cp1[i])-1) + c[3] * X1[i] + u1[i] ## increasing
         logit(p[i,j,2]) <- c20 + (c[1]-c[2]) * X[i,j] + c[3] * X1[i] + u2[i] ## no cp
         }
-        for(j in 1:k.pe[i]){
+        for(j in 1:max.count){
   ### PE model
        ## Weibull baseline
-        lambda0[i,j] <- a*(Ti[i,j])^(a-1)
-        lambda1[i,j] <- lambda0[i,j]*v1[i]*exp(b10+b[1]*X1[i])
-        lambda2[i,j] <- lambda0[i,j]*v2[i]*exp(b20+b[2]*X1[i])
+        lambda0[i,j] <- a*(Ti2[i,j])^(a-1)
+        lambda1[i,j] <- lambda0[i,j] * v1[i] * exp(b10 + b[1]*X1[i])
+        lambda2[i,j] <- lambda0[i,j] * v2[i] * exp(b20 + b[2]*X1[i])
+        loghaz1[i,j] <- E[i,j] * log(lambda1[i,j])
+        loghaz2[i,j] <- E[i,j] * log(lambda2[i,j])
        }
         z[i]~dcat(pi[1:2])
         u1[i] ~ dnorm(0,u.tau1)
@@ -109,16 +111,12 @@ model {
         w2[i] ~ dnorm(0,w.tau2)
         v1[i] <- exp(ga10*u1[i]+w1[i]+ga11*cp1[i])
         v2[i] <- exp(ga20*u2[i]+w2[i])
-        #L.e1[i] <- ifelse(Ti[i,1]!=0, prod(lambda1[i,1:k.pe[i]]) * exp(v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
-        #L.e2[i] <- ifelse(Ti[i,1]!=0, prod(lambda2[i,1:k.pe[i]]) * exp(v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
-        
-        logL1[i] <- ifelse(Ti[i,1]!=0, 
-                     sum(log(lambda1[i,1:k.pe[i]])) + v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a), 
-                     v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a))
-        logL2[i] <- ifelse(Ti[i,1]!=0, 
-                     sum(log(lambda2[i,1:k.pe[i]])) + v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a), 
-                     v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a))
-        
+        logL1[i] <- sum(loghaz1[i,1:max.count]) +
+            v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a - time.tau[i]^a)
+
+        logL2[i] <- sum(loghaz2[i,1:max.count]) +
+            v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a - time.tau[i]^a)
+       
         maxlogL[i] <- max(logL1[i], logL2[i])
         
         ll.e[i] <- maxlogL[i] + log(
@@ -170,7 +168,7 @@ model {
 
 
 ####Observed DATA
-data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti,alpha=alpha, alpha.r=alpha.r)) 
+data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
 inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.9,0.1), u.tau1=0.25,u.tau2=0.25, cp1.mu=14, cp1.tau=1,
                            b10=-3.3, b20=-3, b=c(0.2,0.3), a=1.8, w.tau1=0.04, w.tau2=0.04, 
@@ -193,12 +191,12 @@ summary
 result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixJM.X_data.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
-write.csv(result_df, paste0("mixJM.result1.",num,".csv"))
-save(res, file=paste0("mixJM.res1.",num,".RData"))
+write.csv(result_df, paste0("mixJM.result3.",num,".csv"))
+save(res, file=paste0("mixJM.res3.",num,".RData"))
 
 res_jm <- res$mcmc
 vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-pdf(file = paste0("mixJM.traceplot1.",num,".pdf"),   # The directory you want to save the file in
+pdf(file = paste0("mixJM.traceplot3.",num,".pdf"),   # The directory you want to save the file in
     width = 4, # The width of the plot in inches
     height = 4) # The height of the plot in inches
 traplot(vars)
