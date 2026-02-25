@@ -152,17 +152,17 @@ model {
 	cp1.tau ~ dgamma(0.01,0.01)
 	cp1.tau.inv <- 1/cp1.tau  ## variance
 	a ~ dgamma(0.01,0.01)
-  b10 ~ dnorm(0,0.0001)	
-  b20 ~ dnorm(0,0.0001)	
+  b10 ~ dnorm(0,0.25)	
+  b20 ~ dnorm(0,0.25)	
   for (p in 1:2){
-	     b[p] ~ dnorm(0,0.0001)		
+	     b[p] ~ dnorm(0,0.25)		
   }
 	ga10 ~ dnorm(0,0.0001)
 	ga20 ~ dnorm(0,0.0001)
 	ga11 ~ dnorm(0,0.0001)
-	w.tau1 ~ dgamma(0.001,0.001)
+	w.tau1 ~ dgamma(0.1,0.1)
 	w.tau.inv1 <- 1/w.tau1  ## variance 
-	w.tau2 ~ dgamma(0.001,0.001)
+	w.tau2 ~ dgamma(0.1,0.1)
 	w.tau.inv2 <- 1/w.tau2 ## variance 
 }"
 

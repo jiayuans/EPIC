@@ -129,7 +129,7 @@ poisson2.d <- function(alpha,beta,beta0,x,ga0,TTei){
   return(data.frame(id,xi,Tei,n.rec,start,stop,status))
 }
 
-p1r <- 0.9  # for example
+p1r <- 0.6  # for example
 
 #######################################################;
 for (r in 2:Int){
@@ -160,7 +160,7 @@ for (r in 2:Int){
   }
   
   simdat.pe1 <- poisson1.d(alpha=1.8,beta=0.2,beta0=-3.3,x=X1,ga0=1.2,ga=-0.05,TTei=tt-0.25)
-  simdat.pe2 <- poisson2.d(alpha=1.8,beta=0.3,beta0=-3,x=X1,ga0=-0.2,TTei=tt-0.25)  
+  simdat.pe2 <- poisson2.d(alpha=1.8,beta=0.3,beta0=-2.5,x=X1,ga0=-0.2,TTei=tt-0.25)  
   
   model_source <- rbinom(N, 1, p1r)  # 1 = from pe1, 0 = from pe2
   subject_ids_pe1 <- unique(simdat.pe1$id)
