@@ -160,9 +160,9 @@ model {
 	ga10 ~ dnorm(0,0.0001)
 	ga20 ~ dnorm(0,0.0001)
 	ga11 ~ dnorm(0,0.0001)
-	w.tau1 ~ dgamma(0.1,0.1)
+	w.tau1 ~ dgamma(2,2)
 	w.tau.inv1 <- 1/w.tau1  ## variance 
-	w.tau2 ~ dgamma(0.1,0.1)
+	w.tau2 ~ dgamma(2,2)
 	w.tau.inv2 <- 1/w.tau2 ## variance 
 }"
 
