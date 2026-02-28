@@ -18,7 +18,7 @@ length(id)
 t<-round(first.tt)
 tt<-round(last.tt)
 
-X1=c(rep(1,N/2),rep(0,N/2))
+X1 <- c(rep(1, floor(N/2)), rep(0, N - floor(N/2)))
 k.pa<-(tt-t)*4
 
 alpha = c(1,1)
