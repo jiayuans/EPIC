@@ -1,6 +1,6 @@
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixJM_020225")
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixJM_021125")
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM1_022725")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM1_030125")
 
 ###########################################################################
 # Read csv files
@@ -13,6 +13,7 @@ data_frames <- lapply(num, function(i) {
 })
 
 I=length(data_frames)
+I
 
 Flag<-rep(NA,I)
 B1.mean<-rep(NA,I)
