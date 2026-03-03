@@ -39,7 +39,7 @@ simdat.pe0 <- merge(simdat.pe00, timeS,all=TRUE)
 simdat.pe <- subset(simdat.pe0, stop >= t)
 simdat.pe <- simdat.pe %>% arrange(id, stop)
 
-N <- length(unique(simdat.pe$id))
+N <- length(tt)
 
 # Event times only (status==1)
 ev_list <- vector("list", N)
@@ -84,21 +84,6 @@ data {
   }
 }
 model { 
-
-  # -------------------------
-  # Centered w1 / w2 (identifiability)
-  # -------------------------
-  for(i in 1:N){
-    w1_raw[i] ~ dnorm(0, w.tau1)
-    w2_raw[i] ~ dnorm(0, w.tau2)
-  }
-  w1_bar <- mean(w1_raw[])
-  w2_bar <- mean(w2_raw[])
-  for(i in 1:N){
-    w1[i] <- w1_raw[i] - w1_bar
-    w2[i] <- w2_raw[i] - w2_bar
-  }
-
   # -------------------------
   # Subject loop
   # -------------------------
@@ -129,16 +114,15 @@ model {
     u2[i] ~ dnorm(0, u.tau2)
     cp1[i] ~ dnorm(cp1.mu, cp1.tau)
 
-    # Center cp1 inside v1 to remove b10 <-> ga11*mean(cp1) confounding
-    cp1c[i] <- cp1[i] - cp1.mu
-
     # PA likelihood contribution
     L.a[i]  <- prod( (p2[i,1:k.pa[i]]^Y[i,1:k.pa[i]]) * ((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])) )
     ll.a[i] <- log(L.a[i])
 
     # ---- PE (NHPP / Weibull process) ----
     # v1/v2 frailties (match simulator structure)
-    v1[i] <- exp(ga10*u1[i] + w1[i] + ga11*cp1c[i])
+    w1[i] ~ dnorm(0, w.tau1)
+    w2[i] ~ dnorm(0, w.tau2)
+    v1[i] <- exp(ga10*u1[i] + w1[i] + ga11*cp1[i])
     v2[i] <- exp(ga20*u2[i] + w2[i])
 
     # Baseline intensity pieces at event times
@@ -157,11 +141,11 @@ model {
     # NHPP log-likelihood for each component:
     # sum log lambda(t_j) - b*(tau^a - t0^a)
     # where b = v*exp(b0+bX)
-    logL1[i] <- sum(loghaz1[i,1:max.count]) +
-      v1[i] * exp(b10 + b[1]*X1[i]) * (time.t0[i]^a - time.tau[i]^a)
+    logL1[i] <- sum(loghaz1[i,1:max.count]) -
+      v1[i] * exp(b10 + b[1]*X1[i]) * (time.tau[i]^a - time.t0[i]^a)
 
-    logL2[i] <- sum(loghaz2[i,1:max.count]) +
-      v2[i] * exp(b20 + b[2]*X1[i]) * (time.t0[i]^a - time.tau[i]^a)
+    logL2[i] <- sum(loghaz2[i,1:max.count]) -
+      v2[i] * exp(b20 + b[2]*X1[i]) * (time.tau[i]^a - time.t0[i]^a)
 
     # Mixture over PE components
     maxlogL[i] <- max(logL1[i], logL2[i])
@@ -172,7 +156,7 @@ model {
     )
 
     # zeros trick for custom likelihood
-    phi[i] <- max(-ll.e[i] + 1000, 0)
+    phi[i] <- -ll.e[i] + 1000000
     zeros[i] ~ dpois(phi[i])
 
     # Optional classification draw (post-processing)
@@ -221,13 +205,13 @@ model {
 
   a ~ dgamma(0.01,0.01)
 
-  # OPTIONAL: anchor PE mixture labels to reduce switching
-  # Uncomment ONE ordering if desired (choose direction consistent with your truth).
-  # b10 ~ dnorm(0,0.25) T(-1.0E6, b20)
-  # b20 ~ dnorm(0,0.25)
+  b20_raw ~ dnorm(0, 0.25)
+  delta_b ~ dnorm(0, 0.25) T(0,)
+  b10 <- b20_raw - delta_b
+  b20 <- b20_raw
 
-  b10 ~ dnorm(0,0.25)
-  b20 ~ dnorm(0,0.25)
+  # b10 ~ dnorm(0,0.25)
+  # b20 ~ dnorm(0,0.25)
 
   for (p in 1:2){
     b[p] ~ dnorm(0,0.25)
@@ -248,11 +232,11 @@ model {
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.9,0.1), u.tau1=0.25,u.tau2=0.25, cp1.mu=14, cp1.tau=1,
-                           b10=-3.3, b20=-3, b=c(0.2,0.3), a=1.8, w.tau1=0.04, w.tau2=0.04, 
+inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.6,0.4), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
+                           b20_raw=-2, delta_b=2, b=c(0.2,0.3), a=1.8, w.tau1=11.1, w.tau2=11.1, ga10=1.2, ga20=-0.2, ga11=-0.05,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.91,0.09), u.tau1=0.25,u.tau2=0.25, cp1.mu=14.1, cp1.tau=1,
-                           b10=-3.4, b20=-2.9, b=c(0.2,0.3)+0.1, a=1.8, w.tau1=0.04, w.tau2=0.04, 
+inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.591,0.41), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
+                           b20_raw=-1.9, delta_b=-2.2, b=c(0.2,0.3)+0.1, a=1.75, w.tau1=10, w.tau2=12, ga10=1.1, ga20=-0.1, ga11=-0.03,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
@@ -260,7 +244,8 @@ res <- run.jags(model=modelrancp, burnin=10000, sample=5000,
                 monitor=c("B1","B2","c10", "c20","c", "cp1",
                           "pi","pi.r","z","z.r","u1","u2", "u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
                           "cp1.mu","cp1.tau.inv","cp1.tau",
-                          "b10","b20","b", "a","ga10","ga20","ga11","w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2",
+                          "b10","b20","b", "a","ga10","ga20","ga11",
+                          "w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","b20_raw","delta_b",
                           "prob_class","ll.a","ll.e","dev.a","dev.e"), 
                 data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=15)
 
