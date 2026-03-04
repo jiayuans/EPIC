@@ -156,7 +156,7 @@ model {
     )
 
     # zeros trick for custom likelihood
-    phi[i] <- -ll.e[i] + 1000000
+    phi[i] <- max(-ll.e[i] + 1000000, 0)
     zeros[i] ~ dpois(phi[i])
 
     # Optional classification draw (post-processing)
@@ -236,7 +236,7 @@ inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.4
                            b20_raw=-2, delta_b=2, b=c(0.2,0.3), a=1.8, w.tau1=11.1, w.tau2=11.1, ga10=1.2, ga20=-0.2, ga11=-0.05,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
 inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.591,0.41), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
-                           b20_raw=-1.9, delta_b=-2.2, b=c(0.2,0.3)+0.1, a=1.75, w.tau1=10, w.tau2=12, ga10=1.1, ga20=-0.1, ga11=-0.03,
+                           b20_raw=-1.9, delta_b=2.2, b=c(0.2,0.3)+0.1, a=1.75, w.tau1=10, w.tau2=12, ga10=1.1, ga20=-0.1, ga11=-0.03,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
