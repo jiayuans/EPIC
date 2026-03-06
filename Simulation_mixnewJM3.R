@@ -119,7 +119,6 @@ model {
     ll.a[i] <- log(L.a[i])
 
     # ---- PE (NHPP / Weibull process) ----
-    # v1/v2 frailties (match simulator structure)
     w1[i] ~ dnorm(0, w.tau1)
     w2[i] ~ dnorm(0, w.tau2)
     v1[i] <- exp(ga10*u1[i] + w1[i] + ga11*cp1[i])
@@ -127,8 +126,6 @@ model {
 
     # Baseline intensity pieces at event times
     for(j in 1:max.count){
-      # NOTE: Ti2[i,j] should be the j-th EVENT TIME if E[i,j]=1;
-      # If E[i,j]=0, Ti2 can be 1 (or anything >0) because E*log(lambda) will zero it out.
       lambda0[i,j] <- a * (Ti2[i,j])^(a-1)
 
       lambda1[i,j] <- lambda0[i,j] * v1[i] * exp(b10 + b[1]*X1[i])
@@ -174,18 +171,14 @@ model {
   dev.e <- -2*log_lik0.e
 
   # -------------------------
-  # Priors + (optional) identifiability constraints for mixtures
+  # Priors
   # -------------------------
   pi[1:2]   ~ ddirch(alpha[])
   pi.r[1:2] ~ ddirch(alpha.r[])
 
-  # OPTIONAL: anchor PA mixture labels to reduce switching
-  # Uncomment ONE of these if you want strict identifiability.
-  # c10 ~ dnorm(0,0.0001)
-  # c20 ~ dnorm(0,0.0001) T(c10, 1.0E6)
-
+  # PA intercept ordering: c20 > c10
   c10 ~ dnorm(0,0.0001)
-  c20 ~ dnorm(0,0.0001)
+  c20 ~ dnorm(0,0.0001) T(c10, )
 
   for (k in 1:3){
     c[k] ~ dnorm(0,0.0001)
@@ -193,10 +186,10 @@ model {
   B1 <- c[1] - c[2]
   B2 <- c[1] + c[2]
 
-  u.tau1 ~ dgamma(0.001,0.001)
+  u.tau1 ~ dgamma(16,4) # u.tau1 ~ dgamma(0.001,0.001)
   u.tau.inv1 <- 1/u.tau1
 
-  u.tau2 ~ dgamma(0.001,0.001)
+  u.tau2 ~ dgamma(16,4) # u.tau2 ~ dgamma(0.001,0.001)
   u.tau.inv2 <- 1/u.tau2
 
   cp1.mu ~ dnorm(0,0.01)
@@ -205,11 +198,11 @@ model {
 
   a ~ dgamma(0.01,0.01)
 
+  # PE ordering: b10 < b20
   b20_raw ~ dnorm(0, 0.25)
   delta_b ~ dnorm(0, 0.25) T(0,)
   b10 <- b20_raw - delta_b
   b20 <- b20_raw
-
   # b10 ~ dnorm(0,0.25)
   # b20 ~ dnorm(0,0.25)
 
