@@ -30,7 +30,6 @@ X <- as.matrix(read.csv(list.files(pattern="mixJM.X_newdata1.")))
 Y <- as.matrix(read.csv(list.files(pattern="mixJM.Y_newdata1.")))
 simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="mixJM.rec_newdata1.")))
 #############################################################
-simdat.pe00 <- simdat.pe00 %>% arrange(id, stop)
 
 tt<-tt-0.25
 timeS <- as.data.frame(cbind(id,t)) ## left truncation time
@@ -38,42 +37,43 @@ timeE <- as.data.frame(cbind(id,tt))
 
 simdat.pe0 <- merge(simdat.pe00, timeS,all=TRUE)
 simdat.pe <- subset(simdat.pe0, stop >= t)
+simdat.pe <- simdat.pe %>% arrange(id, stop)
 
-time <- subset(simdat.pe,status==1)
-time1 <- time[,c("id","stop")]  
-simdat.pe1 <- merge(timeS,timeE,all=TRUE)
-simdat.pe2 <- merge(simdat.pe1,time1,all=TRUE)
-simdat.pe2$stop[which(is.na(simdat.pe2$stop))] <- 0
+N <- length(tt)
 
-#length(which(simdat.pe2$stop== 0))
+# Event times only (status==1)
+ev_list <- vector("list", N)
 
-count <- simdat.pe2 %>% count(id)
-max.count <- max(count$n) 
+for (i in 1:N) {
+  ev_list[[i]] <- simdat.pe$stop[
+    simdat.pe$id == i & simdat.pe$status == 1
+  ]
+}
 
-##########################Assigning unique number to each subject##########################
-simdat.pe3 <- simdat.pe2 %>% group_by(id) %>% mutate(time = c(1:length(id)))
-Yd.temp <- data.frame(id = rep(unique(simdat.pe00$id),each=max.count), time = 1:max.count) 
-Y.epic <- merge(simdat.pe3,Yd.temp,by=c('id','time'),all.y=TRUE)
+k.pe <- lengths(ev_list)
+max.count <- max(k.pe)
 
-#################Readingin data for time matrix#############################
-Ti <- matrix(Y.epic$stop, N, max.count, byrow=TRUE)
+Ti <- t(vapply(ev_list, function(v) {
+  if (length(v) == 0) {
+    rep(NA_real_, max.count)
+  } else {
+    c(v, rep(NA_real_, max.count - length(v)))
+  }
+}, numeric(max.count)))
 
+E <- matrix(0L, nrow=N, ncol=max.count)
+
+for (i in 1:N) {
+  if (k.pe[i] > 0)
+    E[i, 1:k.pe[i]] <- 1L
+}
+
+Ti2 <- Ti
+Ti2[is.na(Ti2)] <- 1
 #################Readingin data for X, t0, tau vectors#############################
 time.t0 <- t
 time.tau <- tt
 
-#################input variables for simulation#####################
-#### checking for how many individuals we have NAs in the middle of followup
-sum.na <- rep(NA,N)
-k.pe=rep(NA,N)
-
-ids <- unique(Y.epic$id) ## 103104 103125 103129 103145 103147
-for (i in 1:N){
-  na.indices <- which(is.na(Y.epic$t[Y.epic$id==ids[i]]))
-  if (length(na.indices)==0){
-    k.pe[i] <- max.count} else{
-      k.pe[i] <- min(na.indices)-1}
-}
 alpha.r = c(1,1)
 
 ############Model in the JAGS format#####################
