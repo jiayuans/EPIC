@@ -26,9 +26,9 @@ alpha = c(1,1)
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="mixJM.X_newdata.")))
-Y <- as.matrix(read.csv(list.files(pattern="mixJM.Y_newdata.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="mixJM.rec_newdata.")))
+X <- as.matrix(read.csv(list.files(pattern="mixJM.X_newdata1.")))
+Y <- as.matrix(read.csv(list.files(pattern="mixJM.Y_newdata1.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="mixJM.rec_newdata1.")))
 #############################################################
 simdat.pe00 <- simdat.pe00 %>% arrange(id, stop)
 
@@ -80,63 +80,74 @@ alpha.r = c(1,1)
 modelrancp <- "
 data { 
   for(i in 1:N){
-       zeros[i] <- 0
+    zeros[i] <- 0
   }
 }
 model { 
-
-  # ---- random effects for frailty: raw + centered ----
-  for(i in 1:N){
-    w1_raw[i] ~ dnorm(0, w.tau1)
-    w2_raw[i] ~ dnorm(0, w.tau2)
-  }
-  w1_bar <- mean(w1_raw[])
-  w2_bar <- mean(w2_raw[])
-  for(i in 1:N){
-    w1[i] <- w1_raw[i] - w1_bar
-    w2[i] <- w2_raw[i] - w2_bar
-  }
-
+  # -------------------------
+  # Subject loop
+  # -------------------------
   for(i in 1:N){ 
 
+    # ---- PA (binary) ----
     for(j in 1:k.pa[i]){
-      ### PA model
-      Y[i,j] ~ dbin(p2[i,j],1)
+      Y[i,j] ~ dbin(p2[i,j], 1)
       p2[i,j] <- p[i,j,z[i]]
-      logit(p[i,j,1]) <- c10 + c[1] * (X[i,j]-cp1[i]) + c[2] * (X[i,j]-cp1[i]) * (2*step(X[i,j]-cp1[i])-1) + c[3] * X1[i] + u1[i]
-      logit(p[i,j,2]) <- c20 + (c[1]-c[2]) * X[i,j] + c[3] * X1[i] + u2[i]
+
+      logit(p[i,j,1]) <- c10
+        + c[1] * (X[i,j] - cp1[i])
+        + c[2] * (X[i,j] - cp1[i]) * (2*step(X[i,j] - cp1[i]) - 1)
+        + c[3] * X1[i]
+        + u1[i]
+
+      logit(p[i,j,2]) <- c20
+        + (c[1] - c[2]) * X[i,j]
+        + c[3] * X1[i]
+        + u2[i]
     }
 
-    for(j in 1:k.pe[i]){
-      ### PE model
-      lambda0[i,j] <- a*(Ti[i,j])^(a-1)
-      lambda1[i,j] <- lambda0[i,j]*v1[i]*exp(b10+b[1]*X1[i])
-      lambda2[i,j] <- lambda0[i,j]*v2[i]*exp(b20+b[2]*X1[i])
-    }
-
+    # Latent class for PA
     z[i] ~ dcat(pi[1:2])
 
+    # Random effects for PA
     u1[i] ~ dnorm(0, u.tau1)
     u2[i] ~ dnorm(0, u.tau2)
     cp1[i] ~ dnorm(cp1.mu, cp1.tau)
+    
+    # Center cp1 inside v1
+    cp1c[i] <- cp1[i] - cp1.mu
 
-    # PA likelihood (as you had)
-    L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
+    # PA likelihood contribution
+    L.a[i]  <- prod( (p2[i,1:k.pa[i]]^Y[i,1:k.pa[i]]) * ((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])) )
     ll.a[i] <- log(L.a[i])
 
-    # ---- frailties (use centered w's) ----
-    v1[i] <- exp(ga10*u1[i] + w1[i] + ga11*cp1[i])
+    # ---- PE (NHPP / Weibull process) ----
+    w1[i] ~ dnorm(0, w.tau1)
+    w2[i] ~ dnorm(0, w.tau2)
+    v1[i] <- exp(ga10*u1[i] + w1[i] + ga11*cp1c[i]) # v1[i] <- exp(ga10*u1[i] + w1[i] + ga11*cp1[i])
     v2[i] <- exp(ga20*u2[i] + w2[i])
 
-    # ---- PE marginal log-lik (your stable log-sum-exp) ----
-    logL1[i] <- ifelse(Ti[i,1]!=0, 
-                 sum(log(lambda1[i,1:k.pe[i]])) + v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a), 
-                 v1[i]*exp(b10+b[1]*X1[i])*(time.t0[i]^a-time.tau[i]^a))
+    # Baseline intensity pieces at event times
+    for(j in 1:max.count){
+      lambda0[i,j] <- a * (Ti2[i,j])^(a-1)
 
-    logL2[i] <- ifelse(Ti[i,1]!=0, 
-                 sum(log(lambda2[i,1:k.pe[i]])) + v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a), 
-                 v2[i]*exp(b20+b[2]*X1[i])*(time.t0[i]^a-time.tau[i]^a))
+      lambda1[i,j] <- lambda0[i,j] * v1[i] * exp(b10 + b[1]*X1[i])
+      lambda2[i,j] <- lambda0[i,j] * v2[i] * exp(b20 + b[2]*X1[i])
 
+      loghaz1[i,j] <- E[i,j] * log(lambda1[i,j])
+      loghaz2[i,j] <- E[i,j] * log(lambda2[i,j])
+    }
+
+    # NHPP log-likelihood for each component:
+    # sum log lambda(t_j) - b*(tau^a - t0^a)
+    # where b = v*exp(b0+bX)
+    logL1[i] <- sum(loghaz1[i,1:max.count]) -
+      v1[i] * exp(b10 + b[1]*X1[i]) * (time.tau[i]^a - time.t0[i]^a)
+
+    logL2[i] <- sum(loghaz2[i,1:max.count]) -
+      v2[i] * exp(b20 + b[2]*X1[i]) * (time.tau[i]^a - time.t0[i]^a)
+
+    # Mixture over PE components
     maxlogL[i] <- max(logL1[i], logL2[i])
 
     ll.e[i] <- maxlogL[i] + log(
@@ -144,33 +155,44 @@ model {
       pi.r[2] * exp(logL2[i] - maxlogL[i])
     )
 
-    phi[i] <- max(-ll.e[i] + 1000, 0)
+    # zeros trick for custom likelihood
+    phi[i] <- max(-ll.e[i] + 1000000, 0)
     zeros[i] ~ dpois(phi[i])
 
+    # Optional classification draw (post-processing)
     prob_class[i,1] <- pi.r[1] * exp(logL1[i] - ll.e[i])
     prob_class[i,2] <- pi.r[2] * exp(logL2[i] - ll.e[i])
     z.r[i] ~ dcat(prob_class[i,1:2])
   }
 
-  log_lik0.a <- sum(ll.a[]) 
-  log_lik0.e <- sum(ll.e[]) 
+  # -------------------------
+  # Global summaries
+  # -------------------------
+  log_lik0.a <- sum(ll.a[])
+  log_lik0.e <- sum(ll.e[])
   dev.a <- -2*log_lik0.a
   dev.e <- -2*log_lik0.e
 
-  pi[1:2] ~ ddirch(alpha[])
+  # -------------------------
+  # Priors
+  # -------------------------
+  pi[1:2]   ~ ddirch(alpha[])
   pi.r[1:2] ~ ddirch(alpha.r[])
 
+  # PA intercept ordering: c20 > c10
   c10 ~ dnorm(0,0.0001)
-  c20 ~ dnorm(0,0.0001)
-  for (k in 1:3){
-    c[k] ~ dnorm(0,0.0001)	
-  }
-  B1 <- c[1]-c[2]
-  B2 <- c[1]+c[2]
+  c20 ~ dnorm(0,0.0001) T(c10, )
 
-  u.tau1 ~ dgamma(0.001,0.001)
+  for (k in 1:3){
+    c[k] ~ dnorm(0,0.0001)
+  }
+  B1 <- c[1] - c[2]
+  B2 <- c[1] + c[2]
+
+  u.tau1 ~ dgamma(16,4) # u.tau1 ~ dgamma(0.001,0.001)
   u.tau.inv1 <- 1/u.tau1
-  u.tau2 ~ dgamma(0.001,0.001)
+
+  u.tau2 ~ dgamma(16,4) # u.tau2 ~ dgamma(0.001,0.001)
   u.tau.inv2 <- 1/u.tau2
 
   cp1.mu ~ dnorm(0,0.01)
@@ -179,8 +201,14 @@ model {
 
   a ~ dgamma(0.01,0.01)
 
-  b10 ~ dnorm(0,0.25)
-  b20 ~ dnorm(0,0.25)
+  # PE ordering: b10 < b20
+  b20_raw ~ dnorm(0, 0.25)
+  delta_b ~ dnorm(0, 0.25) T(0,)
+  b10 <- b20_raw - delta_b
+  b20 <- b20_raw
+  # b10 ~ dnorm(0,0.25)
+  # b20 ~ dnorm(0,0.25)
+
   for (p in 1:2){
     b[p] ~ dnorm(0,0.25)
   }
@@ -189,22 +217,22 @@ model {
   ga20 ~ dnorm(0,0.0001)
   ga11 ~ dnorm(0,0.0001)
 
-  w.tau1 ~ dgamma(0.1,0.1)
+  w.tau1 ~ dgamma(25, 2.25) # w.tau1 ~ dgamma(2,2)
   w.tau.inv1 <- 1/w.tau1
-  w.tau2 ~ dgamma(0.1,0.1)
+
+  w.tau2 ~ dgamma(25, 2.25) # w.tau2 ~ dgamma(2,2)
   w.tau.inv2 <- 1/w.tau2
 }
 "
 
-
 ####Observed DATA
-data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti,alpha=alpha, alpha.r=alpha.r)) 
+data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.9,0.1), u.tau1=0.25,u.tau2=0.25, cp1.mu=14, cp1.tau=1,
-                           b10=-3.3, b20=-3, b=c(0.2,0.3), a=1.8, w.tau1=0.04, w.tau2=0.04, 
+inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.6,0.4), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
+                           b20_raw=-2, delta_b=2, b=c(0.2,0.3), a=1.8, w.tau1=11.1, w.tau2=11.1, ga10=1.2, ga20=-0.2, ga11=-0.05,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.91,0.09), u.tau1=0.25,u.tau2=0.25, cp1.mu=14.1, cp1.tau=1,
-                           b10=-3.4, b20=-2.9, b=c(0.2,0.3)+0.1, a=1.8, w.tau1=0.04, w.tau2=0.04, 
+inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.591,0.41), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
+                           b20_raw=-1.9, delta_b=2.2, b=c(0.2,0.3)+0.1, a=1.75, w.tau1=10, w.tau2=12, ga10=1.1, ga20=-0.1, ga11=-0.03,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
@@ -212,14 +240,15 @@ res <- run.jags(model=modelrancp, burnin=10000, sample=5000,
                 monitor=c("B1","B2","c10", "c20","c", "cp1",
                           "pi","pi.r","z","z.r","u1","u2", "u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
                           "cp1.mu","cp1.tau.inv","cp1.tau",
-                          "b10","b20","b", "a","ga10","ga20","ga11","w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2",
+                          "b10","b20","b", "a","ga10","ga20","ga11",
+                          "w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","b20_raw","delta_b",
                           "prob_class","ll.a","ll.e","dev.a","dev.e"), 
                 data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=15)
 
 summary <- summary(res)
 summary
 result_df <- as.data.frame(summary)
-text <- list.files(pattern="mixJM.X_newdata.")
+text <- list.files(pattern="mixJM.X_newdata1.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.newresult1.",num,".csv"))
 save(res, file=paste0("mixJM.newres1.",num,".RData"))
