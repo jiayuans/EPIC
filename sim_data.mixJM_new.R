@@ -7,7 +7,7 @@ setwd(dirg)
 # ----------------------------
 # Read follow-up times
 # ----------------------------
-long.time <- read.csv("long.data_new.csv")
+long.time <- read.csv("long.data_new800.csv")
 first.tt <- long.time[, 2]
 last.tt  <- long.time[, 3]
 
@@ -34,7 +34,7 @@ c10 <- -3.3
 c20 <- -2.6
 c   <- c(0.3, 0.3, -0.05)         # c[1], c[2], c[3]
 cp1_mu_true <- 14
-cp1_sd_true <- 1
+cp1_sd_true <- 1.5
 pi_true <- c(0.55, 0.45)          # Pr(z=1), Pr(z=2) for PA component
 
 # PE
@@ -42,9 +42,9 @@ a_true   <- 1.8
 b10_true <- -4.0
 b20_true <- -2.0
 b_true   <- c(0.2, 0.3)           # b[1], b[2]
-ga10_true <- 1.2
-ga20_true <- -0.2
-ga11_true <- -0.05
+ga10_true <- 1.5
+ga20_true <- -0.4
+ga11_true <- -0.1
 pi_r_true <- c(0.6, 0.4)          # Pr(z.r=1), Pr(z.r=2) for PE component
 
 # Random effects truths (precisions)

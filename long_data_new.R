@@ -1,4 +1,4 @@
-dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC/"
+dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim/"
 setwd(dirg)
 library(dplyr)
 ##################################################################
@@ -24,7 +24,7 @@ library(dplyr)
 ##tt <- cbind(first.tt,last.tt)
 ##write.csv(tt,"long.time.csv")
 
-dat.pa <- read.csv(file=paste("C:/UCHealth/RA/Project/EPIC-CF/Data/Source","/Data-PA-cohort.csv",sep=""))
+dat.pa <- read.csv(file=paste("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Data/Source","/Data-PA-cohort.csv",sep=""))
 dat.pa <- dat.pa[,-1]
 
 sexf <- dat.pa[!duplicated(dat.pa$cffidno,dat.pa$sexf),5]
@@ -45,13 +45,13 @@ dat$fu <- dat$last.t -dat$first.t
 
 
 # Assuming your data frame is called `df` and you want to sort by `column_name`
-top_500_dat <- dat %>%
+top_800_dat <- dat %>%
   arrange(desc(fu)) %>%
-  head(500)
+  head(800)
 
-first.tt<-top_500_dat$first.t
-last.tt<-top_500_dat$last.t
+first.tt<-top_800_dat$first.t
+last.tt<-top_800_dat$last.t
 
 lt <- cbind(first.tt,last.tt)
-write.csv(lt,"long.data_new500.csv")
+write.csv(lt,"long.data_new800.csv")
 

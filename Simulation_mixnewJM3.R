@@ -5,7 +5,7 @@ library(runjags)
 library(tidyverse)
 library(mcmcplots)
 
-long.time <- read.csv("long.data_new.csv")
+long.time <- read.csv("long.data_new800.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
@@ -225,22 +225,22 @@ model {
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.6,0.4), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
-                           b20_raw=-2, delta_b=2, b=c(0.2,0.3), a=1.8, w.tau1=11.1, w.tau2=11.1, ga10=1.2, ga20=-0.2, ga11=-0.05,
+inits1 <- dump.format(list(c10=-3.3, c20=-2.6, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.6,0.4), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=0.4,
+                           b20_raw=-2, delta_b=2, b=c(0.2,0.3), a=1.8, w.tau1=11.1, w.tau2=11.1, ga10=1.5, ga20=-0.4, ga11=-0.1,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.591,0.41), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
-                           b20_raw=-1.9, delta_b=2.2, b=c(0.2,0.3)+0.1, a=1.75, w.tau1=10, w.tau2=12, ga10=1.1, ga20=-0.1, ga11=-0.03,
+inits2 <- dump.format(list(c10=-3.2, c20=-2.5, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.59,0.41), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.5,
+                           b20_raw=-1.9, delta_b=2.2, b=c(0.2,0.3)+0.1, a=1.75, w.tau1=10, w.tau2=12, ga10=1.4, ga20=-0.3, ga11=-0.08,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
-res <- run.jags(model=modelrancp, burnin=10000, sample=5000,  
+res <- run.jags(model=modelrancp, burnin=20000, sample=10000,  
                 monitor=c("B1","B2","c10", "c20","c", "cp1",
-                          "pi","pi.r","z","z.r","u1","u2", "u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
+                          "pi","pi.r","u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
                           "cp1.mu","cp1.tau.inv","cp1.tau",
                           "b10","b20","b", "a","ga10","ga20","ga11",
-                          "w1","w2","w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","b20_raw","delta_b",
-                          "prob_class","ll.a","ll.e","dev.a","dev.e"), 
-                data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=15)
+                          "w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","b20_raw","delta_b",
+                          "ll.a","ll.e","dev.a","dev.e"), 
+                data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=20)
 
 summary <- summary(res)
 summary

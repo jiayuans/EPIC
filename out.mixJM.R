@@ -1,14 +1,14 @@
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixJM_020225")
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixJM_021125")
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM1_030625")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM2_030825")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="mixJM.newresult1.")
+text <- list.files(pattern="mixJM.newresult2.")
 num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("mixJM.newresult1.", i, ".csv") 
+  file_name <- paste0("mixJM.newresult2.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -49,7 +49,7 @@ w2.mean<-rep(NA,I)
 w2.tau.inv.mean<-rep(NA,I)
 
 for(i in 1:I){ 
-  Flag[i] <- ifelse(max(data_frames[[i]][,12], na.rm = TRUE)<1.1,1,0)
+  Flag[i] <- ifelse(max(data_frames[[i]][,12], na.rm = TRUE)<1.3,1,0)
   B1.mean[i] <- data_frames[[i]][1,5] 
   B2.mean[i] <- data_frames[[i]][2,5] 
   c10.mean[i] <-data_frames[[i]][3,5] 
