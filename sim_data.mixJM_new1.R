@@ -42,9 +42,9 @@ a_true   <- 1.8
 b10_true <- -4.0
 b20_true <- -2.0
 b_true   <- c(0.2, 0.3)           # b[1], b[2]
-ga10_true <- 1.2
+ga10_true <- 1
 ga20_true <- -0.2
-ga11_true <- -0.05
+ga11_true <- -0.1
 pi_r_true <- c(0.6, 0.4)          # Pr(z.r=1), Pr(z.r=2) for PE component
 
 # Random effects truths (precisions)
