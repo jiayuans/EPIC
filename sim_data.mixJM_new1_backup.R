@@ -38,8 +38,7 @@ cp1_sd_true <- 1.5
 pi_true <- c(0.55, 0.45)          # Pr(z=1), Pr(z=2) for PA component
 
 # PE
-a1_true  <- 1.8
-a2_true  <- 1.6
+a_true   <- 1.8
 b10_true <- -4.0
 b20_true <- -2.0
 b_true   <- c(0.2, 0.3)           # b[1], b[2]
@@ -49,19 +48,19 @@ ga11_true <- -0.1
 pi_r_true <- c(0.6, 0.4)          # Pr(z.r=1), Pr(z.r=2) for PE component
 
 # Random effects truths (precisions)
+# Choose these so recovery is feasible.
 u_tau1_true <- 4            # sd(u1)=0.5
 u_tau2_true <- 4            # sd(u2)=0.5
 w_tau1_true <- 11.11111111  # sd(w1)=0.3
 w_tau2_true <- 11.11111111  # sd(w2)=0.3
 
 # ----------------------------
-# NHPP generator (0..T)
+# Your current NHPP generator (0..T)
 # Returns interval rows + a terminal censoring row at T with status=0
 # ----------------------------
 NHPP <- function(a, b, T) {
   mu <- b * T^a
   n  <- rpois(1, mu)
-  
   if (n != 0) {
     u <- sort(runif(n, 0, 1))
     y <- T * u^(1/a)
@@ -86,17 +85,17 @@ for (r in 2:Int) {
   X1 <- c(rep(1, floor(N/2)), rep(0, N - floor(N/2)))
   
   # Latent variables exactly as in JAGS
-  u1  <- rnorm(N, 0, sqrt(1 / u_tau1_true))
-  u2  <- rnorm(N, 0, sqrt(1 / u_tau2_true))
-  w1  <- rnorm(N, 0, sqrt(1 / w_tau1_true))
-  w2  <- rnorm(N, 0, sqrt(1 / w_tau2_true))
+  u1  <- rnorm(N, 0, sqrt(1/u_tau1_true))
+  u2  <- rnorm(N, 0, sqrt(1/u_tau2_true))
+  w1  <- rnorm(N, 0, sqrt(1/w_tau1_true))
+  w2  <- rnorm(N, 0, sqrt(1/w_tau2_true))
   cp1 <- rnorm(N, cp1_mu_true, cp1_sd_true)
   
   # Class indicators (truth)
   z   <- sample(1:2, size = N, prob = pi_true,  replace = TRUE)   # PA class
   z_r <- sample(1:2, size = N, prob = pi_r_true, replace = TRUE)  # PE class
   
-  # Frailties
+  # Frailties (exactly JAGS)
   cp1c <- cp1 - cp1_mu_true
   v1 <- exp(ga10_true * u1 + w1 + ga11_true * cp1c)
   v2 <- exp(ga20_true * u2 + w2)
@@ -133,20 +132,22 @@ for (r in 2:Int) {
   }
   
   # ----------------------------
-  # Simulate PE recurrent events
+  # Simulate PE recurrent events using your NHPP(0..T)
+  # Then your JAGS preprocessing will filter stop >= t0
   # ----------------------------
+  # IMPORTANT: Use the same T as your data pipeline: tau = tt - 0.25
   tau <- tt - 0.25
+  
   sim_pe_list <- vector("list", N)
   
   for (i in 1:N) {
-    
     if (z_r[i] == 1) {
       b_scale <- v1[i] * exp(b10_true + b_true[1] * X1[i])
-      times <- NHPP(a = a1_true, b = b_scale, T = tau[i])
     } else {
       b_scale <- v2[i] * exp(b20_true + b_true[2] * X1[i])
-      times <- NHPP(a = a2_true, b = b_scale, T = tau[i])
     }
+    
+    times <- NHPP(a = a_true, b = b_scale, T = tau[i])
     
     dat_i <- data.frame(
       id     = i,
@@ -165,7 +166,7 @@ for (r in 2:Int) {
     arrange(id, stop)
   
   # ----------------------------
-  # Write outputs
+  # Write outputs (same filenames you use)
   # ----------------------------
   write.csv(as.data.frame(X),
             file = paste0("mixJM.X_newdata1.", r - 2, ".csv"),
@@ -184,8 +185,8 @@ for (r in 2:Int) {
   # ----------------------------
   truth <- data.frame(
     c10 = c10, c20 = c20, c1 = c[1], c2 = c[2], c3 = c[3],
-    cp1_mu = cp1_mu_true, cp1_tau = 1 / (cp1_sd_true^2),
-    a1 = a1_true, a2 = a2_true,
+    cp1_mu = cp1_mu_true, cp1_tau = 1/(cp1_sd_true^2),
+    a = a_true,
     b10 = b10_true, b20 = b20_true, b1 = b_true[1], b2 = b_true[2],
     ga10 = ga10_true, ga20 = ga20_true, ga11 = ga11_true,
     pi1 = pi_true[1], pi2 = pi_true[2],
