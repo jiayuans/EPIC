@@ -7,7 +7,7 @@ setwd(dirg)
 # ----------------------------
 # Read follow-up times
 # ----------------------------
-long.time <- read.csv("long.data_new800.csv")
+long.time <- read.csv("long.data_new600.csv")
 first.tt <- long.time[, 2]
 last.tt  <- long.time[, 3]
 

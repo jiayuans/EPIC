@@ -45,13 +45,13 @@ dat$fu <- dat$last.t -dat$first.t
 
 
 # Assuming your data frame is called `df` and you want to sort by `column_name`
-top_800_dat <- dat %>%
+top_600_dat <- dat %>%
   arrange(desc(fu)) %>%
-  head(800)
+  head(600)
 
-first.tt<-top_800_dat$first.t
-last.tt<-top_800_dat$last.t
+first.tt<-top_600_dat$first.t
+last.tt<-top_600_dat$last.t
 
 lt <- cbind(first.tt,last.tt)
-write.csv(lt,"long.data_new800.csv")
+write.csv(lt,"long.data_new600.csv")
 
