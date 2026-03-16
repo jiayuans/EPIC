@@ -5,7 +5,7 @@ library(runjags)
 library(tidyverse)
 library(mcmcplots)
 
-long.time <- read.csv("long.data_new800.csv")
+long.time <- read.csv("long.data_new600.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
@@ -239,14 +239,14 @@ res <- run.jags(model=modelrancp, burnin=10000, sample=5000,
 summary <- summary(res)
 summary
 result_df <- as.data.frame(summary)
-text <- list.files(pattern="mixJM.X_newdata.")
+text <- list.files(pattern="mixJM.X_newdata1.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
-write.csv(result_df, paste0("mixJM.newresult3.",num,".csv"))
-save(res, file=paste0("mixJM.newres3.",num,".RData"))
+write.csv(result_df, paste0("mixJM.newresult3bu.",num,".csv"))
+save(res, file=paste0("mixJM.newres3bu.",num,".RData"))
 
 res_jm <- res$mcmc
 vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-pdf(file = paste0("mixJM.newtraceplot3.",num,".pdf"),   # The directory you want to save the file in
+pdf(file = paste0("mixJM.newtraceplot3bu.",num,".pdf"),   # The directory you want to save the file in
     width = 4, # The width of the plot in inches
     height = 4) # The height of the plot in inches
 traplot(vars)
