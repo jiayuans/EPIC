@@ -239,7 +239,7 @@ res <- run.jags(model=modelrancp, burnin=10000, sample=5000,
 summary <- summary(res)
 summary
 result_df <- as.data.frame(summary)
-text <- list.files(pattern="mixJM.X_newdata.")
+text <- list.files(pattern="mixJM.X_newdata1.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.newresult3.",num,".csv"))
 save(res, file=paste0("mixJM.newres3.",num,".RData"))
