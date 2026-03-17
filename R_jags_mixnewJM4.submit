@@ -1,7 +1,7 @@
 +SingularityImage = "osdf:///ospool/ap40/data/jiayuan.shi/libr.sif"
 executable        = Simulation_mixnewJM4.R
-arguments = mixJM.X_newdata.$(Process).csv mixJM.Y_newdata.$(Process).csv mixJM.rec_newdata.$(Process).csv long.data_new800.csv
-transfer_input_files = mixJM.X_newdata.$(Process).csv, mixJM.Y_newdata.$(Process).csv, mixJM.rec_newdata.$(Process).csv, long.data_new800.csv
+arguments = mixJM.X_newdata2.$(Process).csv mixJM.Y_newdata2.$(Process).csv mixJM.rec_newdata2.$(Process).csv long.data_new600.csv
+transfer_input_files = mixJM.X_newdata2.$(Process).csv, mixJM.Y_newdata2.$(Process).csv, mixJM.rec_newdata2.$(Process).csv, long.data_new600.csv
 transfer_output_files = mixJM.newresult4.$(Process).csv, mixJM.newres4.$(Process).RData, mixJM.newtraceplot4.$(Process).pdf
 
 log    = R.log.$(Cluster).$(Process)
