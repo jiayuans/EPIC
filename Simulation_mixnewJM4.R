@@ -180,14 +180,14 @@ model {
   B1 <- c[1] - c[2]
   B2 <- c[1] + c[2]
 
-  u.tau1 ~ dgamma(0.001,0.001)
+  u.tau1 ~ dgamma(16,4) # u.tau1 ~ dgamma(0.001,0.001)
   u.tau.inv1 <- 1/u.tau1
 
-  u.tau2 ~ dgamma(0.001,0.001)
+  u.tau2 ~ dgamma(16,4) # u.tau2 ~ dgamma(0.001,0.001)
   u.tau.inv2 <- 1/u.tau2
 
   cp1.mu ~ dnorm(0,0.01)
-  cp1.tau ~ dgamma(0.01,0.01)
+  cp1.tau ~ dgamma(1,1)
   cp1.tau.inv <- 1/cp1.tau
 
   a1 ~ dgamma(0.01,0.01)
@@ -202,14 +202,14 @@ model {
     b[p] ~ dnorm(0,0.001)
   }
 
-  ga10 ~ dnorm(0,0.01)
-  ga20 ~ dnorm(0,0.01)
-  ga11 ~ dnorm(0,0.01)
+  ga10 ~ dnorm(0,0.001)
+  ga20 ~ dnorm(0,0.001)
+  ga11 ~ dnorm(0,0.001)
 
-  w.tau1 ~ dgamma(0.001, 0.001) 
+  w.tau1 ~ dgamma(25, 2.25) # w.tau1 ~ dgamma(2,2)
   w.tau.inv1 <- 1/w.tau1
 
-  w.tau2 ~ dgamma(0.001, 0.001) 
+  w.tau2 ~ dgamma(25, 2.25) # w.tau2 ~ dgamma(2,2)
   w.tau.inv2 <- 1/w.tau2
 }
 "
