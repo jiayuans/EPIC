@@ -5,7 +5,7 @@ library(runjags)
 library(tidyverse)
 library(mcmcplots)
 
-long.time <- read.csv("long.data.csv")
+long.time <- read.csv("long.data_new.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
@@ -25,9 +25,9 @@ X1=c(rep(1,N/2),rep(0,N/2))
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data.")))
+X <- as.matrix(read.csv(list.files(pattern="X_data_2rcp.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_data_2rcp.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data_2rcp.")))
 #############################################################
 
 tt<-tt-0.25
@@ -98,7 +98,7 @@ model {
        }
         u[i] ~ dnorm(0,u.tau)
         cp1[i] ~ dnorm(cp1.mu,cp1.tau)	
-	      cp2.temp[i] ~ dunif(0,13) ## max[i]
+	      cp2.temp[i] ~ dgamma(0.01,0.01)
 	      cp2[i] <- cp1[i] + cp2.temp[i]
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
@@ -106,7 +106,7 @@ model {
         v[i] <- exp(ga*u[i]+w[i]+ga1*cp1[i]+ga2*cp2[i])
         L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
-        phi[i] <- -log(L.e[i]) + 1000
+        phi[i] <- -ll.e[i] + 1000
         zeros[i] ~ dpois(phi[i])
   }
   log_lik0.a <- sum(ll.a[]) 
@@ -118,9 +118,9 @@ model {
 	      c[k] ~ dnorm(0,0.0001)	
 	}
   ## prior distributions
-	u.tau ~ dgamma(0.001,0.001)
-	cp1.mu ~ dnorm(0,0.001)
-	cp1.tau ~ dgamma(0.001,0.001)
+	u.tau ~ dgamma(0.01,0.01)
+	cp1.mu ~ dnorm(0,0.01)
+	cp1.tau ~ dgamma(0.01,0.01)
 	cp1.tau.inv <- 1/cp1.tau  ## variance 
 	B1 <-c[1]-c[2]-c[3]
   B2 <-c[1]+c[2]-c[3]
@@ -129,10 +129,10 @@ model {
   a ~ dgamma(0.01,0.01)
   b0 ~ dnorm(0,0.0001)	
   b ~ dnorm(0,0.0001)		
-	ga ~ dnorm(0,0.0001)
-	ga1 ~ dnorm(0,0.0001)
-	ga2 ~ dnorm(0,0.0001)
-	w.tau ~ dgamma(0.001,0.001)
+	ga ~ dnorm(0,0.01)
+	ga1 ~ dnorm(0,0.01)
+	ga2 ~ dnorm(0,0.01)
+	w.tau ~ dgamma(0.01,0.01)
 	w.tau.inv <- 1/w.tau  ## variance 
 }"
   
@@ -140,35 +140,32 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, 
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-2, c=c(0.2,0.4,-0.2,-0.1), u.tau=1, cp1.mu=17, cp1.tau=1, 
-                             b0=-3.4, b=0.2, a=1.7, w.tau=1, ga=0.85, ga1=-0.03, ga2=-0.006,
+  inits1 <- dump.format(list(c0=-2, c=c(0.1,0.15,0.1,-0.1), u.tau=0.04, cp1.mu=5, cp1.tau=1, 
+                             b0=-2, b=0.2, a=1.8, w.tau=0.04, ga=0.2, ga1=-0.05, ga2=-0.01,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-2.1, c=c(0.2,0.4,-0.2,-0.1)+0.01, u.tau=1, cp1.mu=17, cp1.tau=1, 
-                             b0=-3.41, b=0.21, a=1.71, w.tau=1, ga=0.85, ga1=-0.03, ga2=-0.006,
+  inits2 <- dump.format(list(c0=-2.1, c=c(0.1,0.15,0.1,-0.1)+0.01, u.tau=0.04, cp1.mu=5, cp1.tau=1, 
+                             b0=-2.1, b=0.21, a=1.81, w.tau=0.04, ga=0.21, ga1=-0.04, ga2=-0.009,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=20000, sample=3000, 
+  res <- run.jags(model=modelrancp, burnin=5000, sample=3000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
                             "b0","b","a","ga","ga1","ga2","w.tau.inv",
                             "cp1.mu","cp1.tau.inv","cp2.temp",
                             "u","v","w",
-                            "u.tau","w.tau","cp1.tau","ll.a","ll.e","dev.a","dev.e","dic"), 
-                  data=data, n.chains=2, inits=c(inits1,inits2), thin=10, module='dic')
+                            "u.tau","w.tau","cp1.tau","ll.a","ll.e","dev.a","dev.e"), 
+                  data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=6)
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data.")
+  text <- list.files(pattern="X_data_2rcp.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result.",num,".csv"))
+  write.csv(result_df, paste0("result_2rcp.",num,".csv"))
+  save(res, file=paste0("res_2rcp.",num,".RData"))
   
   res_jm <- res$mcmc
-  #dimnames(res_jm[[1]])
-  vars<-mcmc.list(res_jm[[1]][,c(1:20)],res_jm[[2]][,c(1:20)])
-  #str(vars)
-  #plot(vars[,1])
-  #summary(vars)
-  pdf(file = paste0("traceplot.",num,".pdf"),   # The directory you want to save the file in
+  vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
+  pdf(file = paste0("traceplot_2rcp.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)

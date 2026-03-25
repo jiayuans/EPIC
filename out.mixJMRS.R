@@ -1,14 +1,14 @@
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixJM_020225")
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixJM_021125")
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM6_032225")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJMrs_032225")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="mixJM.newresult6.")
+text <- list.files(pattern="mixJM.newresultrs.")
 num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("mixJM.newresult6.", i, ".csv") 
+  file_name <- paste0("mixJM.newresultrs.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -32,8 +32,14 @@ pi2r.mean<-rep(NA,I)
 u1.tau.inv.mean<-rep(NA,I)
 #u2.mean<-rep(NA,I)
 u2.tau.inv.mean<-rep(NA,I)
+u10.tau.mean<-rep(NA,I)
+u20.tau.mean<-rep(NA,I)
+u11.tau.mean<-rep(NA,I)
+u12.tau.mean<-rep(NA,I)
+u21.tau.mean<-rep(NA,I)
+
 cp1.mu.mean<-rep(NA,I)
-cp1.tau.mean<-rep(NA,I)
+cp1.tau.inv.mean<-rep(NA,I)
 
 b10.mean<-rep(NA,I)
 b20.mean<-rep(NA,I)
@@ -43,7 +49,10 @@ a1.mean<-rep(NA,I)
 a2.mean<-rep(NA,I)
 ga10.mean<-rep(NA,I)
 ga20.mean<-rep(NA,I)
+ga.mean<-rep(NA,I)
 ga11.mean<-rep(NA,I)
+ga12.mean<-rep(NA,I)
+ga21.mean<-rep(NA,I)
 #w1.mean<-rep(NA,I)
 w1.tau.inv.mean<-rep(NA,I)
 #w2.mean<-rep(NA,I)
@@ -67,35 +76,39 @@ for(i in 1:I){
   u1.tau.inv.mean[i] <-data_frames[[i]][612,5]
   #u2.mean[i] <-mean(data_frames[[i]][1612:2011,5])
   u2.tau.inv.mean[i] <-data_frames[[i]][613,5]
-  cp1.mu.mean[i] <-data_frames[[i]][616,5]
-  cp1.tau.mean[i] <-data_frames[[i]][617,5]
+  u10.tau.mean[i] <-data_frames[[i]][614,5]
+  u20.tau.mean[i] <-data_frames[[i]][615,5]
+  u11.tau.mean[i] <-data_frames[[i]][616,5]
+  u12.tau.mean[i] <-data_frames[[i]][617,5]
+  u21.tau.mean[i] <-data_frames[[i]][618,5]
+  cp1.mu.mean[i] <-data_frames[[i]][619,5]
+  cp1.tau.inv.mean[i] <-data_frames[[i]][620,5]
   
-  b10.mean[i] <-data_frames[[i]][619,5] 
-  b20.mean[i] <-data_frames[[i]][620,5] 
-  b1.mean[i] <-data_frames[[i]][621,5] 
-  b2.mean[i] <-data_frames[[i]][622,5] 
-  a1.mean[i] <-data_frames[[i]][623,5] 
-  a2.mean[i] <-data_frames[[i]][624,5] 
-  ga10.mean[i] <-data_frames[[i]][625,5] 
-  ga20.mean[i] <-data_frames[[i]][626,5] 
-  ga11.mean[i] <-data_frames[[i]][627,5] 
+  b10.mean[i] <-data_frames[[i]][622,5] 
+  b20.mean[i] <-data_frames[[i]][623,5] 
+  b1.mean[i] <-data_frames[[i]][624,5] 
+  b2.mean[i] <-data_frames[[i]][625,5] 
+  a1.mean[i] <-data_frames[[i]][626,5] 
+  a2.mean[i] <-data_frames[[i]][627,5] 
+  ga10.mean[i] <-data_frames[[i]][628,5] 
+  ga20.mean[i] <-data_frames[[i]][629,5] 
+  ga.mean[i] <-data_frames[[i]][630,5] 
+  ga11.mean[i] <-data_frames[[i]][631,5] 
+  ga12.mean[i] <-data_frames[[i]][632,5] 
+  ga21.mean[i] <-data_frames[[i]][633,5] 
   #w1.mean[i] <-mean(data_frames[[i]][2027:2426,5])
-  w1.tau.inv.mean[i] <-data_frames[[i]][630,5]
+  w1.tau.inv.mean[i] <-data_frames[[i]][636,5]
   #w2.mean[i] <-mean(data_frames[[i]][2427:2826,5])
-  w2.tau.inv.mean[i] <-data_frames[[i]][631,5]
+  w2.tau.inv.mean[i] <-data_frames[[i]][637,5]
 }
 
 Sim.results=cbind(Flag,B1.mean,B2.mean,cp1.mean,c10.mean,c20.mean,c1.mean,c2.mean,c3.mean,pi1.mean,pi2.mean,pi1r.mean,pi2r.mean,
-                  u1.tau.inv.mean,u2.tau.inv.mean,cp1.mu.mean,cp1.tau.mean,
-                  b10.mean,b20.mean,b1.mean,b2.mean,a1.mean,a2.mean,ga10.mean,ga20.mean,ga11.mean,w1.tau.inv.mean,w2.tau.inv.mean)
+                  u1.tau.inv.mean,u2.tau.inv.mean,u10.tau.mean,u20.tau.mean,u11.tau.mean,u12.tau.mean,u21.tau.mean,cp1.mu.mean,cp1.tau.inv.mean,
+                  b10.mean,b20.mean,b1.mean,b2.mean,a1.mean,a2.mean,ga10.mean,ga20.mean,ga11.mean,ga12.mean,ga21.mean,ga.mean,w1.tau.inv.mean,w2.tau.inv.mean)
 table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
-
-
-
-
 
 
 

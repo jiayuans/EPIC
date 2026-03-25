@@ -1,13 +1,13 @@
 library(tidyverse)
 
-dirg <- "C:/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC/"
+dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim/"
 setwd(dirg)
 ##################################################################
 ##    Functions to Read data
 ## 
 ##################################################################
 
-long.time <- read.csv("long.data.csv")
+long.time <- read.csv("long.data_new.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
@@ -27,13 +27,13 @@ I=201
 
 ###############set true values#########################################
 c0=-2 
-c1=0.2
-c2=0.4
-c3=-0.2
+c1=0.1
+c2=0.15
+c3=-0.1
 c4=-0.1
 Verror=1
-cp1.mu=17
-cp1.sd=7
+cp1.mu=5
+cp1.sd=1
 
 #############################################################
 set.seed(123)
@@ -70,7 +70,7 @@ NHPP<-function(a,b,T){
 # -------------- Building the simulated poisson data -----
 poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,TTei){
   le <- length(x)
-  c_0i <- rnorm(le,0,1) 
+  c_0i <- rnorm(le,0,0.2) 
   vi <- exp(ga*b_0i+c_0i+ga1*cp_1i+ga2*cp_2i)
   ##vi <- ifelse(rep(ph,le)==rep(0,le),rep(1,le),rgamma(le,shape=1/ph, scale=ph))
   
@@ -103,9 +103,9 @@ poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,1) #1.6
+  b_0i<-rnorm(N,0,0.2) #1.6
   cp_1i <- rnorm(N,cp1.mu,cp1.sd)
-  cp2.tempi <- runif(N,0,13) #last.tt
+  cp2.tempi <- rgamma(N,0.01,0.01)
   cp_2i <- cp_1i + cp2.tempi
   
   X1=c(rep(1,N/2),rep(0,N/2))
@@ -129,18 +129,18 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.7,beta=0.2,beta0=-3.4,x=X1,ga=0.85,ga1=-0.03,ga2=-0.006,TTei=tt-0.25)
+  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga=0.2,ga1=-0.05,ga2=-0.01,TTei=tt-0.25)
   
   X_df <- as.data.frame(X)
-  filename <- paste0("X_data.", r-2, ".csv")
+  filename <- paste0("X_data_2rcp.", r-2, ".csv")
   write.csv(X_df, file = filename, row.names = FALSE)
   
   Y_df <- as.data.frame(Y)
-  filename <- paste0("Y_data.", r-2, ".csv")
+  filename <- paste0("Y_data_2rcp.", r-2, ".csv")
   write.csv(Y_df, file = filename, row.names = FALSE)
   
   simdat.pe_df <- as.data.frame(simdat.pe00)
-  filename <- paste0("sim.pe_data.", r-2, ".csv")
+  filename <- paste0("sim.pe_data_2rcp.", r-2, ".csv")
   write.csv(simdat.pe_df, file = filename, row.names = FALSE)
 } 
  
