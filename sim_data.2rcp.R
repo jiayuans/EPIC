@@ -29,7 +29,7 @@ I=201
 c0=-2 
 c1=0.1
 c2=0.15
-c3=-0.1
+c3=0.1
 c4=-0.1
 Verror=1
 cp1.mu=5
@@ -105,7 +105,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga,ga1,ga2,TTei){
 for (r in 2:I){
   b_0i<-rnorm(N,0,0.2) #1.6
   cp_1i <- rnorm(N,cp1.mu,cp1.sd)
-  cp2.tempi <- rgamma(N,0.01,0.01)
+  cp2.tempi <- rgamma(N,shape = 100, rate = 10)
   cp_2i <- cp_1i + cp2.tempi
   
   X1=c(rep(1,N/2),rep(0,N/2))
