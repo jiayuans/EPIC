@@ -10,7 +10,7 @@ setwd(dirg)
 long.time <- read.csv("long.data_new600.csv")
 first.tt <- long.time[, 2]
 last.tt  <- long.time[, 3]
-
+ds
 N  <- length(last.tt)
 id <- 1:N
 

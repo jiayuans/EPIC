@@ -1,14 +1,14 @@
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixJM_020225")
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixJM_021125")
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM6_032225")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM3_032225")
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="mixJM.newresult6.")
+text <- list.files(pattern="mixJM.newresult3.")
 num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("mixJM.newresult6.", i, ".csv") 
+  file_name <- paste0("mixJM.newresult3.", i, ".csv") 
   read.csv(file_name)
 })
 

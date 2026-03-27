@@ -2,14 +2,14 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM6_032225")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM7_032225")
 
 ## ----------------------------
 ## 1. Read files
 ## ----------------------------
-files <- list.files(pattern = "^mixJM\\.newresult6\\.[0-9]+\\.csv$")
+files <- list.files(pattern = "^mixJM\\.newresult7\\.[0-9]+\\.csv$")
 
-file_id <- as.numeric(sub("^mixJM\\.newresult6\\.([0-9]+)\\.csv$", "\\1", files))
+file_id <- as.numeric(sub("^mixJM\\.newresult7\\.([0-9]+)\\.csv$", "\\1", files))
 files <- files[order(file_id)]
 
 data_frames <- lapply(files, read.csv)
@@ -41,8 +41,8 @@ truth <- c(
   b20 = -2,
   b1 = 0.2,
   b2 = 0.3,
-  a1 = 1.8,
-  a2 = 1.6,
+  a1 = 2.5,
+  a2 = 0.5,
   ga10 = 0.7,
   ga20 = -0.2,
   ga11 = -0.2,
