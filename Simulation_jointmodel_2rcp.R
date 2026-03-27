@@ -98,7 +98,7 @@ model {
        }
         u[i] ~ dnorm(0,u.tau)
         cp1[i] ~ dnorm(cp1.mu,cp1.tau)	
-	      z[i] ~ dbeta(1,1)
+	      z[i] ~ dbeta(14, 9)
         cp2.temp[i] <- z[i] * (21.45 - cp1[i])
         cp2[i] <- cp1[i] + cp2.temp[i]
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
@@ -149,13 +149,13 @@ model {
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
-  res <- run.jags(model=modelrancp, burnin=5000, sample=3000, 
+  res <- run.jags(model=modelrancp, burnin=5000, sample=4000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
                             "b0","b","a","ga","ga1","ga2","w.tau.inv",
                             "cp1.mu","cp1.tau.inv","cp2.temp",
                             "u","v","w",
                             "u.tau","w.tau","cp1.tau","ll.a","ll.e","dev.a","dev.e"), 
-                  data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=6)
+                  data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=8)
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
