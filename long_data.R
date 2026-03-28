@@ -48,5 +48,5 @@ sexf<-sexf[-359]
 
 lt1 <- cbind(first.tt,last.tt)
 lt2 <- cbind(first.tt,last.tt,sexf)
-write.csv(lt1,"long.data.csv") 
+write.csv(lt1,"long.data.csv")
 write.csv(lt2,"long.data1.csv")

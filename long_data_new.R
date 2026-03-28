@@ -1,7 +1,7 @@
 dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim/"
 setwd(dirg)
 library(dplyr)
-##################################################################
+################################################################## 
 ##    Functions to Read data
 ## 
 ##################################################################
@@ -14,7 +14,7 @@ library(dplyr)
 ##
 ##dat.pa2 <-aggregate(dat.pa$age.min, by=list(dat.pa$cffidno),
 ##                 FUN=max, na.rm=TRUE)
-##names(dat.pa2) <- c('cffidno','age.min')
+##names(dat.pa2) <- c('cffidno','age.min') 
 
 ##first.t<-dat.pa2$age.min
 ##last.t<-dat.pa1$age.max
@@ -53,5 +53,5 @@ first.tt<-top_500_dat$first.t
 last.tt<-top_500_dat$last.t
 
 lt <- cbind(first.tt,last.tt)
-write.csv(lt,"long.data_new500.csv")
+write.csv(lt,"long.data_500.csv")
 

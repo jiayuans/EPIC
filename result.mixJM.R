@@ -127,11 +127,13 @@ for (i in seq_len(I)) {
 ## 6. Metric function
 ## ----------------------------
 calc_metrics <- function(est, lb, ub, true) {
-  c(Truth = true,
-    Mean = mean(est, na.rm = TRUE),
-    Bias = mean(est - true, na.rm = TRUE),
-    MSE  = mean((est - true)^2, na.rm = TRUE),
-    CP95 = mean(lb <= true & ub >= true, na.rm = TRUE)
+  true <- unname(true)
+  c(
+    Mean  = mean(est, na.rm = TRUE),
+    Truth = true,
+    Bias  = mean(est - true, na.rm = TRUE),
+    MSE   = mean((est - true)^2, na.rm = TRUE),
+    CP95  = mean(lb <= true & ub >= true, na.rm = TRUE)
   )
 }
 
