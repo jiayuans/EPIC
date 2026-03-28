@@ -7,7 +7,7 @@ setwd(dirg)
 # ----------------------------
 # Read follow-up times
 # ----------------------------
-long.time <- read.csv("long.data_new600.csv")
+long.time <- read.csv("long.data_500.csv")
 first.tt <- long.time[, 2]
 last.tt  <- long.time[, 3]
 
@@ -43,7 +43,7 @@ a2_true  <- 0.5
 b10_true <- -4.0
 b20_true <- -2.0
 b_true   <- c(0.2, 0.3)           # b[1], b[2]
-ga10_true <- 0.7
+ga10_true <- 0.6
 ga20_true <- -0.2
 ga11_true <- -0.2
 pi_r_true <- c(0.6, 0.4)          # Pr(z.r=1), Pr(z.r=2) for PE component
