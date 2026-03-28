@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 library(tidyverse)
 
-dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim/"
+dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/SIMULATION/"
 setwd(dirg)
 
 # ----------------------------
@@ -45,7 +45,7 @@ b20_true <- -2.0
 b_true   <- c(0.2, 0.3)           # b[1], b[2]
 ga10_true <- 0.6
 ga20_true <- -0.2
-ga11_true <- -0.2
+ga11_true <- -0.1
 pi_r_true <- c(0.6, 0.4)          # Pr(z.r=1), Pr(z.r=2) for PE component
 
 # Random effects truths (precisions)
