@@ -195,18 +195,18 @@ model {
   a1 ~ dgamma(0.01,0.01)
   a2 ~ dgamma(0.01,0.01)
   # PE ordering: b10 < b20
-  b20_raw ~ dnorm(0, 0.01)
-  delta_b ~ dnorm(0, 0.01) T(0,)
+  b20_raw ~ dnorm(0, 0.1)
+  delta_b ~ dnorm(0, 0.1) T(0,)
   b10 <- b20_raw - delta_b
   b20 <- b20_raw
 
   for (p in 1:2){
-    b[p] ~ dnorm(0,0.01)
+    b[p] ~ dnorm(0,0.1)
   }
 
-  ga10 ~ dnorm(0,0.01)
-  ga20 ~ dnorm(0,0.01)
-  ga11 ~ dnorm(0,0.01)
+  ga10 ~ dnorm(0,1)
+  ga20 ~ dnorm(0,1)
+  ga11 ~ dnorm(0,1)
 
   w.tau1 ~ dgamma(25, 2.25) # w.tau1 ~ dgamma(2,2)
   w.tau.inv1 <- 1/w.tau1
