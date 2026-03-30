@@ -25,9 +25,9 @@ X1=c(rep(1,N/2),rep(0,N/2))
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data_2rcp.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data_2rcp.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data_2rcp.")))
+X <- as.matrix(read.csv(list.files(pattern="X_data_2rcpc.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_data_2rcpc.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data_2rcpc.")))
 #############################################################
 
 tt<-tt-0.25
@@ -101,10 +101,12 @@ model {
 	      z[i] ~ dbeta(14, 9)
         cp2.temp[i] <- z[i] * (21.45 - cp1[i])
         cp2[i] <- cp1[i] + cp2.temp[i]
+        cp1c[i] <- cp1[i] - cp1.mu
+        cp2c[i] <- cp2[i] - 15
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
-        v[i] <- exp(ga*u[i]+w[i]+ga1*cp1[i]+ga2*cp2[i])
+        v[i] <- exp(ga*u[i]+w[i]+ga1*cp1c[i]+ga2*cp2c[i])
         L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
         phi[i] <- -ll.e[i] + 1000
@@ -159,14 +161,14 @@ model {
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data_2rcp.")
+  text <- list.files(pattern="X_data_2rcpc.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result_2rcp.",num,".csv"))
-  save(res, file=paste0("res_2rcp.",num,".RData"))
+  write.csv(result_df, paste0("result_2rcpc.",num,".csv"))
+  save(res, file=paste0("res_2rcpc.",num,".RData"))
   
   res_jm <- res$mcmc
   vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-  pdf(file = paste0("traceplot_2rcp.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("traceplot_2rcpc.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)
