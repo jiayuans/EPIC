@@ -58,31 +58,31 @@ for(i in 1:I){
   c1.mean[i] <-data_frames[[i]][5,5] 
   c2.mean[i] <-data_frames[[i]][6,5] 
   c3.mean[i] <-data_frames[[i]][7,5] 
-  cp1.mean[i] <-mean(data_frames[[i]][8:607,5])
-  pi1.mean[i] <-data_frames[[i]][608,5] 
-  pi2.mean[i] <-data_frames[[i]][609,5] 
-  pi1r.mean[i] <-data_frames[[i]][610,5] 
-  pi2r.mean[i] <-data_frames[[i]][611,5] 
+  cp1.mean[i] <-mean(data_frames[[i]][8:507,5])
+  pi1.mean[i] <-data_frames[[i]][508,5] 
+  pi2.mean[i] <-data_frames[[i]][509,5] 
+  pi1r.mean[i] <-data_frames[[i]][510,5] 
+  pi2r.mean[i] <-data_frames[[i]][511,5] 
   #u1.mean[i] <-mean(data_frames[[i]][812:1611,5])
-  u1.tau.inv.mean[i] <-data_frames[[i]][612,5]
+  u1.tau.inv.mean[i] <-data_frames[[i]][512,5]
   #u2.mean[i] <-mean(data_frames[[i]][1612:2011,5])
-  u2.tau.inv.mean[i] <-data_frames[[i]][613,5]
-  cp1.mu.mean[i] <-data_frames[[i]][616,5]
-  cp1.tau.mean[i] <-data_frames[[i]][617,5]
+  u2.tau.inv.mean[i] <-data_frames[[i]][513,5]
+  cp1.mu.mean[i] <-data_frames[[i]][516,5]
+  cp1.tau.mean[i] <-data_frames[[i]][517,5]
   
-  b10.mean[i] <-data_frames[[i]][619,5] 
-  b20.mean[i] <-data_frames[[i]][620,5] 
-  b1.mean[i] <-data_frames[[i]][621,5] 
-  b2.mean[i] <-data_frames[[i]][622,5] 
-  a1.mean[i] <-data_frames[[i]][623,5] 
-  a2.mean[i] <-data_frames[[i]][624,5] 
-  ga10.mean[i] <-data_frames[[i]][625,5] 
-  ga20.mean[i] <-data_frames[[i]][626,5] 
-  ga11.mean[i] <-data_frames[[i]][627,5] 
+  b10.mean[i] <-data_frames[[i]][519,5] 
+  b20.mean[i] <-data_frames[[i]][520,5] 
+  b1.mean[i] <-data_frames[[i]][521,5] 
+  b2.mean[i] <-data_frames[[i]][522,5] 
+  a1.mean[i] <-data_frames[[i]][523,5] 
+  a2.mean[i] <-data_frames[[i]][524,5] 
+  ga10.mean[i] <-data_frames[[i]][525,5] 
+  ga20.mean[i] <-data_frames[[i]][526,5] 
+  ga11.mean[i] <-data_frames[[i]][527,5] 
   #w1.mean[i] <-mean(data_frames[[i]][2027:2426,5])
-  w1.tau.inv.mean[i] <-data_frames[[i]][630,5]
+  w1.tau.inv.mean[i] <-data_frames[[i]][530,5]
   #w2.mean[i] <-mean(data_frames[[i]][2427:2826,5])
-  w2.tau.inv.mean[i] <-data_frames[[i]][631,5]
+  w2.tau.inv.mean[i] <-data_frames[[i]][531,5]
 }
 
 Sim.results=cbind(Flag,B1.mean,B2.mean,cp1.mean,c10.mean,c20.mean,c1.mean,c2.mean,c3.mean,pi1.mean,pi2.mean,pi1r.mean,pi2r.mean,

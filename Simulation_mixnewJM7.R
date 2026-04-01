@@ -188,15 +188,15 @@ model {
   u.tau2 ~ dgamma(16,4) # u.tau2 ~ dgamma(0.001,0.001)
   u.tau.inv2 <- 1/u.tau2
 
-  cp1.mu ~ dnorm(0,0.01)
-  cp1.tau ~ dgamma(1,1)
+  cp1.mu ~ dnorm(0, 0.01)
+  cp1.tau ~ dgamma(0.01, 0.01)
   cp1.tau.inv <- 1/cp1.tau
 
-  a1 ~ dgamma(0.01,0.01)
-  a2 ~ dgamma(0.01,0.01)
+  a1 ~ dgamma(0.01, 0.01)
+  a2 ~ dgamma(0.01, 0.01)
   # PE ordering: b10 < b20
-  b20_raw ~ dnorm(0, 0.1)
-  delta_b ~ dnorm(0, 0.1) T(0,)
+  b20_raw ~ dnorm(0, 0.01)
+  delta_b ~ dnorm(0, 0.01) T(0,)
   b10 <- b20_raw - delta_b
   b20 <- b20_raw
 
@@ -204,9 +204,9 @@ model {
     b[p] ~ dnorm(0,0.1)
   }
 
-  ga10 ~ dnorm(0,1)
-  ga20 ~ dnorm(0,1)
-  ga11 ~ dnorm(0,1)
+  ga10 ~ dnorm(0, 0.01)
+  ga20 ~ dnorm(0, 0.01)
+  ga11 ~ dnorm(0, 0.01)
 
   w.tau1 ~ dgamma(25, 2.25) # w.tau1 ~ dgamma(2,2)
   w.tau.inv1 <- 1/w.tau1
@@ -227,14 +227,14 @@ inits2 <- dump.format(list(c20=-2.5, delta_c=0.6, c=c(0.3,0.3,-0.05)+0.01, pi=c(
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
-res <- run.jags(model=modelrancp, burnin=10000, sample=5000,  
+res <- run.jags(model=modelrancp, burnin=10000, sample=6000,  
                 monitor=c("B1","B2","c10", "c20","c", "cp1",
                           "pi","pi.r","u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
                           "cp1.mu","cp1.tau.inv","cp1.tau",
                           "b10","b20","b", "a1","a2","ga10","ga20","ga11",
                           "w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","c20_raw", "delta_c","b20_raw","delta_b",
                           "ll.a","ll.e","dev.a","dev.e"), 
-                data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=10)
+                data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=6)
 
 summary <- summary(res)
 summary
