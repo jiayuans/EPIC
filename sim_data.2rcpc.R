@@ -106,10 +106,10 @@ for (r in 2:I){
   b_0i<-rnorm(N,0,0.2) #1.6
   cp_1i <- rnorm(N,cp1.mu,cp1.sd)
   cp1c <- cp_1i - cp1.mu
-  z <- rbeta(N, 14, 9)
+  z <- rbeta(N, 3, 2)
   cp2.tempi <- z * (21.45 - cp_1i)
   cp_2i <- cp_1i + cp2.tempi
-  cp2c <- cp_2i - 15
+  cp2c <- cp_2i - 14.87
   
   X1=c(rep(1,N/2),rep(0,N/2))
   ##X1=sample(c(1,0),N, replace = TRUE)

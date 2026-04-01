@@ -98,11 +98,11 @@ model {
        }
         u[i] ~ dnorm(0,u.tau)
         cp1[i] ~ dnorm(cp1.mu,cp1.tau)	
-	      z[i] ~ dbeta(14, 9)
+	      z[i] ~ dbeta(3, 2)
         cp2.temp[i] <- z[i] * (21.45 - cp1[i])
         cp2[i] <- cp1[i] + cp2.temp[i]
         cp1c[i] <- cp1[i] - cp1.mu
-        cp2c[i] <- cp2[i] - 15
+        cp2c[i] <- cp2[i] - 14.87
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
