@@ -5,7 +5,7 @@ library(runjags)
 library(tidyverse)
 library(mcmcplots)
 
-long.time <- read.csv("long.data_500.csv")
+long.time <- read.csv("long.data_new600.csv")
 first.tt <- long.time[,2]
 last.tt <- long.time[,3]
 
