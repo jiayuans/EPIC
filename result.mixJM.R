@@ -2,7 +2,7 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM7_032225")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM7_040225")
 
 ## ----------------------------
 ## 1. Read files
@@ -36,7 +36,7 @@ truth <- c(
   u1.tau.inv = 1/4,       # if row stores variance; adjust if needed
   u2.tau.inv = 1/4,
   cp1.mu = 14,
-  cp1.tau = 1/(1.5^2),
+  cp1.tau = 1/(1^2),
   b10 = -4,
   b20 = -2,
   b1 = 0.2,
@@ -162,11 +162,13 @@ summary_conv <- data.frame(Parameter = params, summary_conv)
 ## ----------------------------
 ## 8. Output
 ## ----------------------------
-summary_all[, -1]  <- round(summary_all[, -1], 3)
-summary_conv[, -1] <- round(summary_conv[, -1], 3)
+summary_all[, -1]  <- round(summary_all[, -1], 2)
+summary_conv[, -1] <- round(summary_conv[, -1], 2)
 
 cat("\n================ ALL RUNS ================\n")
 print(summary_all)
 
 cat("\n=========== FLAG = 1 ONLY ================\n")
 print(summary_conv)
+
+

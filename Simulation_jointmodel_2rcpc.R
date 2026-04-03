@@ -102,7 +102,8 @@ model {
         cp2.temp[i] <- z[i] * (21.45 - cp1[i])
         cp2[i] <- cp1[i] + cp2.temp[i]
         cp1c[i] <- cp1[i] - cp1.mu
-        cp2c[i] <- cp2[i] - 14.87
+        cp2.mu[i] <- cp1[i] + 0.6 * (21.45 - cp1[i])
+        cp2c[i] <- cp2[i] - cp2.mu[i] # cp2c[i] <- cp2[i] - 14.87
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
@@ -123,7 +124,7 @@ model {
   ## prior distributions
 	u.tau ~ dgamma(0.01,0.01)
 	cp1.mu ~ dnorm(0,0.01)
-	cp1.tau ~ dgamma(0.01,0.01)
+	cp1.tau ~ dgamma(1,1) # dgamma(0.01,0.01)
 	cp1.tau.inv <- 1/cp1.tau  ## variance 
 	B1 <-c[1]-c[2]-c[3]
   B2 <-c[1]+c[2]-c[3]
@@ -154,7 +155,7 @@ model {
   res <- run.jags(model=modelrancp, burnin=10000, sample=6000, 
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
                             "b0","b","a","ga","ga1","ga2","w.tau.inv",
-                            "cp1.mu","cp1.tau.inv","cp2.temp",
+                            "cp1.mu","cp1.tau.inv","cp2.temp","cp2.mu",
                             "u","v","w",
                             "u.tau","w.tau","cp1.tau","ll.a","ll.e","dev.a","dev.e"), 
                   data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=6)
