@@ -2,7 +2,7 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpc_040225")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpc_040425")
 
 ###########################################################################
 # 1. Read csv files
@@ -73,9 +73,9 @@ row_map <- list(
   w.tau.inv = 816,
   cp1mu     = 817,
   cp1var    = 818,
-  u         = 1219:1618,
-  v         = 1619:2018,
-  w         = 2019:2418
+  u         = 1619:2018,
+  v         = 2019:2418,
+  w         = 2419:2818
 )
 
 ###########################################################################

@@ -1,6 +1,6 @@
 library(tidyverse)
 
-dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/SIMULATION/"
+dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim/"
 setwd(dirg)
 ##################################################################
 ##    Functions to Read data
@@ -109,8 +109,9 @@ for (r in 2:I){
   z <- rbeta(N, 3, 2)
   cp2.tempi <- z * (21.45 - cp_1i)
   cp_2i <- cp_1i + cp2.tempi
-  cp2.mu <- cp_1i + 0.6 * (21.45 - cp_1i)
-  cp2c   <- cp_2i - cp2.mu # cp2c <- cp_2i - 14.87
+  #cp2.mu <- cp_1i + 0.6 * (21.45 - cp_1i)
+  #cp2c   <- cp_2i - cp2.mu 
+  cp2c <- cp_2i - 14.87
   
   X1=c(rep(1,N/2),rep(0,N/2))
   ##X1=sample(c(1,0),N, replace = TRUE)
