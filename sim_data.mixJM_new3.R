@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 library(tidyverse)
 
-dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/SIMULATION/"
+dirg <- "/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim/"
 setwd(dirg)
 
 # ----------------------------

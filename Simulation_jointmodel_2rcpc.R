@@ -102,9 +102,9 @@ model {
         cp2.temp[i] <- z[i] * (21.45 - cp1[i])
         cp2[i] <- cp1[i] + cp2.temp[i]
         cp1c[i] <- cp1[i] - cp1.mu
-        #cp2.mu[i] <- cp1[i] + 0.6 * (21.45 - cp1[i]) # subject-specific expected value of cp2[i] given cp1[i]
-        #cp2c[i] <- cp2[i] - cp2.mu[i] 
-        cp2c[i] <- cp2[i] - 14.87
+        cp2.mu[i] <- cp1[i] + 0.6 * (21.45 - cp1[i]) # subject-specific expected value of cp2[i] given cp1[i]
+        cp2c[i] <- cp2[i] - cp2.mu[i] 
+        #cp2c[i] <- cp2[i] - 14.87
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
@@ -137,7 +137,7 @@ model {
 	ga ~ dnorm(0,0.1)
 	ga1 ~ dnorm(0,0.1)
 	ga2 ~ dnorm(0,0.1)
-	w.tau ~ dgamma(0.01,0.01)
+	w.tau ~ dgamma(2,1)
 	w.tau.inv <- 1/w.tau  ## variance 
 }"
   
@@ -157,7 +157,7 @@ model {
                   monitor=c("B1","B2","B3","cp1","cp2","c0","c","u.tau.inv",
                             "b0","b","a","ga","ga1","ga2","w.tau.inv",
                             "cp1.mu","cp1.tau.inv","cp2.temp",
-                            "u","v","w",
+                            "u","v","w","cp2.mu",
                             "u.tau","w.tau","cp1.tau","ll.a","ll.e","dev.a","dev.e"), 
                   data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=6)
   
