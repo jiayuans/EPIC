@@ -137,7 +137,7 @@ model {
 	ga ~ dnorm(0,0.1)
 	ga1 ~ dnorm(0,0.1)
 	ga2 ~ dnorm(0,0.1)
-	w.tau ~ dgamma(2,1)
+	w.tau ~ dgamma(10, 0.4)
 	w.tau.inv <- 1/w.tau  ## variance 
 }"
   
