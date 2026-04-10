@@ -208,10 +208,10 @@ model {
   ga20 ~ dnorm(0, 2)
   ga11 ~ dnorm(0, 1)
 
-  w.tau1 ~ dgamma(25, 2.25) # w.tau1 ~ dgamma(2,2)
+  w.tau1 ~ dgamma(4, 0.16) # w.tau1 ~ dgamma(2,2)
   w.tau.inv1 <- 1/w.tau1
 
-  w.tau2 ~ dgamma(25, 2.25) # w.tau2 ~ dgamma(2,2)
+  w.tau2 ~ dgamma(4, 0.16) # w.tau2 ~ dgamma(2,2)
   w.tau.inv2 <- 1/w.tau2
 }
 "
@@ -219,11 +219,11 @@ model {
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c20=-2.6, delta_c=0.7, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.5,0.5), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
-                           b20_raw=-1.5, delta_b=2.5, b=c(0.2,0.3), a1=2.5,a2=0.5, w.tau1=11.1, w.tau2=11.1, ga10=0.7, ga20=-0.2, ga11=-0.2,
+inits1 <- dump.format(list(c20=-2.6, delta_c=0.7, c=c(0.3,0.3,-0.05), pi=c(0.4,0.6), pi.r=c(0.4,0.6), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
+                           b20_raw=-1, delta_b=3, b=c(0.2,0.3), a1=2.5,a2=0.5, w.tau1=25, w.tau2=25, ga10=0.7, ga20=-0.2, ga11=-0.2,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c20=-2.5, delta_c=0.6, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.51,0.49), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
-                           b20_raw=-1.6, delta_b=2.6, b=c(0.2,0.3)+0.1, a1=2.55,a2=0.6, w.tau1=10, w.tau2=12, ga10=0.8, ga20=-0.1, ga11=-0.1,
+inits2 <- dump.format(list(c20=-2.5, delta_c=0.6, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.41,0.59), pi.r=c(0.41,0.59), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
+                           b20_raw=-1.1, delta_b=2.1, b=c(0.2,0.3)+0.1, a1=2.55,a2=0.6, w.tau1=24, w.tau2=24, ga10=0.8, ga20=-0.1, ga11=-0.1,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
