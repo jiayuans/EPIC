@@ -123,7 +123,7 @@ model {
 	      c[k] ~ dnorm(0,0.01)	
 	}
   ## prior distributions
-	u.tau ~ dgamma(10, 0.4) #dgamma(0.01,0.01)
+	u.tau ~ dgamma(0.01,0.01)
 	cp1.mu ~ dnorm(0,0.01)
 	cp1.tau ~ dgamma(1,1) # dgamma(0.01,0.01)
 	cp1.tau.inv <- 1/cp1.tau  ## variance 
@@ -134,10 +134,10 @@ model {
   a ~ dgamma(0.01,0.01)
   b0 ~ dnorm(0,0.01)	
   b ~ dnorm(0,0.01)		
-	ga ~ dnorm(0,1)
+	ga ~ dnorm(0,0.1)
 	ga1 ~ dnorm(0,0.1)
 	ga2 ~ dnorm(0,0.1)
-	w.tau ~ dgamma(10, 0.4)
+	w.tau ~ dgamma(5, 0.2)
 	w.tau.inv <- 1/w.tau  ## variance 
 }"
   
