@@ -134,7 +134,7 @@ model {
   a ~ dgamma(0.01,0.01)
   b0 ~ dnorm(0,0.01)	
   b ~ dnorm(0,0.01)		
-	ga ~ dnorm(0,0.1)
+	ga ~ dnorm(0,1)
 	ga1 ~ dnorm(0,0.1)
 	ga2 ~ dnorm(0,0.1)
 	w.tau ~ dgamma(10, 0.4)
