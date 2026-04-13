@@ -165,12 +165,12 @@ model {
   result_df <- as.data.frame(summary)
   text <- list.files(pattern="X_data_2rcpc.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result_2rcpcp.",num,".csv"))
-  save(res, file=paste0("res_2rcpcp.",num,".RData"))
+  write.csv(result_df, paste0("result_2rcpcpn.",num,".csv"))
+  save(res, file=paste0("res_2rcpcpn.",num,".RData"))
   
   res_jm <- res$mcmc
   vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-  pdf(file = paste0("traceplot_2rcpcp.",num,".pdf"),   # The directory you want to save the file in
+  pdf(file = paste0("traceplot_2rcpcpn.",num,".pdf"),   # The directory you want to save the file in
       width = 4, # The width of the plot in inches
       height = 4) # The height of the plot in inches
   traplot(vars)
