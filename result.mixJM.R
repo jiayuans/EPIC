@@ -2,7 +2,7 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM7_040225")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM7_041525")
 
 ## ----------------------------
 ## 1. Read files
@@ -29,16 +29,16 @@ truth <- c(
   c1 = 0.3,
   c2 = 0.3,
   c3 = -0.05,
-  pi1 = 0.55,
-  pi2 = 0.45,
-  pi1r = 0.6,
-  pi2r = 0.4,
+  pi1 = 0.4,
+  pi2 = 0.6,
+  pi1r = 0.4,
+  pi2r = 0.6,
   u1.tau.inv = 1/4,       # if row stores variance; adjust if needed
   u2.tau.inv = 1/4,
   cp1.mu = 14,
-  cp1.tau = 1/(1^2),
+  cp1.tau = 1,
   b10 = -4,
-  b20 = -2,
+  b20 = -1,
   b1 = 0.2,
   b2 = 0.3,
   a1 = 2.5,
@@ -46,8 +46,8 @@ truth <- c(
   ga10 = 0.7,
   ga20 = -0.2,
   ga11 = -0.2,
-  w1.tau.inv = 1/11.11111111,
-  w2.tau.inv = 1/11.11111111
+  w1.tau.inv = 1/25,
+  w2.tau.inv = 1/25
 )
 
 ## ----------------------------
@@ -172,3 +172,5 @@ cat("\n=========== FLAG = 1 ONLY ================\n")
 print(summary_conv)
 
 
+cat("\n=========== FLAG TABLE ================\n")
+print(table(Flag))

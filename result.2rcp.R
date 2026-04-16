@@ -2,14 +2,14 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpc_040825")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpcpn_041325")
 
 ###########################################################################
 # 1. Read csv files
 ###########################################################################
-files <- list.files(pattern = "^result_2rcpc\\.[0-9]+\\.csv$")
+files <- list.files(pattern = "^result_2rcpcpn\\.[0-9]+\\.csv$")
 
-file_id <- as.numeric(sub("^result_2rcpc\\.([0-9]+)\\.csv$", "\\1", files))
+file_id <- as.numeric(sub("^result_2rcpcpn\\.([0-9]+)\\.csv$", "\\1", files))
 files <- files[order(file_id)]
 
 data_frames <- lapply(files, read.csv)
