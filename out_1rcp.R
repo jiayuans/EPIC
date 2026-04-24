@@ -1,5 +1,5 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0925")
+setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0925_FINAL")
 #setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP1_0923")
 #setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0920") ##### best estimates in folder 1RCP_new
 load("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0925/res_1rcp.1.RData")
@@ -201,5 +201,5 @@ cp <- c(sum(dat1$B1.cp)/I,sum(dat1$B2.cp)/I,sum(dat1$cp1.cp)/I,sum(dat1$c0.cp)/I
         sum(dat1$b0.cp)/I,sum(dat1$b1.cp)/I,sum(dat1$a.cp)/I,sum(dat1$ga.cp)/I,sum(dat1$ga1.cp)/I,sum(dat1$w.tau.inv.cp)/I)
 
 
-cbind(true, as.numeric(c(est[2:15])), round(bias,3),round(mse,4),round(cp,2))
+cbind(true, as.numeric(c(est[2:15])), round(bias,2),round(mse,2),round(cp,2))
 

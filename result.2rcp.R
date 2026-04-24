@@ -2,7 +2,7 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpcpn_041325")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpcpn_041825_ok")
 
 ###########################################################################
 # 1. Read csv files
@@ -22,6 +22,9 @@ I
 # Adjust these if your output stores variance vs precision differently
 ###########################################################################
 truth <- c(
+  B1       = -0.15,
+  B2       = 0.15,
+  B3       = 0.35,
   cp1      = 5,                    # average subject-specific cp1
   cp2      = 5 + (3/5) * (21.45 - 5),   # E[cp2]
   c0       = -2,
