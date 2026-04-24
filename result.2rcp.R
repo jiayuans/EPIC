@@ -22,16 +22,16 @@ I
 # Adjust these if your output stores variance vs precision differently
 ###########################################################################
 truth <- c(
-  B1       = -0.15,
-  B2       = 0.15,
-  B3       = 0.35,
-  cp1      = 5,                    # average subject-specific cp1
-  cp2      = 5 + (3/5) * (21.45 - 5),   # E[cp2]
+  B1       = -0.3, #-0.15,
+  B2       = 0, #0.15,
+  B3       = 0.6, #0.35,
+  cp1      = 4.5, #5,                    # average subject-specific cp1
+  cp2      = 4.5 + (3/5) * (21.45 - 4.5), #14.67; 5 + (3/5) * (21.45 - 5)=14.87,   # E[cp2]
   c0       = -2,
-  c1       = 0.1,
+  c1       = 0.15, #0.1,
   c2       = 0.15,
-  c3       = 0.1,
-  c4       = -0.1,
+  c3       = 0.3, #0.1,
+  c4       = -0.05, #-0.1,
   u.tau.inv = 0.2^2,               
   b0       = -2,
   b1       = 0.2,
@@ -40,7 +40,7 @@ truth <- c(
   ga1      = -0.05,
   ga2      = -0.02,
   w.tau.inv = 0.2^2,                   # if this is residual variance; change if precision
-  cp1mu    = 5,
+  cp1mu    = 4.5, #5,
   cp1var   = 1,                    # cp1.sd = 1, so variance = 1
   u        = 0,
   v        = 1,
