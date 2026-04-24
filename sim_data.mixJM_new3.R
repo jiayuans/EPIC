@@ -43,15 +43,15 @@ a2_true  <- 0.5
 b10_true <- -3.5
 b20_true <- -1
 b_true   <- c(0.2, 0.3)           # b[1], b[2]
-ga10_true <- 0.7
-ga20_true <- -0.2
+ga10_true <- 0.6
+ga20_true <- -0.1
 ga11_true <- -0.2
-pi_r_true <- c(0.5, 0.5)          # Pr(z.r=1), Pr(z.r=2) for PE component
+pi_r_true <- c(0.4, 0.6)          # Pr(z.r=1), Pr(z.r=2) for PE component
 
 # Random effects truths (precisions)
-u_tau1_true <- 6.25             # sd(u1)=0.4
-u_tau2_true <- 11.11            # sd(u2)=0.3
-w_tau1_true <- 44.44            # sd(w1)=0.15
+u_tau1_true <- 4             # sd(u1)=0.5
+u_tau2_true <- 4            # sd(u2)=0.5
+w_tau1_true <- 25            # sd(w1)=0.2
 w_tau2_true <- 25               # sd(w2)=0.2
 
 # ----------------------------
