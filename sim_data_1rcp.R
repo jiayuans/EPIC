@@ -68,7 +68,7 @@ NHPP<-function(a,b,T){
 # -------------- Building the simulated poisson data -----
 poisson.d <- function(alpha,beta,beta0,x,ga0,ga,TTei){
   le <- length(x)
-  c_0i <- rnorm(le,0,0.2) #1
+  c_0i <- rnorm(le,0,1) #1
   vi <- exp(ga0*b_0i+c_0i+ga*cp_i)
 
   times <- NHPP(b=vi[1]*exp(beta*x[1])*exp(beta0),a=alpha,T=TTei[1])
@@ -100,7 +100,7 @@ poisson.d <- function(alpha,beta,beta0,x,ga0,ga,TTei){
 
 #######################################################
 for (r in 2:I){
-  b_0i<-rnorm(N,0,0.2) #1
+  b_0i<-rnorm(N,0,1) #1
   X1=c(rep(1,N/2),rep(0,N/2))
   ##X1=sample(c(1,0),N, replace = TRUE)
   cp_i<-rnorm(N,cp.true,1) 
@@ -121,7 +121,7 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.3,ga=-0.05,TTei=tt-0.25) #ga0=0.3
+  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.2,ga=-0.05,TTei=tt-0.25) #ga0=0.3
   
   X_df <- as.data.frame(X)
   filename <- paste0("X_data_1rcp.", r-2, ".csv")
