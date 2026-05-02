@@ -1,5 +1,5 @@
 #scp "jiayuan.shi@ap40.uw.osg-htc.org:/home/jiayuan.shi/EPIC/result_1rcp.*.csv" /Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_run
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM1rcp_042925")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM1rcp_050125")
 #setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP1_0923")
 #setwd("/Volumes/dept/SPH/SPH-BIOS/EJCStudents/ShiJ/EPIC-CF/Simulation/1RCP_0925_FINAL") ##### best estimates in folder 1RCP_new
 load("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/1RCP_0925/res_1rcp.1.RData")
@@ -81,23 +81,23 @@ round(colMeans(Sim.results.1),2)
 #write.csv(dat, "resultall.csv")
 
 B1=rep(0,I)
-B2=rep(0.6,I)
-c0=rep(-3,I) #-3
-c1=rep(0.3,I)
-c2=rep(0.3,I) 
-c3=rep(-0.05,I) #-0.05
-cp1=rep(15,I)
+B2=rep(0.35,I) #0.6
+c0=rep(-2,I) #-3
+c1=rep(0.175,I) #0.3
+c2=rep(0.175,I) #0.3
+c3=rep(-0.1,I) #-0.05
+cp1=rep(14.87,I) #15
 u.sigma2=rep(1,I)
 alpha=rep(1.8,I)
 beta=rep(0.2,I)
 beta0=rep(-2,I)
-ga=rep(0.3,I)
-ga1=rep(-0.05,I) #-0.05
+ga=rep(0.2,I) #0.3
+ga1=rep(-0.05,I) 
 w.sigma2=rep(1,I)
 true <- c(B1[1],B2[1],cp1[1],c0[1],c1[1],c2[1],c3[1],
           u.sigma2[1],
           beta0[1],beta[1],alpha[1],
-          ga0[1],ga[1],w.sigma2[1])
+          ga[1],ga1[1],w.sigma2[1])
 
 dat <- as.data.frame(cbind(Sim.results,B1,B2,cp1,c0,c1,c2,c3,u.sigma2,beta0,beta,alpha,ga,ga1,w.sigma2))
 bias <- c(sum(dat$B1.mean-dat$B1)/I,sum(dat$B2.mean-dat$B2)/I,sum(dat$cp1.mean-dat$cp1)/I,sum(dat$c0.mean-dat$c0)/I,
