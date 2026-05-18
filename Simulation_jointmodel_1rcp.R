@@ -25,9 +25,9 @@ X1=c(rep(1,N/2),rep(0,N/2))
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="X_data_1rcp.")))
-Y <- as.matrix(read.csv(list.files(pattern="Y_data_1rcp.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data_1rcp.")))
+X <- as.matrix(read.csv(list.files(pattern="X_data_2rcpc.")))
+Y <- as.matrix(read.csv(list.files(pattern="Y_data_2rcpc.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="sim.pe_data_2rcpc.")))
 #############################################################
 
 tt<-tt-0.25
@@ -159,7 +159,7 @@ model {
   
   summary <- summary(res)
   result_df <- as.data.frame(summary)
-  text <- list.files(pattern="X_data_1rcp.")
+  text <- list.files(pattern="X_data_2rcpc.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
   write.csv(result_df, paste0("result_1rcp.",num,".csv"))
   save(res, file=paste0("res_1rcp.",num,".RData"))
