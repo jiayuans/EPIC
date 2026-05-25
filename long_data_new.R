@@ -45,12 +45,36 @@ dat$fu <- dat$last.t -dat$first.t
 
 
 # Assuming your data frame is called `df` and you want to sort by `column_name`
-top_500_dat <- dat %>%
-  arrange(desc(fu)) %>%
-  head(500)
+#top_dat <- dat %>%
+#  arrange(desc(fu)) %>%
+#  head(400)
+#first.tt<-top_dat$first.t
+#last.tt<-top_dat$last.t
 
-first.tt<-top_500_dat$first.t
-last.tt<-top_500_dat$last.t
+#top_500_dat <- dat %>%
+#  arrange(desc(fu)) %>%
+#  head(500)
+#first.tt<-top_500_dat$first.t
+#last.tt<-top_500_dat$last.t
+
+set.seed(123)
+sample_dat <- dat %>%
+  filter(fu >= 5) %>%
+  sample_n(400)
+
+first.tt <- sample_dat$first.t
+last.tt  <- sample_dat$last.t
+
+lt <- cbind(first.tt,last.tt)
+write.csv(lt,"long.data_new.csv")
+
+
+set.seed(123)
+sample_500_dat <- dat %>%
+  sample_n(500)
+
+first.tt <- sample_500_dat$first.t
+last.tt  <- sample_500_dat$last.t
 
 lt <- cbind(first.tt,last.tt)
 write.csv(lt,"long.data_500.csv")
