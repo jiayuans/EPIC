@@ -69,7 +69,6 @@ lt <- cbind(first.tt,last.tt)
 write.csv(lt,"long.data_new.csv")
 
 
-set.seed(123)
 sample_500_dat <- dat %>%
   sample_n(500)
 
