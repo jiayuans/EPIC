@@ -98,10 +98,11 @@ model {
        }
         u[i] ~ dnorm(0,u.tau)
         cp1[i] ~ dnorm(cp1.mu,cp1.tau)	
+        cp1c[i] <- cp1[i] - cp1.mu
         L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
         ll.a[i] <- log(L.a[i])
         w[i] ~ dnorm(0,w.tau)
-        v[i] <- exp(ga*u[i]+w[i]+ga1*cp1[i])
+        v[i] <- exp(ga*u[i]+w[i]+ga1*cp1c[i])
         L.e[i] <- ifelse(Ti[i,1]!=0, prod(lambda[i,1:k.pe[i]]) * exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)), exp(v[i]*exp(b0+b*X1[i])*(time.t0[i]^a-time.tau[i]^a)))
         ll.e[i] <- log(L.e[i])
         phi[i] <- -ll.e[i] + 1000
@@ -118,17 +119,17 @@ model {
   ## prior distributions
 	u.tau ~ dgamma(0.01,0.01)
 	cp1.mu ~ dnorm(0,0.01)
-	cp1.tau ~ dgamma(0.01,0.01)
+	cp1.tau ~ dgamma(1,1)
 	cp1.tau.inv <- 1/cp1.tau  ## variance 
 	B1 <-c[1]-c[2]
   B2 <-c[1]+c[2]
   u.tau.inv <- 1/u.tau  ## variance 
   a ~ dgamma(0.01,0.01)
   b0 ~ dnorm(-2, 0.02)  
-  b ~ dnorm(0,0.0001)
-	ga ~ dnorm(0,0.01)
-	ga1 ~ dnorm(0,0.01)
-	w.tau ~ dgamma(0.01,0.01)
+  b ~ dnorm(0,0.01)
+	ga ~ dnorm(0,0.1)
+	ga1 ~ dnorm(0,0.1)
+	w.tau ~dgamma(3, 0.12)
 	w.tau.inv <- 1/w.tau  ## variance 
 }"
 
@@ -137,11 +138,11 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa,
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-3, c=c(0.3,0.3,-0.1), u.tau=1, cp1.mu=14.87, cp1.tau=1, 
-                             b0=-2, b=0.2, a=1.8, w.tau=1, ga=0.3, ga1=-0.05,
+  inits1 <- dump.format(list(c0=-3, c=c(0.3,0.3,-0.1), u.tau=0.04, cp1.mu=14.87, cp1.tau=1, 
+                             b0=-2, b=0.2, a=1.8, w.tau=0.04, ga=0.3, ga1=-0.05,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-3.1, c=c(0.3,0.3,-0.1)+0.01, u.tau=1, cp1.mu=14.87, cp1.tau=1, 
-                             b0=-2.1, b=0.21, a=1.8, w.tau=1, ga=0.31, ga1=-0.04,
+  inits2 <- dump.format(list(c0=-3.1, c=c(0.3,0.3,-0.1)+0.01, u.tau=0.04, cp1.mu=14.87, cp1.tau=1, 
+                             b0=-2.1, b=0.21, a=1.8, w.tau=0.04, ga=0.31, ga1=-0.04,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
