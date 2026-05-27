@@ -2,14 +2,14 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM12rcpcpn_052225")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM12rcpcpn_052725")
 
 ###########################################################################
 # 1. Read csv files
 ###########################################################################
-files <- list.files(pattern = "^result_2rcpcpn\\.[0-9]+\\.csv$")
+files <- list.files(pattern = "^result_12rcpcpn\\.[0-9]+\\.csv$")
 
-file_id <- as.numeric(sub("^result_2rcpcpn\\.([0-9]+)\\.csv$", "\\1", files))
+file_id <- as.numeric(sub("^result_12rcpcpn\\.([0-9]+)\\.csv$", "\\1", files))
 files <- files[order(file_id)]
 
 data_frames <- lapply(files, read.csv)
@@ -23,7 +23,7 @@ I
 ###########################################################################
 truth <- c(
   B1       = 0,
-  B2       = 0.27,
+  B2       = 0.6,
   B3       = 0.6,
   cp1      = 14.87,                    # average subject-specific cp1
   cp2      = 14.87,

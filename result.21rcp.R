@@ -2,13 +2,14 @@
 ## Summarize simulation results: 1 random change point model
 ## Calculate convergence flag, bias, MSE, and 95% coverage probability
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM21rcp_052225")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM21rcp_052725")
 
 ###########################################################################
 # 1. Read csv files
 ###########################################################################
+files <- list.files(pattern = "^result_21rcp\\.[0-9]+\\.csv$")
 
-file_id <- as.numeric(sub("^result_1rcp\\.([0-9]+)\\.csv$", "\\1", files))
+file_id <- as.numeric(sub("^result_21rcp\\.([0-9]+)\\.csv$", "\\1", files))
 files <- files[order(file_id)]
 
 data_frames <- lapply(files, read.csv)
@@ -21,8 +22,8 @@ I
 # Adjust these if your true values are different
 ###########################################################################
 truth <- c(
-  B1        = -0.05,
-  B2        = 0.25,
+  B1        = -0.15,
+  B2        = 0.15,
   cp1       = 5,
   c0        = -2,
   c1        = 0.1,

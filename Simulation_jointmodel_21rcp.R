@@ -163,15 +163,267 @@ model {
   text <- list.files(pattern="X_data_2rcpc.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
   write.csv(result_df, paste0("result_21rcp.",num,".csv"))
-  save(res, file=paste0("res_21rcp.",num,".RData"))
+  #save(res, file=paste0("res_21rcp.",num,".RData"))
   
   res_jm <- res$mcmc
-  vars<-mcmc.list(res_jm[[1]][,c(1:2,403:413)],res_jm[[2]][,c(1:2,403:413)])
-  pdf(file = paste0("traceplot_21rcp.",num,".pdf"),   # The directory you want to save the file in
-      width = 4, # The width of the plot in inches
-      height = 4) # The height of the plot in inches
-  traplot(vars)
-  dev.off()
+  #vars<-mcmc.list(res_jm[[1]][,c(1:2,403:413)],res_jm[[2]][,c(1:2,403:413)])
+  #pdf(file = paste0("traceplot_21rcp.",num,".pdf"),   # The directory you want to save the file in
+  #    width = 4, # The width of the plot in inches
+  #    height = 4) # The height of the plot in inches
+  #traplot(vars)
+  #dev.off()
+  
+  ## =========================================================
+  ## DIC / WAIC calculation for 21rcp model
+  ## Fit model: 1 random change point
+  ## =========================================================
+  
+  ## -----------------------------
+  ## Helper functions
+  ## -----------------------------
+  colVars <- function(a) {
+    cm <- colMeans(a)
+    diff <- sweep(a, 2, cm, "-")
+    apply(diff^2, 2, sum) / (nrow(a) - 1)
+  }
+  
+  log_mean_exp <- function(x) {
+    m <- max(x)
+    m + log(mean(exp(x - m)))
+  }
+  
+  waic_fun <- function(log_lik) {
+    ## log_lik: rows = posterior draws, cols = subjects
+    lppd_i <- apply(log_lik, 2, log_mean_exp)
+    lppd <- sum(lppd_i)
+    
+    p_waic_1 <- 2 * sum(lppd_i - colMeans(log_lik))
+    p_waic_2 <- sum(colVars(log_lik))
+    
+    waic_2 <- -2 * lppd + 2 * p_waic_2
+    
+    list(
+      waic = waic_2,
+      p_waic = p_waic_2,
+      lppd = lppd,
+      p_waic_1 = p_waic_1
+    )
+  }
+  
+  mean_dev_from_loglik <- function(log_lik) {
+    ## mean posterior deviance
+    mean(-2 * rowSums(log_lik))
+  }
+  
+  get1 <- function(sum.df, nm) {
+    as.numeric(sum.df[nm, "Mean"])
+  }
+  
+  getv <- function(sum.df, pat) {
+    r <- grep(pat, rownames(sum.df), value = TRUE)
+    idx <- as.numeric(sub(".*\\[([0-9]+)\\]$", "\\1", r))
+    r <- r[order(idx)]
+    as.numeric(sum.df[r, "Mean"])
+  }
+  
+  sign_step <- function(x) {
+    ## JAGS step(x) = 1 if x >= 0
+    ifelse(x >= 0, 1, -1)
+  }
+  
+  expit <- function(x) {
+    1 / (1 + exp(-x))
+  }
   
   
+  ## -----------------------------
+  ## Extract posterior summary and posterior draws
+  ## -----------------------------
+  sum.df <- result_df
+  M <- N
+  
+  draw_mat <- as.matrix(as.mcmc.list(res_jm))
+  
+  ll_a_names <- paste0("ll.a[", 1:M, "]")
+  ll_e_names <- paste0("ll.e[", 1:M, "]")
+  
+  if (!all(ll_a_names %in% colnames(draw_mat))) {
+    stop("Some ll.a[i] columns are missing from monitored draws.")
+  }
+  
+  if (!all(ll_e_names %in% colnames(draw_mat))) {
+    stop("Some ll.e[i] columns are missing from monitored draws.")
+  }
+  
+  log.like.a <- draw_mat[, ll_a_names, drop = FALSE]
+  log.like.e <- draw_mat[, ll_e_names, drop = FALSE]
+  
+  ## joint pointwise log-likelihood
+  log.like.total <- log.like.a + log.like.e
+  
+  
+  ## -----------------------------
+  ## WAIC
+  ## -----------------------------
+  waic.jm.a     <- waic_fun(log.like.a)
+  waic.jm.e     <- waic_fun(log.like.e)
+  waic.jm.total <- waic_fun(log.like.total)
+  
+  waic.a     <- waic.jm.a$waic
+  waic.e     <- waic.jm.e$waic
+  total.waic <- waic.jm.total$waic
+  
+  
+  ## -----------------------------
+  ## Mean posterior deviance
+  ## -----------------------------
+  md.jm.a     <- mean_dev_from_loglik(log.like.a)
+  md.jm.e     <- mean_dev_from_loglik(log.like.e)
+  md.jm.total <- mean_dev_from_loglik(log.like.total)
+  
+  
+  ## -----------------------------
+  ## Extract posterior mean parameters
+  ## -----------------------------
+  c0 <- get1(sum.df, "c0")
+  c  <- getv(sum.df, "^c\\[")
+  
+  c1 <- c[1]
+  c2 <- c[2]
+  c3 <- c[3]
+  
+  b0 <- get1(sum.df, "b0")
+  b  <- get1(sum.df, "b")
+  
+  a <- get1(sum.df, "a")
+  
+  ga  <- get1(sum.df, "ga")
+  ga1 <- get1(sum.df, "ga1")
+  
+  cp1.mu <- get1(sum.df, "cp1.mu")
+  
+  cp1 <- getv(sum.df, "^cp1\\[")
+  u   <- getv(sum.df, "^u\\[")
+  w   <- getv(sum.df, "^w\\[")
+  
+  
+  ## -----------------------------
+  ## Reconstruct v[i] at posterior mean
+  ## Matching JAGS:
+  ## cp1c[i] <- cp1[i] - cp1.mu
+  ## v[i] <- exp(ga*u[i] + w[i] + ga1*cp1c[i])
+  ## -----------------------------
+  cp1c <- cp1 - cp1.mu
+  v <- exp(ga * u + w + ga1 * cp1c)
+  
+  
+  ## -----------------------------
+  ## Reconstruct log-likelihood at posterior mean
+  ## -----------------------------
+  max_kpa <- max(k.pa)
+  max_kpe <- max(k.pe)
+  
+  p2      <- matrix(NA_real_, M, max_kpa)
+  lambda0 <- matrix(NA_real_, M, max_kpe)
+  lambda  <- matrix(NA_real_, M, max_kpe)
+  
+  ll.a.hat <- rep(NA_real_, M)
+  ll.e.hat <- rep(NA_real_, M)
+  
+  for (i in 1:M) {
+    
+    ## -----------------------
+    ## PA model
+    ## -----------------------
+    for (j in 1:k.pa[i]) {
+      d1 <- X[i, j] - cp1[i]
+      s1 <- sign_step(d1)
+      
+      eta_ij <- c0 +
+        c1 * d1 +
+        c2 * d1 * s1 +
+        c3 * X1[i] +
+        u[i]
+      
+      p2[i, j] <- expit(eta_ij)
+    }
+    
+    ll.a.hat[i] <- sum(
+      Y[i, 1:k.pa[i]] * log(p2[i, 1:k.pa[i]]) +
+        (1 - Y[i, 1:k.pa[i]]) * log(1 - p2[i, 1:k.pa[i]])
+    )
+    
+    
+    ## -----------------------
+    ## PE model
+    ## -----------------------
+    linpred_surv <- b0 + b * X1[i]
+    
+    for (j in 1:k.pe[i]) {
+      lambda0[i, j] <- a * (Ti[i, j])^(a - 1)
+      lambda[i, j]  <- lambda0[i, j] * v[i] * exp(linpred_surv)
+    }
+    
+    if (Ti[i, 1] != 0) {
+      ll.e.hat[i] <- sum(log(lambda[i, 1:k.pe[i]])) +
+        v[i] * exp(linpred_surv) * (time.t0[i]^a - time.tau[i]^a)
+    } else {
+      ll.e.hat[i] <-
+        v[i] * exp(linpred_surv) * (time.t0[i]^a - time.tau[i]^a)
+    }
+  }
+  
+  
+  ## -----------------------------
+  ## Deviance at posterior mean
+  ## -----------------------------
+  dev_hat.a     <- -2 * sum(ll.a.hat)
+  dev_hat.e     <- -2 * sum(ll.e.hat)
+  dev_hat.total <- -2 * sum(ll.a.hat + ll.e.hat)
+  
+  
+  ## -----------------------------
+  ## DIC
+  ## DIC = 2 * mean(D(theta)) - D(E(theta))
+  ## -----------------------------
+  dic.a     <- 2 * md.jm.a     - dev_hat.a
+  dic.e     <- 2 * md.jm.e     - dev_hat.e
+  dic.total <- 2 * md.jm.total - dev_hat.total
+  
+  
+  ## -----------------------------
+  ## Final output
+  ## -----------------------------
+  dicwaic_df <- data.frame(
+    DIC_a      = dic.a,
+    WAIC_a     = waic.a,
+    DIC_e      = dic.e,
+    WAIC_e     = waic.e,
+    DIC_total  = dic.total,
+    WAIC_total = total.waic,
+    
+    p_WAIC_a      = waic.jm.a$p_waic,
+    p_WAIC_e      = waic.jm.e$p_waic,
+    p_WAIC_total  = waic.jm.total$p_waic,
+    
+    lppd_a      = waic.jm.a$lppd,
+    lppd_e      = waic.jm.e$lppd,
+    lppd_total  = waic.jm.total$lppd,
+    
+    mean_dev_a      = md.jm.a,
+    mean_dev_e      = md.jm.e,
+    mean_dev_total  = md.jm.total,
+    
+    dev_hat_a      = dev_hat.a,
+    dev_hat_e      = dev_hat.e,
+    dev_hat_total  = dev_hat.total
+  )
+  
+  print(dicwaic_df)
+  
+  write.csv(
+    dicwaic_df,
+    paste0("dicwaic_21rcp.", num, ".csv"),
+    row.names = FALSE
+  )
    
