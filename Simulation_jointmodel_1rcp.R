@@ -112,9 +112,9 @@ model {
   log_lik0.e <- sum(ll.e[]) 
   dev.a <- -2*log_lik0.a
   dev.e <- -2*log_lik0.e
-  c0 ~ dnorm(0,0.0001)
+  c0 ~ dnorm(0,0.01)
 	for (k in 1:3){
-	      c[k] ~ dnorm(0,0.0001)	
+	      c[k] ~ dnorm(0,0.01)	
 	}
   ## prior distributions
 	u.tau ~ dgamma(0.01,0.01)
