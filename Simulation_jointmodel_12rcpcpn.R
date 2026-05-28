@@ -145,11 +145,11 @@ model {
   data <- dump.format(list(X=X, Y=Y, N=N, k.pa=k.pa, 
                            X1=X1, k.pe=k.pe, time.t0=time.t0, time.tau=time.tau, Ti=Ti)) 
   ##initial Values
-  inits1 <- dump.format(list(c0=-3, c=c(0.1,0.15,0.1,-0.1), u.tau=0.04, cp1.mu=5, cp1.tau=1, 
-                             b0=-2, b=0.2, a=1.8, w.tau=0.04, ga=0.3, ga1=-0.05, ga2=-0.02,
+  inits1 <- dump.format(list(c0=-2, c=c(0.1,0.15,0.1,-0.1), u.tau=0.04, cp1.mu=5, cp1.tau=1, 
+                             b0=-2, b=0.2, a=1.8, w.tau=0.04, ga=0.2, ga1=-0.05, ga2=-0.02,
                              .RNG.name="base::Super-Duper", .RNG.seed=1))
-  inits2 <- dump.format(list(c0=-3.1, c=c(0.1,0.15,0.1,-0.1)+0.01, u.tau=0.04, cp1.mu=5, cp1.tau=1, 
-                             b0=-2.1, b=0.21, a=1.81, w.tau=0.04, ga=0.31, ga1=-0.04, ga2=-0.019,
+  inits2 <- dump.format(list(c0=-2.1, c=c(0.1,0.15,0.1,-0.1)+0.01, u.tau=0.04, cp1.mu=5, cp1.tau=1, 
+                             b0=-2.1, b=0.21, a=1.81, w.tau=0.04, ga=0.21, ga1=-0.04, ga2=-0.019,
                              .RNG.name="base::Super-Duper", .RNG.seed=2))
 
   #### Run the model and produce plots
@@ -165,12 +165,12 @@ model {
   result_df <- as.data.frame(summary)
   text <- list.files(pattern="X_data_1rcp.")
   num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[2]]))
-  write.csv(result_df, paste0("result_12rcpcpn.",num,".csv"))
-  #save(res, file=paste0("res_12rcpcpn.",num,".RData"))
+  write.csv(result_df, paste0("result_12rcp.",num,".csv"))
+  #save(res, file=paste0("res_12rcp.",num,".RData"))
   
   res_jm <- res$mcmc
   #vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-  #pdf(file = paste0("traceplot_12rcpcpn.",num,".pdf"),   # The directory you want to save the file in
+  #pdf(file = paste0("traceplot_12rcp.",num,".pdf"),   # The directory you want to save the file in
   #    width = 4, # The width of the plot in inches
   #    height = 4) # The height of the plot in inches
   #traplot(vars)
@@ -178,7 +178,7 @@ model {
    
   
   ## =========================================================
-  ## DIC / WAIC calculation for 12rcpcpn model
+  ## DIC / WAIC calculation for 12rcp model
   ## Fit model: 2 random change points with centered cp1/cp2
   ## =========================================================
   
@@ -439,6 +439,6 @@ model {
   
   write.csv(
     dicwaic_df,
-    paste0("dicwaic_12rcpcpn.", num, ".csv"),
+    paste0("dicwaic_12rcp.", num, ".csv"),
     row.names = FALSE
   )

@@ -2,7 +2,7 @@
 ## Summarize simulation results: 1 random change point model
 ## Calculate convergence flag, bias, MSE, and 95% coverage probability
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM1rcp_052825")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM1rcp_052825pm")
 
 ###########################################################################
 # 1. Read csv files
@@ -25,7 +25,7 @@ truth <- c(
   B1        = 0,
   B2        = 0.6,
   cp1       = 14.87,
-  c0        = -3,
+  c0        = -2,
   c1        = 0.3,
   c2        = 0.3,
   c3        = -0.1,
@@ -33,7 +33,7 @@ truth <- c(
   b0        = -2,
   b1        = 0.2,
   a         = 1.8,
-  ga        = 0.3,
+  ga        = 0.2,
   ga1       = -0.05,
   w.tau.inv = 0.04,
   cp1mu     = 14.87,

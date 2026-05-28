@@ -2,7 +2,7 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpcpn_052725")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpcpn_052825")
 
 ###########################################################################
 # 1. Read csv files
@@ -166,3 +166,30 @@ print(summary_conv)
 
 cat("\n=========== FLAG TABLE ================\n")
 print(table(Flag))
+
+
+
+
+###########################################################################
+# DIC and WAIC
+###########################################################################
+files <- list.files(pattern = "^dicwaic_2rcpcpn\\.[0-9]+\\.csv$")
+
+file_id <- as.numeric(sub("^dicwaic_2rcpcpn\\.([0-9]+)\\.csv$", "\\1", files))
+files <- files[order(file_id)]
+
+data_frames <- lapply(files, read.csv)
+
+## Combine all DIC/WAIC files
+dicwaic_all <- bind_rows(data_frames, .id = "sim_index")
+
+## Number of successfully read files
+I <- nrow(dicwaic_all)
+
+## Mean DIC_total and WAIC_total
+mean_DIC_total  <- mean(dicwaic_all$DIC_total, na.rm = TRUE)
+mean_WAIC_total <- mean(dicwaic_all$WAIC_total, na.rm = TRUE)
+
+mean_DIC_total
+mean_WAIC_total
+# 19933.12; 19987.63
