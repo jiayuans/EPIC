@@ -2,7 +2,7 @@
 ## Summarize simulation results: 1 random change point model
 ## Calculate convergence flag, bias, MSE, and 95% coverage probability
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM1rcp_052725")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM1rcp_052825")
 
 ###########################################################################
 # 1. Read csv files
@@ -29,13 +29,13 @@ truth <- c(
   c1        = 0.3,
   c2        = 0.3,
   c3        = -0.1,
-  u.tau.inv = 1,
+  u.tau.inv = 0.04,
   b0        = -2,
   b1        = 0.2,
   a         = 1.8,
   ga        = 0.3,
   ga1       = -0.05,
-  w.tau.inv = 1,
+  w.tau.inv = 0.04,
   cp1mu     = 14.87,
   cp1var    = 1,
   u         = 0,
@@ -167,3 +167,29 @@ print(summary_conv)
 
 cat("\n=========== FLAG TABLE ================\n")
 print(table(Flag))
+
+
+
+###########################################################################
+# DIC and WAIC
+###########################################################################
+files <- list.files(pattern = "^dicwaic_1rcp\\.[0-9]+\\.csv$")
+
+file_id <- as.numeric(sub("^dicwaic_1rcp\\.([0-9]+)\\.csv$", "\\1", files))
+files <- files[order(file_id)]
+
+data_frames <- lapply(files, read.csv)
+
+## Combine all DIC/WAIC files
+dicwaic_all <- bind_rows(data_frames, .id = "sim_index")
+
+## Number of successfully read files
+I <- nrow(dicwaic_all)
+
+## Mean DIC_total and WAIC_total
+mean_DIC_total  <- mean(dicwaic_all$DIC_total, na.rm = TRUE)
+mean_WAIC_total <- mean(dicwaic_all$WAIC_total, na.rm = TRUE)
+
+mean_DIC_total
+mean_WAIC_total
+# 9461.406; 9506.716

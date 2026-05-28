@@ -26,7 +26,7 @@ kk=max(k.pa)
 I=201
 
 ###############set true values#########################################
-c0=-3
+c0=-2 #-3
 c1=0.3
 c2=0.3
 c3=-0.1 #-0.05
@@ -122,7 +122,7 @@ for (r in 2:I){
     }
   }
   
-  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.3,ga=-0.05,TTei=tt-0.25) 
+  simdat.pe00 <- poisson.d(alpha=1.8,beta=0.2,beta0=-2,x=X1,ga0=0.2,ga=-0.05,TTei=tt-0.25) #ga0=0.3
   
   X_df <- as.data.frame(X)
   filename <- paste0("X_data_1rcp.", r-2, ".csv")
