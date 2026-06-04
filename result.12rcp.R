@@ -2,14 +2,14 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM12rcpcpn_052825")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM12rcp_052825_ok")
 
 ###########################################################################
 # 1. Read csv files
 ###########################################################################
-files <- list.files(pattern = "^result_12rcpcpn\\.[0-9]+\\.csv$")
+files <- list.files(pattern = "^result_12rcp\\.[0-9]+\\.csv$")
 
-file_id <- as.numeric(sub("^result_12rcpcpn\\.([0-9]+)\\.csv$", "\\1", files))
+file_id <- as.numeric(sub("^result_12rcp\\.([0-9]+)\\.csv$", "\\1", files))
 files <- files[order(file_id)]
 
 data_frames <- lapply(files, read.csv)
@@ -27,19 +27,19 @@ truth <- c(
   B3       = 0.6,
   cp1      = 14.87,                    # average subject-specific cp1
   cp2      = 14.87,
-  c0       = -3,
+  c0       = -2,
   c1       = 0.3,
   c2       = 0.3,
   c3       = 0,
   c4       = -0.1,
-  u.tau.inv = 1,               
+  u.tau.inv = 0.04,               
   b0       = -2,
   b1       = 0.2,
   a        = 1.8,
-  ga       = 0.3,
+  ga       = 0.2,
   ga1      = -0.05,
   ga2      = 0,
-  w.tau.inv = 1,                   # if this is residual variance; change if precision
+  w.tau.inv = 0.04,                   # if this is residual variance; change if precision
   cp1mu    = 14.87,
   cp1var   = 1,                    # cp1.sd = 1, so variance = 1
   u        = 0,
@@ -172,9 +172,9 @@ print(table(Flag))
 ###########################################################################
 # DIC and WAIC
 ###########################################################################
-files <- list.files(pattern = "^dicwaic_12rcpcpn\\.[0-9]+\\.csv$")
+files <- list.files(pattern = "^dicwaic_12rcp\\.[0-9]+\\.csv$")
 
-file_id <- as.numeric(sub("^dicwaic_12rcpcpn\\.([0-9]+)\\.csv$", "\\1", files))
+file_id <- as.numeric(sub("^dicwaic_12rcp\\.([0-9]+)\\.csv$", "\\1", files))
 files <- files[order(file_id)]
 
 data_frames <- lapply(files, read.csv)
@@ -185,10 +185,18 @@ dicwaic_all <- bind_rows(data_frames, .id = "sim_index")
 ## Number of successfully read files
 I <- nrow(dicwaic_all)
 
-## Mean DIC_total and WAIC_total
+## Mean DIC and WAIC
+mean_DIC_a  <- mean(dicwaic_all$DIC_a, na.rm = TRUE)
+mean_WAIC_a <- mean(dicwaic_all$WAIC_a, na.rm = TRUE)
+mean_DIC_e  <- mean(dicwaic_all$DIC_e, na.rm = TRUE)
+mean_WAIC_e <- mean(dicwaic_all$WAIC_e, na.rm = TRUE)
 mean_DIC_total  <- mean(dicwaic_all$DIC_total, na.rm = TRUE)
 mean_WAIC_total <- mean(dicwaic_all$WAIC_total, na.rm = TRUE)
 
-mean_DIC_total
-mean_WAIC_total
-# 19933.12; 19987.63
+round(mean_DIC_a)
+round(mean_WAIC_a)
+round(mean_DIC_e)
+round(mean_WAIC_e)
+round(mean_DIC_total)
+round(mean_WAIC_total)
+# 13601.27; 13738.39

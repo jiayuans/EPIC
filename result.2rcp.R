@@ -2,7 +2,7 @@
 ## Summarize simulation results: convergence flag, bias, MSE, 95% CP
 ## Cleaner version
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpcpn_052825")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM2rcpcpn_052825_ok")
 
 ###########################################################################
 # 1. Read csv files
@@ -186,10 +186,18 @@ dicwaic_all <- bind_rows(data_frames, .id = "sim_index")
 ## Number of successfully read files
 I <- nrow(dicwaic_all)
 
-## Mean DIC_total and WAIC_total
+## Mean DIC and WAIC
+mean_DIC_a  <- mean(dicwaic_all$DIC_a, na.rm = TRUE)
+mean_WAIC_a <- mean(dicwaic_all$WAIC_a, na.rm = TRUE)
+mean_DIC_e  <- mean(dicwaic_all$DIC_e, na.rm = TRUE)
+mean_WAIC_e <- mean(dicwaic_all$WAIC_e, na.rm = TRUE)
 mean_DIC_total  <- mean(dicwaic_all$DIC_total, na.rm = TRUE)
 mean_WAIC_total <- mean(dicwaic_all$WAIC_total, na.rm = TRUE)
 
-mean_DIC_total
-mean_WAIC_total
-# 19933.12; 19987.63
+round(mean_DIC_a)
+round(mean_WAIC_a)
+round(mean_DIC_e)
+round(mean_WAIC_e)
+round(mean_DIC_total)
+round(mean_WAIC_total)
+# 19869.69; 19955.5

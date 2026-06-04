@@ -64,9 +64,12 @@ sample_dat <- dat %>%
 
 first.tt <- sample_dat$first.t
 last.tt  <- sample_dat$last.t
+fu <- last.tt - first.tt
 
 lt <- cbind(first.tt,last.tt)
 write.csv(lt,"long.data_new.csv")
+mean(fu)
+sd(fu)
 
 
 sample_500_dat <- dat %>%
