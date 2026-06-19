@@ -2,7 +2,7 @@
 ## Summarize simulation results: 1 random change point model
 ## Calculate convergence flag, bias, MSE, and 95% coverage probability
 ###########################################################################
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM1rcp_052825_ok")
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/JM1rcp_060425_ok")
 
 ###########################################################################
 # 1. Read csv files

@@ -220,10 +220,10 @@ model {
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
 inits1 <- dump.format(list(c20=-2.6, delta_c=0.7, c=c(0.3,0.3,-0.05), pi=c(0.4,0.6), pi.r=c(0.4,0.6), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
-                           b20_raw=-1, delta_b=2.5, b=c(0.2,0.3), a1=2.5,a2=0.5, w.tau1=25, w.tau2=25, ga10=0.6, ga20=-0.1, ga11=-0.2,
+                           b20_raw=-1, delta_b=2.5, b=c(0.2,0.3), a1=2.5,a2=0.5, w.tau1=25, w.tau2=25, ga10=0.5, ga20=-0.1, ga11=-0.2,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
 inits2 <- dump.format(list(c20=-2.5, delta_c=0.6, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.41,0.59), pi.r=c(0.41,0.59), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
-                           b20_raw=-1.1, delta_b=2.4, b=c(0.2,0.3)+0.1, a1=2.55,a2=0.6, w.tau1=24, w.tau2=26, ga10=0.61, ga20=-0.11, ga11=-0.21,
+                           b20_raw=-1.1, delta_b=2.4, b=c(0.2,0.3)+0.1, a1=2.55,a2=0.6, w.tau1=24, w.tau2=26, ga10=0.51, ga20=-0.11, ga11=-0.21,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
@@ -242,12 +242,12 @@ result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixJM.X_newdata3.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.newresult7.",num,".csv"))
-save(res, file=paste0("mixJM.newres7.",num,".RData"))
+#save(res, file=paste0("mixJM.newres7.",num,".RData"))
 
 res_jm <- res$mcmc
-vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-pdf(file = paste0("mixJM.newtraceplot7.",num,".pdf"),   # The directory you want to save the file in
-    width = 4, # The width of the plot in inches
-    height = 4) # The height of the plot in inches
-traplot(vars)
-dev.off()
+#vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
+#pdf(file = paste0("mixJM.newtraceplot7.",num,".pdf"),   # The directory you want to save the file in
+#    width = 4, # The width of the plot in inches
+#    height = 4) # The height of the plot in inches
+#traplot(vars)
+#dev.off()

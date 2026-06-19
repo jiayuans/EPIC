@@ -43,7 +43,7 @@ a2_true  <- 0.5
 b10_true <- -3.5
 b20_true <- -1
 b_true   <- c(0.2, 0.3)           # b[1], b[2]
-ga10_true <- 0.6
+ga10_true <- 0.5 #0.6
 ga20_true <- -0.1
 ga11_true <- -0.2
 pi_r_true <- c(0.4, 0.6)          # Pr(z.r=1), Pr(z.r=2) for PE component
