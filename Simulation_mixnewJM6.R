@@ -152,7 +152,7 @@ model {
     ll.e[i] <- equals(z.r[i],1) * logL1[i] + equals(z.r[i],2) * logL2[i]
 
     # zeros trick for custom likelihood
-    phi[i] <- max(-ll.e[i] + 1000000, 0)
+    phi[i] <- max(-ll.e[i] + 10000, 0)
     zeros[i] ~ dpois(phi[i])
   }
 
@@ -188,12 +188,12 @@ model {
   u.tau2 ~ dgamma(16,4) # u.tau2 ~ dgamma(0.001,0.001)
   u.tau.inv2 <- 1/u.tau2
 
-  cp1.mu ~ dnorm(0,0.01)
-  cp1.tau ~ dgamma(1,1)
+  cp1.mu ~ dnorm(0, 0.01)
+  cp1.tau ~ dgamma(1, 1)
   cp1.tau.inv <- 1/cp1.tau
 
-  a1 ~ dgamma(0.01,0.01)
-  a2 ~ dgamma(0.01,0.01)
+  a1 ~ dgamma(0.1, 0.1)
+  a2 ~ dgamma(0.1, 0.1)
   # PE ordering: b10 < b20
   b20_raw ~ dnorm(0, 0.01)
   delta_b ~ dnorm(0, 0.01) T(0,)
@@ -204,14 +204,14 @@ model {
     b[p] ~ dnorm(0,0.01)
   }
 
-  ga10 ~ dnorm(0,0.01)
-  ga20 ~ dnorm(0,0.01)
-  ga11 ~ dnorm(0,0.01)
+  ga10 ~ dnorm(0, 1)
+  ga20 ~ dnorm(0, 1)
+  ga11 ~ dnorm(0, 1)
 
-  w.tau1 ~ dgamma(25, 2.25) # w.tau1 ~ dgamma(2,2)
+  w.tau1 ~ dgamma(4, 0.16) # w.tau1 ~ dgamma(2,2)
   w.tau.inv1 <- 1/w.tau1
 
-  w.tau2 ~ dgamma(25, 2.25) # w.tau2 ~ dgamma(2,2)
+  w.tau2 ~ dgamma(4, 0.16) # w.tau2 ~ dgamma(2,2)
   w.tau.inv2 <- 1/w.tau2
 }
 "
@@ -219,22 +219,22 @@ model {
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c20=-2.6, delta_c=0.7, c=c(0.3,0.3,-0.05), pi=c(0.55,0.45), pi.r=c(0.6,0.4), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
-                           b20_raw=-2, delta_b=2, b=c(0.2,0.3), a1=1.8,a2=1.6, w.tau1=11.1, w.tau2=11.1, ga10=1, ga20=-0.2, ga11=-0.1,
+inits1 <- dump.format(list(c20=-2.6, delta_c=0.7, c=c(0.3,0.3,-0.05), pi=c(0.4,0.6), pi.r=c(0.4,0.6), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
+                           b20_raw=-1, delta_b=2.5, b=c(0.2,0.3), a1=2.5,a2=0.5, w.tau1=25, w.tau2=25, ga10=0.4, ga20=-0.1, ga11=-0.2,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c20=-2.5, delta_c=0.6, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.56,0.44), pi.r=c(0.59,0.41), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
-                           b20_raw=-1.9, delta_b=2.2, b=c(0.2,0.3)+0.1, a1=1.75,a2=1.55, w.tau1=10, w.tau2=12, ga10=1.1, ga20=-0.1, ga11=-0.08,
+inits2 <- dump.format(list(c20=-2.5, delta_c=0.6, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.41,0.59), pi.r=c(0.41,0.59), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
+                           b20_raw=-1.1, delta_b=2.4, b=c(0.2,0.3)+0.1, a1=2.55,a2=0.6, w.tau1=24, w.tau2=26, ga10=0.41, ga20=-0.11, ga11=-0.21,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
-res <- run.jags(model=modelrancp, burnin=10000, sample=5000,  
+res <- run.jags(model=modelrancp, burnin=10000, sample=6000,  
                 monitor=c("B1","B2","c10", "c20","c", "cp1",
                           "pi","pi.r","u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
                           "cp1.mu","cp1.tau.inv","cp1.tau",
                           "b10","b20","b", "a1","a2","ga10","ga20","ga11",
                           "w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","c20_raw", "delta_c","b20_raw","delta_b",
                           "ll.a","ll.e","dev.a","dev.e"), 
-                data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=15)
+                data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=10)
 
 summary <- summary(res)
 summary
@@ -242,12 +242,12 @@ result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixJM.X_newdata2.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.newresult6.",num,".csv"))
-save(res, file=paste0("mixJM.newres6.",num,".RData"))
+#save(res, file=paste0("mixJM.newres6.",num,".RData"))
 
 res_jm <- res$mcmc
-vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
-pdf(file = paste0("mixJM.newtraceplot6.",num,".pdf"),   # The directory you want to save the file in
-    width = 4, # The width of the plot in inches
-    height = 4) # The height of the plot in inches
-traplot(vars)
-dev.off()
+#vars<-mcmc.list(res_jm[[1]][,c(1:16)],res_jm[[2]][,c(1:16)])
+#pdf(file = paste0("mixJM.newtraceplot6.",num,".pdf"),   # The directory you want to save the file in
+#    width = 4, # The width of the plot in inches
+#    height = 4) # The height of the plot in inches
+#traplot(vars)
+#dev.off()
