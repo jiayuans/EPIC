@@ -35,18 +35,18 @@ c20 <- -2.6
 c   <- c(0.3, 0.3, -0.05)         # c[1], c[2], c[3]
 cp1_mu_true <- 14
 cp1_sd_true <- 1
-pi_true <- c(0.7, 0.3)          # Pr(z=1), Pr(z=2) for PA component
+pi_true <- c(0.6, 0.4)          # Pr(z=1), Pr(z=2) for PA component
 
 # PE
 a1_true  <- 2
 a2_true  <- 0.5
-b10_true <- -3.5
-b20_true <- -4
-b_true   <- c(0.2, 1)           # b[1], b[2]
+b10_true <- -1
+b20_true <- -3.5
+b_true   <- c(0.2, 0.4)           # b[1], b[2]
 ga10_true <- 0.5 #0.6
 ga20_true <- -0.1
 ga11_true <- -0.2
-pi_r_true <- c(0.7, 0.3)          # Pr(z.r=1), Pr(z.r=2) for PE component
+pi_r_true <- c(0.6, 0.4)          # Pr(z.r=1), Pr(z.r=2) for PE component
 
 # Random effects truths (precisions)
 u_tau1_true <- 4             # sd(u1)=0.5
