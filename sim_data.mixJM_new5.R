@@ -23,7 +23,7 @@ kk   <- max(k.pa)
 # ----------------------------
 # Number of simulated datasets
 # ----------------------------
-Int <- 201
+Int <- 501
 set.seed(123)
 
 # ----------------------------
@@ -32,21 +32,22 @@ set.seed(123)
 # PA
 c10 <- -3.3
 c20 <- -2.6
-c   <- c(0.3, 0.3, -0.05)         # c[1], c[2], c[3]
+c   <- c(0.3, 0.3, 0.3, -0.05)  # c[1], c[2], c[3], c[4]
 cp1_mu_true <- 14
 cp1_sd_true <- 1
-pi_true <- c(0.6, 0.4)          # Pr(z=1), Pr(z=2) for PA component
+pi_true <- c(0.4, 0.6)          # Pr(z=1), Pr(z=2) for PA component
 
 # PE
-a1_true  <- 2
+a1_true  <- 2.5
 a2_true  <- 0.5
-b10_true <- -1
-b20_true <- -3.5
-b_true   <- c(0.2, 0.4)           # b[1], b[2]
+b10_true <- -3.5
+b20_true <- -1
+b_true   <- c(0.2, 0.3)           # b[1], b[2]
 ga10_true <- 0.5 #0.6
 ga20_true <- -0.1
 ga11_true <- -0.2
-pi_r_true <- c(0.6, 0.4)          # Pr(z.r=1), Pr(z.r=2) for PE component
+ga12_true <- 0.1
+pi_r_true <- c(0.4, 0.6)          # Pr(z.r=1), Pr(z.r=2) for PE component
 
 # Random effects truths (precisions)
 u_tau1_true <- 4             # sd(u1)=0.5
@@ -92,16 +93,28 @@ for (r in 2:Int) {
   w2  <- rnorm(N, 0, sqrt(1 / w_tau2_true))
   cp1 <- rnorm(N, cp1_mu_true, cp1_sd_true)
   
+  while(any(cp1 > 21.45)){
+    ind <- which(cp1 > 21.45)
+    cp1[ind] <- rnorm(length(ind), cp1_mu_true, cp1_sd_true)
+  }
+  
+  qcp <- rbeta(N, 1, 1)
+  cp2.temp <- qcp * (21.45 - cp1)
+  cp2 <- cp1 + cp2.temp
+  
   # Class indicators (truth)
   z   <- sample(1:2, size = N, prob = pi_true,  replace = TRUE)   # PA class
   z_r <- sample(1:2, size = N, prob = pi_r_true, replace = TRUE)  # PE class
   
   # Frailties
   cp1c <- cp1 - cp1_mu_true
+  cp2_mu <- cp1 + 0.5 * (21.45 - cp1)
+  cp2c <- cp2 - cp2_mu
+  
   # Shared longitudinal contribution
   eta_shared <- ifelse(
     z == 1,
-    ga10_true * u1 + ga11_true * cp1c,
+    ga10_true * u1 + ga11_true * cp1c + ga12_true * cp2c,
     ga20_true * u2
   )
   
@@ -121,16 +134,18 @@ for (r in 2:Int) {
   
   for (i in 1:N) {
     for (j in 1:k.pa[i]) {
-      Ind <- ifelse(X[i, j] < cp1[i], -1, 1)
+      Ind1 <- ifelse(X[i, j] < cp1[i], -1, 1)
+      Ind2 <- ifelse(X[i, j] < cp2[i], -1, 1)
       
       logit1 <- c10 +
         c[1] * (X[i, j] - cp1[i]) +
-        c[2] * (X[i, j] - cp1[i]) * Ind +
-        c[3] * X1[i] + u1[i]
+        c[2] * (X[i, j] - cp1[i]) * Ind1 +
+        c[3] * (X[i, j] - cp2[i]) * Ind2 +
+        c[4] * X1[i] + u1[i]
       
       logit2 <- c20 +
-        (c[1] - c[2]) * X[i, j] +
-        c[3] * X1[i] + u2[i]
+        (c[1] - c[2] - c[3]) * X[i, j] +
+        c[4] * X1[i] + u2[i]
       
       p1 <- plogis(logit1)
       p2 <- plogis(logit2)
@@ -191,11 +206,17 @@ for (r in 2:Int) {
   # Write truth file for recovery checks
   # ----------------------------
   truth <- data.frame(
-    c10 = c10, c20 = c20, c1 = c[1], c2 = c[2], c3 = c[3],
+    c10 = c10, c20 = c20,
+    c1 = c[1], c2 = c[2], c3 = c[3], c4 = c[4],
+    B1 = c[1] - c[2] - c[3],
+    B2 = c[1] + c[2] - c[3],
+    B3 = c[1] + c[2] + c[3],
     cp1_mu = cp1_mu_true, cp1_tau = 1 / (cp1_sd_true^2),
+    qcp_mean = 0.5,
     a1 = a1_true, a2 = a2_true,
     b10 = b10_true, b20 = b20_true, b1 = b_true[1], b2 = b_true[2],
-    ga10 = ga10_true, ga20 = ga20_true, ga11 = ga11_true,
+    ga10 = ga10_true, ga20 = ga20_true,
+    ga11 = ga11_true, ga12 = ga12_true,
     pi1 = pi_true[1], pi2 = pi_true[2],
     pi1r = pi_r_true[1], pi2r = pi_r_true[2],
     u_tau1 = u_tau1_true, u_tau2 = u_tau2_true,

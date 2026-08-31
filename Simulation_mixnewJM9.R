@@ -97,12 +97,13 @@ model {
       logit(p[i,j,1]) <- c10
         + c[1] * (X[i,j] - cp1[i])
         + c[2] * (X[i,j] - cp1[i]) * (2*step(X[i,j] - cp1[i]) - 1)
-        + c[3] * X1[i]
+        + c[3] * (X[i,j] - cp2[i]) * (2*step(X[i,j] - cp2[i]) - 1)
+        + c[4] * X1[i]
         + u1[i]
 
       logit(p[i,j,2]) <- c20
-        + (c[1] - c[2]) * X[i,j]
-        + c[3] * X1[i]
+        + (c[1] - c[2] - c[3]) * X[i,j]
+        + c[4] * X1[i]
         + u2[i]
     }
 
@@ -112,10 +113,15 @@ model {
     # Random effects for PA
     u1[i] ~ dnorm(0, u.tau1)
     u2[i] ~ dnorm(0, u.tau2)
-    cp1[i] ~ dnorm(cp1.mu, cp1.tau)
+    cp1[i] ~ dnorm(cp1.mu, cp1.tau)T(,21.45)
+    qcp[i] ~ dbeta(1,1)
+    cp2.temp[i] <- qcp[i] * (21.45 - cp1[i])
+    cp2[i] <- cp1[i] + cp2.temp[i]
 
     # Center cp1 inside v1
     cp1c[i] <- cp1[i] - cp1.mu
+    cp2.mu[i] <- cp1[i] + 0.5 * (21.45 - cp1[i])
+    cp2c[i] <- cp2[i] - cp2.mu[i]
     
     # PA likelihood contribution
     L.a[i]  <- prod( (p2[i,1:k.pa[i]]^Y[i,1:k.pa[i]]) * ((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])) )
@@ -124,12 +130,12 @@ model {
     # ---- PE (NHPP / Weibull process) ----
     w1[i] ~ dnorm(0, w.tau1)
     w2[i] ~ dnorm(0, w.tau2)
-    #v1[i] <- exp(ga10*u1[i] + w1[i] + ga11*cp1c[i]) 
+    #v1[i] <- exp(ga10*u1[i] + w1[i] + ga11*cp1c[i] + ga12*cp2c[i]) 
     #v2[i] <- exp(ga20*u2[i] + w2[i])
     
     eta.shared[i] <-
         equals(z[i], 1) *
-          (ga10*u1[i] + ga11*cp1c[i]) +
+          (ga10*u1[i] + ga11*cp1c[i] + ga12*cp2c[i]) +
         equals(z[i], 2) *
           (ga20*u2[i])
         
@@ -185,11 +191,12 @@ model {
   c10 <- c20_raw - delta_c
   c20 <- c20_raw
 
-  for (k in 1:3){
+  for (k in 1:4){
     c[k] ~ dnorm(0,0.01)
   }
-  B1 <- c[1] - c[2]
-  B2 <- c[1] + c[2]
+  B1 <- c[1] - c[2] - c[3]
+  B2 <- c[1] + c[2] - c[3]
+  B3 <- c[1] + c[2] + c[3]
 
   u.tau1 ~ dgamma(16,4) # u.tau1 ~ dgamma(0.001,0.001)
   u.tau.inv1 <- 1/u.tau1
@@ -203,10 +210,11 @@ model {
 
   a1 ~ dgamma(0.1, 0.1)
   a2 ~ dgamma(0.1, 0.1)
-  # PE ordering: b10 > b20
-  b20 ~ dnorm(0, 0.01)
+  # PE ordering: b10 < b20
+  b20_raw ~ dnorm(0, 0.01)
   delta_b ~ dnorm(0, 0.01) T(0,)
-  b10 <- b20 + delta_b
+  b10 <- b20_raw - delta_b
+  b20 <- b20_raw
 
   for (p in 1:2){
     b[p] ~ dnorm(0,0.01)
@@ -215,6 +223,7 @@ model {
   ga10 ~ dnorm(0, 1)
   ga20 ~ dnorm(0, 1)
   ga11 ~ dnorm(0, 1)
+  ga12 ~ dnorm(0, 1)
 
   w.tau1 ~ dgamma(4, 0.16) # w.tau1 ~ dgamma(2,2)
   w.tau.inv1 <- 1/w.tau1
@@ -223,25 +232,24 @@ model {
   w.tau.inv2 <- 1/w.tau2
 }
 "
-
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c20=-2.6, delta_c=0.7, c=c(0.3,0.3,-0.05), pi=c(0.6,0.4), pi.r=c(0.6,0.4), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
-                           b20=-3.5, delta_b=2.5, b=c(0.2,0.4), a1=2,a2=0.5, w.tau1=25, w.tau2=25, ga10=0.5, ga20=-0.1, ga11=-0.2,
+inits1 <- dump.format(list(c20_raw=-2.6, delta_c=0.7, c=c(0.3,0.3,0.3,-0.05), pi=c(0.4,0.6), pi.r=c(0.4,0.6), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
+                           b20_raw=-1, delta_b=2.5, b=c(0.2,0.3), a1=2.5,a2=0.5, w.tau1=25, w.tau2=25, ga10=0.5, ga20=-0.1, ga11=-0.2,ga12=0.1,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c20=-2.5, delta_c=0.6, c=c(0.3,0.3,-0.05)+0.01, pi=c(0.61,0.39), pi.r=c(0.61,0.39), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
-                           b20=-3.5, delta_b=2.3, b=c(0.2,0.4)+0.1, a1=2.1,a2=0.6, w.tau1=24, w.tau2=26, ga10=0.51, ga20=-0.11, ga11=-0.21,
+inits2 <- dump.format(list(c20_raw=-2.5, delta_c=0.6, c=c(0.3,0.3,0.3,-0.05)+0.01, pi=c(0.41,0.59), pi.r=c(0.41,0.59), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
+                           b20_raw=-1.1, delta_b=2.4, b=c(0.2,0.3)+0.1, a1=2.55,a2=0.6, w.tau1=24, w.tau2=26, ga10=0.51, ga20=-0.11, ga11=-0.21,ga12=0.11,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
 res <- run.jags(model=modelrancp, burnin=10000, sample=6000,  
-                monitor=c("B1","B2","c10", "c20","c", "cp1",
+                monitor=c("B1","B2","B3","c10", "c20","c", "cp1",
                           "pi","pi.r","u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
                           "cp1.mu","cp1.tau.inv","cp1.tau",
-                          "b10","b20","b", "a1","a2","ga10","ga20","ga11",
-                          "w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","c20_raw", "delta_c","delta_b",
-                          "ll.a","ll.e","dev.a","dev.e"), 
+                          "b10","b20","b", "a1","a2","ga10","ga20","ga11","ga12",
+                          "w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","c20_raw", "delta_c","b20_raw","delta_b",
+                          "ll.a","ll.e","dev.a","dev.e","cp2","cp2.temp","cp2.mu","cp1c","cp2c"), 
                 data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=10)
 
 summary <- summary(res)
@@ -250,6 +258,5 @@ result_df <- as.data.frame(summary)
 text <- list.files(pattern="mixJM.X_newdata5.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.newresult9.",num,".csv"))
-#save(res, file=paste0("mixJM.newres8.",num,".RData"))
 
 res_jm <- res$mcmc
