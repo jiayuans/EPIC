@@ -93,3 +93,110 @@ Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
 
+
+
+
+
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM9_090925") 
+
+###########################################################################
+# Read csv files
+text <- list.files(pattern="mixJM.newresult9.")
+num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]])))
+
+data_frames <- lapply(num, function(i) {
+  file_name <- paste0("mixJM.newresult9.", i, ".csv") 
+  read.csv(file_name)
+})
+
+I=length(data_frames)
+I
+
+Flag<-rep(NA,I)
+B1.mean<-rep(NA,I)
+B2.mean<-rep(NA,I)
+B3.mean<-rep(NA,I)
+c10.mean<-rep(NA,I)
+c20.mean<-rep(NA,I)
+c1.mean<-rep(NA,I)
+c2.mean<-rep(NA,I)
+c3.mean<-rep(NA,I)
+c4.mean<-rep(NA,I)
+cp1.mean<-rep(NA,I)
+cp2.mean<-rep(NA,I)
+pi1.mean<-rep(NA,I)
+pi2.mean<-rep(NA,I)
+pi1r.mean<-rep(NA,I)
+pi2r.mean<-rep(NA,I)
+#u1.mean<-rep(NA,I)
+u1.tau.inv.mean<-rep(NA,I)
+#u2.mean<-rep(NA,I)
+u2.tau.inv.mean<-rep(NA,I)
+cp1.mu.mean<-rep(NA,I)
+cp1.tau.mean<-rep(NA,I)
+cp2.mu.mean<-rep(NA,I)
+
+b10.mean<-rep(NA,I)
+b20.mean<-rep(NA,I)
+b1.mean<-rep(NA,I)
+b2.mean<-rep(NA,I)
+a1.mean<-rep(NA,I)
+a2.mean<-rep(NA,I)
+ga10.mean<-rep(NA,I)
+ga20.mean<-rep(NA,I)
+ga11.mean<-rep(NA,I)
+ga12.mean<-rep(NA,I)
+#w1.mean<-rep(NA,I)
+w1.tau.inv.mean<-rep(NA,I)
+#w2.mean<-rep(NA,I)
+w2.tau.inv.mean<-rep(NA,I)
+
+for(i in 1:I){ 
+  Flag[i] <- ifelse(max(data_frames[[i]][,12], na.rm = TRUE)<1.3,1,0)
+  B1.mean[i] <- data_frames[[i]][1,5] 
+  B2.mean[i] <- data_frames[[i]][2,5] 
+  B3.mean[i] <- data_frames[[i]][3,5] 
+  c10.mean[i] <-data_frames[[i]][4,5] 
+  c20.mean[i] <-data_frames[[i]][5,5] 
+  c1.mean[i] <-data_frames[[i]][6,5] 
+  c2.mean[i] <-data_frames[[i]][7,5] 
+  c3.mean[i] <-data_frames[[i]][8,5] 
+  c4.mean[i] <-data_frames[[i]][9,5] 
+  cp1.mean[i] <-mean(data_frames[[i]][10:609,5])
+  cp2.mean[i] <-mean(data_frames[[i]][1841:2440,5])
+  pi1.mean[i] <-data_frames[[i]][610,5] 
+  pi2.mean[i] <-data_frames[[i]][611,5] 
+  pi1r.mean[i] <-data_frames[[i]][612,5] 
+  pi2r.mean[i] <-data_frames[[i]][613,5] 
+  #u1.mean[i] <-mean(data_frames[[i]][812:1611,5])
+  u1.tau.inv.mean[i] <-data_frames[[i]][614,5]
+  #u2.mean[i] <-mean(data_frames[[i]][1612:2011,5])
+  u2.tau.inv.mean[i] <-data_frames[[i]][615,5]
+  cp1.mu.mean[i] <-data_frames[[i]][618,5]
+  cp1.tau.mean[i] <-data_frames[[i]][619,5]
+  cp2.mu.mean[i] <-mean(data_frames[[i]][3041:3640,5])
+  
+  b10.mean[i] <-data_frames[[i]][621,5] 
+  b20.mean[i] <-data_frames[[i]][622,5] 
+  b1.mean[i] <-data_frames[[i]][623,5] 
+  b2.mean[i] <-data_frames[[i]][624,5] 
+  a1.mean[i] <-data_frames[[i]][625,5] 
+  a2.mean[i] <-data_frames[[i]][626,5] 
+  ga10.mean[i] <-data_frames[[i]][627,5] 
+  ga20.mean[i] <-data_frames[[i]][628,5] 
+  ga11.mean[i] <-data_frames[[i]][629,5] 
+  ga12.mean[i] <-data_frames[[i]][630,5] 
+  #w1.mean[i] <-mean(data_frames[[i]][2027:2426,5])
+  w1.tau.inv.mean[i] <-data_frames[[i]][633,5]
+  #w2.mean[i] <-mean(data_frames[[i]][2427:2826,5])
+  w2.tau.inv.mean[i] <-data_frames[[i]][634,5]
+}
+
+Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c10.mean,c20.mean,c1.mean,c2.mean,c3.mean,c4.mean,pi1.mean,pi2.mean,pi1r.mean,pi2r.mean,
+                  u1.tau.inv.mean,u2.tau.inv.mean,cp1.mu.mean,cp1.tau.mean,cp2.mu.mean,
+                  b10.mean,b20.mean,b1.mean,b2.mean,a1.mean,a2.mean,ga10.mean,ga20.mean,ga11.mean,ga12.mean,w1.tau.inv.mean,w2.tau.inv.mean)
+table(Flag)
+Sim.results.1 <- subset(Sim.results,Flag==1)
+round(colMeans(Sim.results.1),2)
+round(colMeans(Sim.results),2)
+
