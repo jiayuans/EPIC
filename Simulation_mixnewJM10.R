@@ -245,11 +245,11 @@ inits2 <- dump.format(list(c20_raw=-2.1, delta_c=2.1, c=c(0.5,0.2,0.4,-0.05)+0.0
 #### Run the model and produce plots
 res <- run.jags(model=modelrancp, burnin=10000, sample=6000,  
                 monitor=c("B1","B2","B3","c10", "c20","c", "cp1",
-                          "pi","pi.r","u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
-                          "cp1.mu","cp1.tau.inv","cp1.tau",
+                          "pi","pi.r","u.tau.inv1","u.tau.inv2", 
+                          "cp1.mu","cp1.tau.inv",
                           "b10","b20","b", "a1","a2","ga10","ga20","ga11","ga12",
-                          "w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","c20_raw", "delta_c","b20_raw","delta_b",
-                          "ll.a","ll.e","dev.a","dev.e","cp2","cp2.temp","cp2.mu","cp1c","cp2c"), 
+                          "w.tau.inv1","w.tau.inv2",
+                          "ll.a","ll.e","cp2","cp2.mu","z","z.r"), 
                 data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=10)
 
 summary <- summary(res)
@@ -260,3 +260,152 @@ num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.newresult10.",num,".csv"))
 
 res_jm <- res$mcmc
+res_jm <- res$mcmc
+
+library(loo)
+
+## =========================================================
+## Helper functions
+## =========================================================
+
+colVars <- function(a){
+  diff <- a - matrix(colMeans(a), nrow(a), ncol(a), byrow = TRUE)
+  colSums(diff^2) / (nrow(a) - 1)
+}
+
+log_mean_exp <- function(x){
+  m <- max(x)
+  m + log(mean(exp(x - m)))
+}
+
+waic_from_loglik <- function(log_lik){
+  
+  lppd_i <- apply(log_lik, 2, log_mean_exp)
+  lppd <- sum(lppd_i)
+  
+  p_waic_1 <- 2 * sum(lppd_i - colMeans(log_lik))
+  p_waic_2 <- sum(colVars(log_lik))
+  
+  WAIC <- -2 * (lppd - p_waic_2)
+  
+  list(
+    lppd = lppd,
+    p_waic_1 = p_waic_1,
+    p_waic_2 = p_waic_2,
+    WAIC = WAIC
+  )
+}
+
+dic_from_loglik <- function(log_lik){
+  
+  D <- -2 * rowSums(log_lik)
+  
+  mean_deviance <- mean(D)
+  pD <- var(D) / 2
+  DIC <- mean_deviance + pD
+  
+  list(
+    mean_deviance = mean_deviance,
+    pD = pD,
+    DIC = DIC
+  )
+}
+
+
+## =========================================================
+## Combine posterior draws across chains
+## =========================================================
+
+post <- do.call(rbind, lapply(res_jm, as.matrix))
+cn <- colnames(post)
+
+
+## =========================================================
+## Locate and order subject-level log-likelihood columns
+## =========================================================
+
+idx.a <- grep("^ll\\.a\\[[0-9]+\\]$", cn)
+idx.e <- grep("^ll\\.e\\[[0-9]+\\]$", cn)
+
+if(length(idx.a) == 0)
+  stop("No ll.a[i] columns found in posterior samples.")
+
+if(length(idx.e) == 0)
+  stop("No ll.e[i] columns found in posterior samples.")
+
+idx.a <- idx.a[
+  order(as.integer(
+    sub("^ll\\.a\\[([0-9]+)\\]$", "\\1", cn[idx.a])
+  ))
+]
+
+idx.e <- idx.e[
+  order(as.integer(
+    sub("^ll\\.e\\[([0-9]+)\\]$", "\\1", cn[idx.e])
+  ))
+]
+
+if(length(idx.a) != length(idx.e))
+  stop("Different number of ll.a[i] and ll.e[i] columns.")
+
+
+## =========================================================
+## Subject-level log-likelihood matrices
+## =========================================================
+
+ll.a.mat <- post[, idx.a, drop = FALSE]
+ll.e.mat <- post[, idx.e, drop = FALSE]
+
+ll.total.mat <- ll.a.mat + ll.e.mat
+
+
+## =========================================================
+## DIC
+## =========================================================
+
+dic.pa    <- dic_from_loglik(ll.a.mat)
+dic.pe    <- dic_from_loglik(ll.e.mat)
+dic.total <- dic_from_loglik(ll.total.mat)
+
+
+## =========================================================
+## WAIC
+## =========================================================
+
+waic.pa    <- waic_from_loglik(ll.a.mat)
+waic.pe    <- waic_from_loglik(ll.e.mat)
+waic.total <- waic_from_loglik(ll.total.mat)
+
+
+## =========================================================
+## PSIS-LOO
+## ========================================================= 
+
+loo.pa    <- loo(ll.a.mat)
+loo.pe    <- loo(ll.e.mat)
+loo.total <- loo(ll.total.mat)
+
+
+## =========================================================
+## Final output: DIC + WAIC + LOO only
+## =========================================================
+
+dicwaic_df <- data.frame(
+  DIC_PA    = dic.pa$DIC,
+  WAIC_PA   = waic.pa$WAIC,
+  LOOIC_PA  = -2 * loo.pa$estimates["elpd_loo", "Estimate"],
+  
+  DIC_PE    = dic.pe$DIC,
+  WAIC_PE   = waic.pe$WAIC,
+  LOOIC_PE  = -2 * loo.pe$estimates["elpd_loo", "Estimate"],
+  
+  DIC_Total   = dic.total$DIC,
+  WAIC_Total  = waic.total$WAIC,
+  LOOIC_Total = -2 * loo.total$estimates["elpd_loo", "Estimate"]
+)
+
+write.csv(
+  dicwaic_df,
+  paste0("dicwaic_mixJM.", num, ".csv"),
+  row.names = FALSE
+)
