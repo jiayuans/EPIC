@@ -3,7 +3,6 @@ library(coda)
 library(rjags)
 library(runjags)
 library(tidyverse)
-library(mcmcplots)
 library(loo)
 
 long.time <- read.csv("long.data_new600.csv")
