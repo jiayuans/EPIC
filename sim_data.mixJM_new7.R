@@ -32,18 +32,18 @@ set.seed(123)
 # PA
 c10 <- -4
 c20 <- -2
-c   <- c(0.5, 0.2, 0.4, -0.05)  # c[1], c[2], c[3], c[4]
+c   <- c(0.4, 0.2, 0.3, -0.05)  # c[1], c[2], c[3], c[4]
 cp1_mu_true <- 9
 cp1_sd_true <- 1
-pi_true <- c(0.4, 0.6)          # Pr(z=1), Pr(z=2) for PA component
+pi_true <- c(0.5, 0.5)          # Pr(z=1), Pr(z=2) for PA component
 
 # PE
 a1_true  <- 2
 a2_true  <- 0.5
-b10_true <- -1
+b10_true <- -3
 b20_true <- -3.5
 b_true   <- c(0.1, 0.3)           # b[1], b[2]
-ga10_true <- 0.5 
+ga10_true <- 0.3 
 ga20_true <- 0.1
 ga11_true <- -0.2
 ga12_true <- 0.1

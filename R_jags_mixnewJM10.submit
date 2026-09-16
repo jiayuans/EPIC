@@ -1,4 +1,4 @@
-+SingularityImage = "osdf:///ospool/ap40/data/jiayuan.shi/libr.sif"
++SingularityImage = "osdf:///ospool/ap40/data/jiayuan.shi/rlib.sif"
 executable        = Simulation_mixnewJM10.R
 arguments = mixJM.X_newdata6.$(Process).csv mixJM.Y_newdata6.$(Process).csv mixJM.rec_newdata6.$(Process).csv long.data_new600.csv
 transfer_input_files = mixJM.X_newdata6.$(Process).csv, mixJM.Y_newdata6.$(Process).csv, mixJM.rec_newdata6.$(Process).csv, long.data_new600.csv
