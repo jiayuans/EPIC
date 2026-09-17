@@ -113,12 +113,12 @@ model {
     # Random effects for PA
     u1[i] ~ dnorm(0, u.tau1)
     u2[i] ~ dnorm(0, u.tau2)
-    cp1[i] ~ dnorm(cp1.mu, cp1.tau)T(, 21.45)
-    cp2[i] ~ dunif(cp1[i], 21.45)
+    cp1[i] ~ dnorm(cp1.mu, cp1.tau)T(, 21)
+    cp2[i] ~ dunif(cp1[i], 21)
 
     # Center cp1 inside v1
     cp1c[i] <- cp1[i] - cp1.mu
-    cp2.mu[i] <- 0.5 * (cp1[i] + 21.45)
+    cp2.mu[i] <- 0.5 * (cp1[i] + 21)
     cp2c[i] <- cp2[i] - cp2.mu[i]
     
     # PA likelihood contribution
