@@ -203,15 +203,16 @@ round(colMeans(Sim.results),2)
 
 
 
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM10_091325") 
+
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM11_092125") 
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="mixJM.newresult10.")
+text <- list.files(pattern="mixJM.newresult11.")
 num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("mixJM.newresult10.", i, ".csv") 
+  file_name <- paste0("mixJM.newresult11.", i, ".csv") 
   read.csv(file_name)
 })
 
@@ -269,7 +270,7 @@ for(i in 1:I){
   c3.mean[i] <-data_frames[[i]][8,5] 
   c4.mean[i] <-data_frames[[i]][9,5] 
   cp1.mean[i] <-mean(data_frames[[i]][10:609,5])
-  cp2.mean[i] <-mean(data_frames[[i]][1841:2440,5])
+  cp2.mean[i] <-mean(data_frames[[i]][1830:2429,5])
   pi1.mean[i] <-data_frames[[i]][610,5] 
   pi2.mean[i] <-data_frames[[i]][611,5] 
   pi1r.mean[i] <-data_frames[[i]][612,5] 
@@ -278,24 +279,24 @@ for(i in 1:I){
   u1.tau.inv.mean[i] <-data_frames[[i]][614,5]
   #u2.mean[i] <-mean(data_frames[[i]][1612:2011,5])
   u2.tau.inv.mean[i] <-data_frames[[i]][615,5]
-  cp1.mu.mean[i] <-data_frames[[i]][618,5]
-  cp1.tau.mean[i] <-data_frames[[i]][619,5]
-  cp2.mu.mean[i] <-mean(data_frames[[i]][3041:3640,5])
+  cp1.mu.mean[i] <-data_frames[[i]][616,5]
+  cp1.tau.mean[i] <-data_frames[[i]][617,5]
+  cp2.mu.mean[i] <-mean(data_frames[[i]][2430:3029,5])
   
-  b10.mean[i] <-data_frames[[i]][621,5] 
-  b20.mean[i] <-data_frames[[i]][622,5] 
-  b1.mean[i] <-data_frames[[i]][623,5] 
-  b2.mean[i] <-data_frames[[i]][624,5] 
-  a1.mean[i] <-data_frames[[i]][625,5] 
-  a2.mean[i] <-data_frames[[i]][626,5] 
-  ga10.mean[i] <-data_frames[[i]][627,5] 
-  ga20.mean[i] <-data_frames[[i]][628,5] 
-  ga11.mean[i] <-data_frames[[i]][629,5] 
-  ga12.mean[i] <-data_frames[[i]][630,5] 
+  b10.mean[i] <-data_frames[[i]][618,5] 
+  b20.mean[i] <-data_frames[[i]][619,5] 
+  b1.mean[i] <-data_frames[[i]][620,5] 
+  b2.mean[i] <-data_frames[[i]][621,5] 
+  a1.mean[i] <-data_frames[[i]][622,5] 
+  a2.mean[i] <-data_frames[[i]][623,5] 
+  ga10.mean[i] <-data_frames[[i]][624,5] 
+  ga20.mean[i] <-data_frames[[i]][625,5] 
+  ga11.mean[i] <-data_frames[[i]][626,5] 
+  ga12.mean[i] <-data_frames[[i]][627,5] 
   #w1.mean[i] <-mean(data_frames[[i]][2027:2426,5])
-  w1.tau.inv.mean[i] <-data_frames[[i]][633,5]
+  w1.tau.inv.mean[i] <-data_frames[[i]][628,5]
   #w2.mean[i] <-mean(data_frames[[i]][2427:2826,5])
-  w2.tau.inv.mean[i] <-data_frames[[i]][634,5]
+  w2.tau.inv.mean[i] <-data_frames[[i]][629,5]
 }
 
 Sim.results=cbind(Flag,B1.mean,B2.mean,B3.mean,cp1.mean,cp2.mean,c10.mean,c20.mean,c1.mean,c2.mean,c3.mean,c4.mean,pi1.mean,pi2.mean,pi1r.mean,pi2r.mean,
@@ -310,15 +311,16 @@ round(colMeans(Sim.results),2)
 
 
 
-setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM11_092125") 
+
+setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM12_092125") 
 
 ###########################################################################
 # Read csv files
-text <- list.files(pattern="mixJM.newresult11.")
+text <- list.files(pattern="mixJM.newresult12.")
 num <- as.numeric(unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]])))
 
 data_frames <- lapply(num, function(i) {
-  file_name <- paste0("mixJM.newresult11.", i, ".csv") 
+  file_name <- paste0("mixJM.newresult12.", i, ".csv") 
   read.csv(file_name)
 })
 

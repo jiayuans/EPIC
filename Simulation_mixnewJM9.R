@@ -113,14 +113,12 @@ model {
     # Random effects for PA
     u1[i] ~ dnorm(0, u.tau1)
     u2[i] ~ dnorm(0, u.tau2)
-    cp1[i] ~ dnorm(cp1.mu, cp1.tau)T(,21.45)
-    qcp[i] ~ dbeta(1,1)
-    cp2.temp[i] <- qcp[i] * (21.45 - cp1[i])
-    cp2[i] <- cp1[i] + cp2.temp[i]
+    cp1[i] ~ dnorm(cp1.mu, cp1.tau)T(, 21)
+    cp2[i] ~ dunif(cp1[i], 21)
 
     # Center cp1 inside v1
     cp1c[i] <- cp1[i] - cp1.mu
-    cp2.mu[i] <- cp1[i] + 0.5 * (21.45 - cp1[i])
+    cp2.mu[i] <- 0.5 * (cp1[i] + 21)
     cp2c[i] <- cp2[i] - cp2.mu[i]
     
     # PA likelihood contribution
@@ -235,21 +233,21 @@ model {
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E, alpha=alpha, alpha.r=alpha.r)) 
 ###initial Values
-inits1 <- dump.format(list(c20_raw=-2.6, delta_c=0.7, c=c(0.3,0.3,0.3,-0.05), pi=c(0.4,0.6), pi.r=c(0.4,0.6), u.tau1=4,u.tau2=4, cp1.mu=14, cp1.tau=1,
+inits1 <- dump.format(list(c20_raw=-2.6, delta_c=0.7, c=c(0.3,0.3,0.3,-0.05), pi=c(0.4,0.6), pi.r=c(0.4,0.6), u.tau1=4,u.tau2=4, cp1.mu=9, cp1.tau=1,
                            b20_raw=-1, delta_b=2.5, b=c(0.2,0.3), a1=2.5,a2=0.5, w.tau1=25, w.tau2=25, ga10=0.5, ga20=-0.1, ga11=-0.2,ga12=0.1,
                            .RNG.name="base::Super-Duper", .RNG.seed=1)) 
-inits2 <- dump.format(list(c20_raw=-2.5, delta_c=0.6, c=c(0.3,0.3,0.3,-0.05)+0.01, pi=c(0.41,0.59), pi.r=c(0.41,0.59), u.tau1=3.6,u.tau2=4.4, cp1.mu=14.1, cp1.tau=0.9,
+inits2 <- dump.format(list(c20_raw=-2.5, delta_c=0.6, c=c(0.3,0.3,0.3,-0.05)+0.01, pi=c(0.41,0.59), pi.r=c(0.41,0.59), u.tau1=3.6,u.tau2=4.4, cp1.mu=9.1, cp1.tau=0.9,
                            b20_raw=-1.1, delta_b=2.4, b=c(0.2,0.3)+0.1, a1=2.55,a2=0.6, w.tau1=24, w.tau2=26, ga10=0.51, ga20=-0.11, ga11=-0.21,ga12=0.11,
                            .RNG.name="base::Super-Duper", .RNG.seed=2))
 
 #### Run the model and produce plots
 res <- run.jags(model=modelrancp, burnin=10000, sample=6000,  
                 monitor=c("B1","B2","B3","c10", "c20","c", "cp1",
-                          "pi","pi.r","u.tau.inv1","u.tau.inv2", "u.tau1","u.tau2",
-                          "cp1.mu","cp1.tau.inv","cp1.tau",
+                          "pi","pi.r","u.tau.inv1","u.tau.inv2", 
+                          "cp1.mu","cp1.tau.inv",
                           "b10","b20","b", "a1","a2","ga10","ga20","ga11","ga12",
-                          "w.tau1","w.tau2","w.tau.inv1","w.tau.inv2","c20_raw", "delta_c","b20_raw","delta_b",
-                          "ll.a","ll.e","dev.a","dev.e","cp2","cp2.temp","cp2.mu","cp1c","cp2c"), 
+                          "w.tau.inv1","w.tau.inv2",
+                          "ll.a","ll.e","cp2","cp2.mu","z","z.r"), 
                 data=data, n.chains=2, method = "parallel", inits=c(inits1,inits2), thin=10)
 
 summary <- summary(res)
@@ -260,3 +258,238 @@ num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.newresult9.",num,".csv"))
 
 res_jm <- res$mcmc
+
+
+
+## =========================================================
+## Helper functions
+## =========================================================
+
+colVars <- function(a){
+  diff <- a - matrix(colMeans(a), nrow(a), ncol(a), byrow = TRUE)
+  colSums(diff^2) / (nrow(a) - 1)
+}
+
+log_mean_exp <- function(x){
+  m <- max(x)
+  m + log(mean(exp(x - m)))
+}
+
+waic_from_loglik <- function(log_lik){
+  
+  lppd_i <- apply(log_lik, 2, log_mean_exp)
+  lppd <- sum(lppd_i)
+  
+  p_waic_1 <- 2 * sum(lppd_i - colMeans(log_lik))
+  p_waic_2 <- sum(colVars(log_lik))
+  
+  WAIC <- -2 * (lppd - p_waic_2)
+  
+  list(
+    lppd = lppd,
+    p_waic_1 = p_waic_1,
+    p_waic_2 = p_waic_2,
+    WAIC = WAIC
+  )
+}
+
+dic_from_loglik <- function(log_lik){
+  
+  D <- -2 * rowSums(log_lik)
+  
+  mean_deviance <- mean(D)
+  pD <- var(D) / 2
+  DIC <- mean_deviance + pD
+  
+  list(
+    mean_deviance = mean_deviance,
+    pD = pD,
+    DIC = DIC
+  )
+}
+
+
+## =========================================================
+## Combine posterior draws across chains
+## =========================================================
+
+post <- do.call(rbind, lapply(res_jm, as.matrix))
+cn <- colnames(post)
+
+
+## =========================================================
+## Locate and order subject-level log-likelihood columns
+## =========================================================
+
+idx.a <- grep("^ll\\.a\\[[0-9]+\\]$", cn)
+idx.e <- grep("^ll\\.e\\[[0-9]+\\]$", cn)
+
+if(length(idx.a) == 0)
+  stop("No ll.a[i] columns found in posterior samples.")
+
+if(length(idx.e) == 0)
+  stop("No ll.e[i] columns found in posterior samples.")
+
+idx.a <- idx.a[
+  order(as.integer(
+    sub("^ll\\.a\\[([0-9]+)\\]$", "\\1", cn[idx.a])
+  ))
+]
+
+idx.e <- idx.e[
+  order(as.integer(
+    sub("^ll\\.e\\[([0-9]+)\\]$", "\\1", cn[idx.e])
+  ))
+]
+
+if(length(idx.a) != length(idx.e))
+  stop("Different number of ll.a[i] and ll.e[i] columns.")
+
+
+## =========================================================
+## Subject-level log-likelihood matrices
+## =========================================================
+
+ll.a.mat <- post[, idx.a, drop = FALSE]
+ll.e.mat <- post[, idx.e, drop = FALSE]
+
+ll.total.mat <- ll.a.mat + ll.e.mat
+
+
+## =========================================================
+## DIC
+## =========================================================
+
+dic.pa    <- dic_from_loglik(ll.a.mat)
+dic.pe    <- dic_from_loglik(ll.e.mat)
+dic.total <- dic_from_loglik(ll.total.mat)
+
+
+## =========================================================
+## WAIC
+## =========================================================
+
+waic.pa    <- waic_from_loglik(ll.a.mat)
+waic.pe    <- waic_from_loglik(ll.e.mat)
+waic.total <- waic_from_loglik(ll.total.mat)
+
+
+## =========================================================
+## PSIS-LOO
+## ========================================================= 
+
+loo.pa    <- loo(ll.a.mat)
+loo.pe    <- loo(ll.e.mat)
+loo.total <- loo(ll.total.mat)
+
+
+## =========================================================
+## Final output: DIC + WAIC + LOO only
+## =========================================================
+
+dicwaic_df <- data.frame(
+  DIC_PA    = dic.pa$DIC,
+  WAIC_PA   = waic.pa$WAIC,
+  LOOIC_PA  = -2 * loo.pa$estimates["elpd_loo", "Estimate"],
+  
+  DIC_PE    = dic.pe$DIC,
+  WAIC_PE   = waic.pe$WAIC,
+  LOOIC_PE  = -2 * loo.pe$estimates["elpd_loo", "Estimate"],
+  
+  DIC_Total   = dic.total$DIC,
+  WAIC_Total  = waic.total$WAIC,
+  LOOIC_Total = -2 * loo.total$estimates["elpd_loo", "Estimate"]
+)
+
+write.csv(
+  dicwaic_df,
+  paste0("dicwaic_mixJM9.", num, ".csv"),
+  row.names = FALSE
+)
+
+
+post <- do.call(rbind, lapply(res_jm, as.matrix))
+cn <- colnames(post)
+
+get_subject_id <- function(x, prefix){
+  as.integer(sub(paste0("^", prefix, "\\[([0-9]+)\\]$"), "\\1", x))
+}
+
+idx.z   <- grep("^z\\[[0-9]+\\]$", cn)
+idx.cp1 <- grep("^cp1\\[[0-9]+\\]$", cn)
+idx.cp2 <- grep("^cp2\\[[0-9]+\\]$", cn)
+
+idx.z   <- idx.z[order(get_subject_id(cn[idx.z], "z"))]
+idx.cp1 <- idx.cp1[order(get_subject_id(cn[idx.cp1], "cp1"))]
+idx.cp2 <- idx.cp2[order(get_subject_id(cn[idx.cp2], "cp2"))]
+
+if(length(idx.z) != N) stop("Number of z[i] parameters does not equal N.")
+if(length(idx.cp1) != N) stop("Number of cp1[i] parameters does not equal N.")
+if(length(idx.cp2) != N) stop("Number of cp2[i] parameters does not equal N.")
+
+z.mat   <- post[, idx.z, drop=FALSE]
+cp1.mat <- post[, idx.cp1, drop=FALSE]
+cp2.mat <- post[, idx.cp2, drop=FALSE]
+
+## Classification: Component 1 if P(z=1)>=0.75, otherwise Component 2
+prob.comp1 <- colMeans(z.mat == 1)
+component <- ifelse(prob.comp1 >= 0.75, 1, 2)
+
+## Subject-specific posterior means
+cp1.post.mean <- colMeans(cp1.mat)
+cp2.post.mean <- colMeans(cp2.mat)
+
+classify.dat <- data.frame(
+  ID=1:N,
+  Prob_Component1=prob.comp1,
+  Component=component,
+  cp1_post_mean=cp1.post.mean,
+  cp2_post_mean=cp2.post.mean
+)
+
+## Number and percentage in each component
+n.comp1 <- sum(component == 1)
+n.comp2 <- sum(component == 2)
+pct.comp1 <- 100*n.comp1/N
+pct.comp2 <- 100*n.comp2/N
+
+component1.id <- which(component == 1)
+component2.id <- which(component == 2)
+
+## cp1 and cp2 summaries among Component 1 subjects
+if(length(component1.id) > 0){
+  cp1.subject.mean <- cp1.post.mean[component1.id]
+  cp2.subject.mean <- cp2.post.mean[component1.id]
+  
+  cp1.comp1.mean <- mean(cp1.subject.mean)
+  cp1.comp1.lower <- as.numeric(quantile(cp1.subject.mean, 0.025, na.rm=TRUE))
+  cp1.comp1.upper <- as.numeric(quantile(cp1.subject.mean, 0.975, na.rm=TRUE))
+  
+  cp2.comp1.mean <- mean(cp2.subject.mean)
+  cp2.comp1.lower <- as.numeric(quantile(cp2.subject.mean, 0.025, na.rm=TRUE))
+  cp2.comp1.upper <- as.numeric(quantile(cp2.subject.mean, 0.975, na.rm=TRUE))
+} else {
+  cp1.comp1.mean <- cp1.comp1.lower <- cp1.comp1.upper <- NA_real_
+  cp2.comp1.mean <- cp2.comp1.lower <- cp2.comp1.upper <- NA_real_
+}
+
+classification_summary <- data.frame(
+  N=N,
+  N_Component1=n.comp1,
+  Percent_Component1=pct.comp1,
+  N_Component2=n.comp2,
+  Percent_Component2=pct.comp2,
+  Mean_cp1_Component1=cp1.comp1.mean,
+  Lower95_cp1_Component1=cp1.comp1.lower,
+  Upper95_cp1_Component1=cp1.comp1.upper,
+  Mean_cp2_Component1=cp2.comp1.mean,
+  Lower95_cp2_Component1=cp2.comp1.lower,
+  Upper95_cp2_Component1=cp2.comp1.upper
+)
+
+
+write.csv(
+  classification_summary,
+  paste0("mixJM.classification_summary9.", num, ".csv"),
+  row.names=FALSE
+)

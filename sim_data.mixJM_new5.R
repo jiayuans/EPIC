@@ -33,7 +33,7 @@ set.seed(123)
 c10 <- -3.3
 c20 <- -2.6
 c   <- c(0.3, 0.3, 0.3, -0.05)  # c[1], c[2], c[3], c[4]
-cp1_mu_true <- 14
+cp1_mu_true <- 9
 cp1_sd_true <- 1
 pi_true <- c(0.4, 0.6)          # Pr(z=1), Pr(z=2) for PA component
 
@@ -93,14 +93,18 @@ for (r in 2:Int) {
   w2  <- rnorm(N, 0, sqrt(1 / w_tau2_true))
   cp1 <- rnorm(N, cp1_mu_true, cp1_sd_true)
   
-  while(any(cp1 > 21.45)){
-    ind <- which(cp1 > 21.45)
+  while(any(cp1 > 21)){
+    ind <- which(cp1 > 21)
     cp1[ind] <- rnorm(length(ind), cp1_mu_true, cp1_sd_true)
   }
   
-  qcp <- rbeta(N, 1, 1)
-  cp2.temp <- qcp * (21.45 - cp1)
-  cp2 <- cp1 + cp2.temp
+  # Second change point:
+  # cp2 | cp1 ~ Uniform(cp1, 21)
+  cp2 <- runif(
+    N,
+    min = cp1,
+    max = 21
+  )
   
   # Class indicators (truth)
   z   <- sample(1:2, size = N, prob = pi_true,  replace = TRUE)   # PA class
@@ -108,7 +112,8 @@ for (r in 2:Int) {
   
   # Frailties
   cp1c <- cp1 - cp1_mu_true
-  cp2_mu <- cp1 + 0.5 * (21.45 - cp1)
+  # Conditional mean of cp2 given cp1 under Uniform(cp1, 21)
+  cp2_mu <- (cp1 + 21) / 2
   cp2c <- cp2 - cp2_mu
   
   # Shared longitudinal contribution
@@ -212,7 +217,7 @@ for (r in 2:Int) {
     B2 = c[1] + c[2] - c[3],
     B3 = c[1] + c[2] + c[3],
     cp1_mu = cp1_mu_true, cp1_tau = 1 / (cp1_sd_true^2),
-    qcp_mean = 0.5,
+    cp2_mean = (cp1_mu_true + 21) / 2,
     a1 = a1_true, a2 = a2_true,
     b10 = b10_true, b20 = b20_true, b1 = b_true[1], b2 = b_true[2],
     ga10 = ga10_true, ga20 = ga20_true,
