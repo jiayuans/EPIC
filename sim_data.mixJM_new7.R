@@ -38,10 +38,10 @@ cp1_sd_true <- 1
 pi_true <- c(0.5, 0.5)          # Pr(z=1), Pr(z=2) for PA component
 
 # PE
-a1_true  <- 1.2
+a1_true  <- 1.1
 a2_true  <- 0.9
-b10_true <- -2.4
-b20_true <- -2.7
+b10_true <- -1.5
+b20_true <- -2
 b_true   <- c(0.2, 0.3)           # b[1], b[2]
 ga10_true <- 0.3 
 ga20_true <- 0.1
