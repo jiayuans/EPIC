@@ -1,0 +1,13 @@
+Welcome to JAGS 4.3.2 (official binary) on Sun Sep 27 10:26:52 2026
+JAGS is free software and comes with ABSOLUTELY NO WARRANTY
+Loading module: basemod: ok
+Loading module: bugs: ok
+. . Reading data file data.txt
+. Compiling data graph
+   Resolving undeclared variables
+   Allocating nodes
+   Initializing
+   Reading data back into data table
+Compiling model graph
+   Resolving undeclared variables
+   Allocating nodes

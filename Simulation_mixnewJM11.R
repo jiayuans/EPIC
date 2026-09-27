@@ -388,10 +388,27 @@ waic.total <- waic_from_loglik(ll.total.mat)
 ## =========================================================
 ## PSIS-LOO
 ## ========================================================= 
+safe_looic <- function(log_lik) {
+  
+  # loo can handle -Inf, but not NA / NaN / +Inf
+  if (any(is.na(log_lik)) ||
+      any(log_lik == Inf, na.rm = TRUE)) {
+    return(NA_real_)
+  }
+  
+  tryCatch({
+    fit <- loo(log_lik)
+    -2 * fit$estimates["elpd_loo", "Estimate"]
+  },
+  error = function(e) {
+    message("LOO failed: ", conditionMessage(e))
+    NA_real_
+  })
+}
 
-loo.pa    <- loo(ll.a.mat)
-loo.pe    <- loo(ll.e.mat)
-loo.total <- loo(ll.total.mat)
+LOOIC_PA    <- safe_looic(ll.a.mat)
+LOOIC_PE    <- safe_looic(ll.e.mat)
+LOOIC_Total <- safe_looic(ll.total.mat)
 
 
 ## =========================================================
@@ -401,15 +418,15 @@ loo.total <- loo(ll.total.mat)
 dicwaic_df <- data.frame(
   DIC_PA    = dic.pa$DIC,
   WAIC_PA   = waic.pa$WAIC,
-  LOOIC_PA  = -2 * loo.pa$estimates["elpd_loo", "Estimate"],
+  LOOIC_PA  = LOOIC_PA,
   
   DIC_PE    = dic.pe$DIC,
   WAIC_PE   = waic.pe$WAIC,
-  LOOIC_PE  = -2 * loo.pe$estimates["elpd_loo", "Estimate"],
+  LOOIC_PE  = LOOIC_PE,
   
   DIC_Total   = dic.total$DIC,
   WAIC_Total  = waic.total$WAIC,
-  LOOIC_Total = -2 * loo.total$estimates["elpd_loo", "Estimate"]
+  LOOIC_Total = LOOIC_Total
 )
 
 write.csv(

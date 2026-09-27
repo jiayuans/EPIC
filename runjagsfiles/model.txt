@@ -1,0 +1,112 @@
+data{
+for(i in 1:M){
+zeros[i]<- 0
+}
+}
+model{
+for(i in 1:M){ 
+for(j in 1:k.pa[i]){
+### PA model
+Y[i,j] ~ dbin(p2[i,j],1)
+p2[i,j] <- p[i,j,z[i]]
+logit(p[i,j,1]) <- c10 + (c[1]+u11[i]) * (X[i,j]-cp1[i]) + (c[2]+u12[i]) * (X[i,j]-cp1[i]) * (2*step(X[i,j]-cp1[i])-1) + (c[3]+u13[i]) * (X[i,j]-cp2[i]) * (2*step(X[i,j]-cp2[i])-1) + c[4] * X1_pa[i] + c[5] * X2_pa[i] + c[6] * X3_pa[i] + u10[i]
+logit(p[i,j,2]) <- c20 + (c[1]-c[2]-c[3]+u21[i]) * X[i,j] + c[4] * X1_pa[i] + c[5] * X2_pa[i] + c[6] * X3_pa[i] + u20[i] ## no cp
+}
+for(j in 1:k.pe[i]){
+### PE model
+## Weibull baseline
+lambda10[i,j] <- a1*(Ti[i,j])^(a1-1) 
+lambda20[i,j] <- a2*(Ti[i,j])^(a2-1)
+lambda1[i,j] <- lambda10[i,j]*v1[i]*exp(b10+b[1]*X1[i]) 
+lambda2[i,j] <- lambda20[i,j]*v2[i]*exp(b20+b[2]*X1[i])
+}
+z[i] ~ dcat(pi[1:2])
+z.r[i] ~ dcat(pi.r[1:2])
+u10[i] ~ dnorm(0,u.tau10)
+u20[i] ~ dnorm(0,u.tau20)
+u11[i] ~ dnorm(0,u.tau11)
+u12[i] ~ dnorm(0,u.tau12)
+u13[i] ~ dnorm(0, u.tau13)
+u21[i] ~ dnorm(0,u.tau21)
+cp1[i] ~ dnorm(cp1.mu, cp1.tau)T(, max_time)
+cp2[i] ~ dunif(cp1[i], max_time)
+L.a[i] <- prod(((p2[i,1:k.pa[i]])^(Y[i,1:k.pa[i]]))*((1-p2[i,1:k.pa[i]])^(1-Y[i,1:k.pa[i]])))
+ll.a[i] <- log(L.a[i])
+w1[i] ~ dnorm(0,w.tau1)
+w2[i] ~ dnorm(0,w.tau2)
+#v1[i] <- exp(ga10*u10[i]+w1[i]+gacp1*cp1[i]+gacp2*cp2[i]+ga11*u11[i]+ga12*u12[i]+ga13*u13[i])
+#v2[i] <- exp(ga20*u20[i]+w2[i]+ga21*u21[i])
+eta.shared[i] <-
+equals(z[i], 1) *
+(ga10*u10[i] +
+gacp1*cp1[i] +
+gacp2*cp2[i] +
+ga11*u11[i] +
+ga12*u12[i] +
+ga13*u13[i]) +
+equals(z[i], 2) *
+(ga20*u20[i] +
+ga21*u21[i])
+v1[i] <- exp(w1[i] + eta.shared[i])
+v2[i] <- exp(w2[i] + eta.shared[i])
+logL1[i] <- ifelse(Ti[i,1] != 0,
+sum(log(lambda1[i,1:k.pe[i]])) - v1[i] * exp(b10 + b[1] * X1[i]) * (pow(time.tau[i], a1) - pow(time.t0[i], a1)),
+-v1[i] * exp(b10 + b[1] * X1[i]) * (pow(time.tau[i], a1) - pow(time.t0[i], a1)))
+logL2[i] <- ifelse(Ti[i,1] != 0,
+sum(log(lambda2[i,1:k.pe[i]])) - v2[i] * exp(b20 + b[2] * X1[i]) * (pow(time.tau[i], a2) - pow(time.t0[i], a2)),
+-v2[i] * exp(b20 + b[2] * X1[i]) * (pow(time.tau[i], a2) - pow(time.t0[i], a2)))
+ll.e[i] <- logL1[i] * equals(z.r[i],1) +
+logL2[i] * equals(z.r[i],2)
+phi[i] <- -ll.e[i] + 10000
+zeros[i] ~ dpois(phi[i])
+}
+log_lik0.a <- sum(ll.a[]) 
+log_lik0.e <- sum(ll.e[]) 
+dev.a <- -2*log_lik0.a
+dev.e <- -2*log_lik0.e
+pi[1:2] ~ ddirch(alpha[])
+pi.r[1:2] ~ ddirch(alpha[])
+c10 ~ dnorm(0,0.0001)
+c20 ~ dnorm(0,0.0001)
+for (k in 1:6){
+c[k] ~ dnorm(0,0.0001)
+}
+B1 <- c[1] - c[2] - c[3]
+B2 <- c[1] + c[2] - c[3]
+B3 <- c[1] + c[2] + c[3]
+u.tau10 ~ dgamma(0.001,0.001)
+u.tau.inv10 <- 1/u.tau10  ## variance
+u.tau20 ~ dgamma(0.001,0.001)
+u.tau.inv20 <- 1/u.tau20  ## variance
+u.tau11 ~ dgamma(0.001,0.001)
+u.tau.inv11 <- 1/u.tau11  ## variance
+u.tau12 ~ dgamma(0.001,0.001)
+u.tau.inv12 <- 1/u.tau12  ## variance
+u.tau13 ~ dgamma(0.001,0.001)
+u.tau.inv13 <- 1/u.tau13  ## variance
+u.tau21 ~ dgamma(0.001,0.001)
+u.tau.inv21 <- 1/u.tau21  ## variance
+cp1.mu ~ dnorm(0,0.01)
+cp1.tau ~ dgamma(0.01,0.01)
+cp1.tau.inv <- 1/cp1.tau  ## variance
+a1 ~ dgamma(0.01,0.01)
+a2 ~ dgamma(0.01,0.01)
+b20 ~ dnorm(0, 0.0001)
+delta.b0 ~ dnorm(0, 0.0001)T(0,)
+b10 <- b20 + delta.b0
+for (p in 1:2){
+b[p] ~ dnorm(0,0.0001)
+}
+ga10 ~ dnorm(0,0.01)
+ga20 ~ dnorm(0,0.01)
+gacp1 ~ dnorm(0,0.01)
+gacp2 ~ dnorm(0,0.01)
+ga11 ~ dnorm(0,0.01)
+ga12 ~ dnorm(0,0.01)
+ga13 ~ dnorm(0,0.01)
+ga21 ~ dnorm(0,0.01) #0.0001
+w.tau1 ~ dgamma(0.001,0.001)
+w.tau.inv1 <- 1/w.tau1  ## variance 
+w.tau2 ~ dgamma(0.001,0.001)
+w.tau.inv2 <- 1/w.tau2 ## variance
+}
