@@ -31,25 +31,46 @@ set.seed(123)
 # ----------------------------
 
 # PA
-c0 <- -4
-c  <- c(0.4, 0.2, 0.3, -0.05)   # c[1], c[2], c[3], c[4]
+c0 <- -3.3
+c  <- c(0.3, 0.3, 0.3, -0.05)   # c[1], c[2], c[3], c[4]
 
 cp1_mu_true <- 9
 cp1_sd_true <- 1
 
 # PE
-a_true  <- 2
-b0_true <- -3
-b_true  <- 0.1
+a_true  <- 2.5
+b0_true <- -3.5
+b_true  <- 0.2
 
 # Association parameters
-ga_true    <- 0.3
+ga_true    <- 0.5
 gacp1_true <- -0.2
 gacp2_true <- 0.1
 
 # Random-effect precisions
 u_tau_true <- 4       # sd(u)=0.5
 w_tau_true <- 25      # sd(w)=0.2
+
+# PA
+#c0 <- -4
+#c  <- c(0.4, 0.2, 0.3, -0.05)   # c[1], c[2], c[3], c[4]
+
+#cp1_mu_true <- 9
+#cp1_sd_true <- 1
+
+# PE
+#a_true  <- 2
+#b0_true <- -3
+#b_true  <- 0.1
+
+# Association parameters
+#ga_true    <- 0.3
+#gacp1_true <- -0.2
+#gacp2_true <- 0.1
+
+# Random-effect precisions
+#u_tau_true <- 4       # sd(u)=0.5
+#w_tau_true <- 25      # sd(w)=0.2
 
 # ----------------------------
 # NHPP generator (0..T)

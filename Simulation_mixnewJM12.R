@@ -179,18 +179,17 @@ model {
 ####Observed DATA
 data <- dump.format(list(N=N, X=X, Y=Y, X1=X1,k.pa=k.pa,max.count=max.count, time.t0=time.t0, time.tau=time.tau, Ti2=Ti2, E=E)) 
 ###initial Values
-### Initial values
 inits1 <- dump.format(list(
-  c0=-4,
-  c=c(0.4,0.2,0.3,-0.05),
+  c0=-3.3,
+  c=c(0.3,0.2,0.3,-0.05),
   u.tau=4,
   cp1.mu=9,
   cp1.tau=1,
-  b0=-3,
-  b=0.1,
-  a=2,
+  b0=-3.5,
+  b=0.2,
+  a=2.5,
   w.tau=25,
-  ga10=0.3,
+  ga10=0.5,
   ga11=-0.2,
   ga12=0.1,
   .RNG.name="base::Super-Duper",
@@ -198,21 +197,55 @@ inits1 <- dump.format(list(
 ))
 
 inits2 <- dump.format(list(
-  c0=-4.1,
-  c=c(0.4,0.2,0.3,-0.05)+0.01,
+  c0=-3.4,
+  c=c(0.3,0.2,0.3,-0.05)+0.01,
   u.tau=3.6,
   cp1.mu=9.1,
   cp1.tau=0.9,
-  b0=-3.1,
+  b0=-3.6,
   b=0.2,
-  a=2.1,
+  a=2.4,
   w.tau=24,
-  ga10=0.31,
+  ga10=0.51,
   ga11=-0.21,
   ga12=0.11,
   .RNG.name="base::Super-Duper",
   .RNG.seed=2
 ))
+
+#inits1 <- dump.format(list(
+#  c0=-4,
+#  c=c(0.4,0.2,0.3,-0.05),
+#  u.tau=4,
+#  cp1.mu=9,
+#  cp1.tau=1,
+#  b0=-3,
+#  b=0.1,
+#  a=2,
+#  w.tau=25,
+#  ga10=0.3,
+#  ga11=-0.2,
+#  ga12=0.1,
+#  .RNG.name="base::Super-Duper",
+#  .RNG.seed=1
+#))
+
+#inits2 <- dump.format(list(
+#  c0=-4.1,
+#  c=c(0.4,0.2,0.3,-0.05)+0.01,
+#  u.tau=3.6,
+#  cp1.mu=9.1,
+#  cp1.tau=0.9,
+#  b0=-3.1,
+#  b=0.2,
+#  a=2.1,
+#  w.tau=24,
+#  ga10=0.31,
+#  ga11=-0.21,
+# ga12=0.11,
+# .RNG.name="base::Super-Duper",
+#  .RNG.seed=2
+#))
 
 #### Run the model and produce plots
 res <- run.jags(model=modelrancp, adapt = 10000, burnin=10000, sample=6000,  
