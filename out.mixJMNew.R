@@ -387,10 +387,6 @@ round(colMeans(Sim.results),2)
 
 
 
-
-
-
-
 setwd("/Users/Shared/Windows/UCHealth/RA/Project/EPIC-CF/Analysis_Jiayuan/EPIC_Sim_Results/mixnewJM9_101726")  #mixnewJM9_101726
 
 ###########################################################################
@@ -493,7 +489,4 @@ table(Flag)
 Sim.results.1 <- subset(Sim.results,Flag==1)
 round(colMeans(Sim.results.1),2)
 round(colMeans(Sim.results),2)
-
-
-
 
