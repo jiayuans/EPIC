@@ -26,9 +26,9 @@ alpha = c(1,1)
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="mixJM.X_newdata8.")))
-Y <- as.matrix(read.csv(list.files(pattern="mixJM.Y_newdata8.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="mixJM.rec_newdata8.")))
+X <- as.matrix(read.csv(list.files(pattern="nonmixJM.X_newdata8.")))
+Y <- as.matrix(read.csv(list.files(pattern="nonmixJM.Y_newdata8.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="nonmixJM.rec_newdata8.")))
 #############################################################
 
 tt<-tt-0.25
@@ -253,7 +253,7 @@ res <- run.jags(model=modelrancp, burnin=10000, sample=6000,
 summary <- summary(res)
 summary
 result_df <- as.data.frame(summary)
-text <- list.files(pattern="mixJM.X_newdata8.")
+text <- list.files(pattern="nonmixJM.X_newdata8.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("mixJM.newresult9_misspec.",num,".csv"))
 

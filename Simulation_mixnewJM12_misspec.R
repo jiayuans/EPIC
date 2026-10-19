@@ -25,9 +25,9 @@ k.pa<-(tt-t)*4
 set.seed(123)
 
 #############################################################
-X <- as.matrix(read.csv(list.files(pattern="nonmixJM.X_newdata5.")))
-Y <- as.matrix(read.csv(list.files(pattern="nonmixJM.Y_newdata5.")))
-simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="nonmixJM.rec_newdata5.")))
+X <- as.matrix(read.csv(list.files(pattern="mixJM.X_newdata5.")))
+Y <- as.matrix(read.csv(list.files(pattern="mixJM.Y_newdata5.")))
+simdat.pe00 <- as.data.frame(read.csv(list.files(pattern="mixJM.rec_newdata5.")))
 #############################################################
 
 tt<-tt-0.25
@@ -263,7 +263,7 @@ res <- run.jags(model=modelrancp, adapt = 10000, burnin=10000, sample=6000,
 summary <- summary(res)
 summary
 result_df <- as.data.frame(summary)
-text <- list.files(pattern="nonmixJM.X_newdata5.")
+text <- list.files(pattern="mixJM.X_newdata5.")
 num <- unlist(lapply(strsplit(text,'.',fixed=TRUE),function(x) x[[3]]))
 write.csv(result_df, paste0("nonmixJM.newresult12_misspec.",num,".csv"))
 
